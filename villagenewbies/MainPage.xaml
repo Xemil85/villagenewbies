@@ -1,0 +1,43 @@
+﻿<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="VillageNewbies.Views.MainPage"
+             BackgroundColor="#F5F5F5"
+             Title="Village Newbies Oy">
+
+    <ScrollView>
+        <VerticalStackLayout Spacing="25" Padding="30" HorizontalOptions="FillAndExpand" VerticalOptions="Center">
+
+            <Label 
+                Text="Tervetuloa Village Newbies Oy:n Varausjärjestelmään!"
+                FontSize="22"
+                HorizontalOptions="Center"
+                VerticalOptions="Center"
+                TextColor="#2E4053" />
+
+            <Button Text="Mökit"
+                    FontSize="Medium"
+                    BackgroundColor="#3498DB"
+                    TextColor="White"
+                    CornerRadius="10"/>
+
+            <Button Text="Palvelut"
+                    FontSize="Medium"
+                    BackgroundColor="#3498DB"
+                    TextColor="White"
+                    CornerRadius="10"/>
+
+            <Button Text="Varaukset"
+                    FontSize="Medium"
+                    BackgroundColor="#3498DB"
+                    TextColor="White"
+                    CornerRadius="10"/>
+
+            <Button Text="Asiakkaat"
+                    FontSize="Medium"
+                    BackgroundColor="#3498DB"
+                    TextColor="White"
+                    CornerRadius="10"/>
+
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>
