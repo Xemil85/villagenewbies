@@ -1,0 +1,16 @@
+<Shell xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+       xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+       xmlns:views="clr-namespace:VillageNewbies.Views"
+       x:Class="VillageNewbies.AppShell">
+
+    <!-- TabBar määritellään sivujen väliseen navigointiin välilehtien avulla -->
+    <TabBar>
+        <Tab Title="Etusivu" Icon="home.png">
+            <ShellContent ContentTemplate="{DataTemplate views:MainPage}" />
+        </Tab>
+        <Tab Title="Mökit" Icon="cabin.png">
+            <ShellContent ContentTemplate="{DataTemplate views:CabinsPage}" />
+        </Tab>
+        <!-- Lisää muita Tabeja tarpeen mukaan, ServicesPage ja BookingsPage yms -->
+    </TabBar>
+</Shell>
