@@ -5,15 +5,24 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Data;
+using Microsoft.Maui.Controls;
+using System.Diagnostics;
 
 namespace VillageNewbies
 {
     public class MokkiAccess
     {
-        private const string ConnectionString = "server=localhost;port=3306;database=vn;user=root;password="; //hox. Tuohon salasana 
-
         public async Task<List<Mokki>> FetchAllMokitAsync()
         {
+            string projectDirectory = System.AppDomain.CurrentDomain.BaseDirectory;
+            var projectRoot = Path.GetFullPath(Path.Combine(projectDirectory, @"..\..\..\..\..\"));
+
+            DotNetEnv.Env.Load(projectRoot);
+            var env = Environment.GetEnvironmentVariables();
+
+            string ConnectionString = $"server={env["SERVER"]};port={env["SERVER_PORT"]};database={env["SERVER_DATABASE"]};user={env["SERVER_USER"]};password={env["SERVER_PASSWORD"]}";
+            Debug.WriteLine(ConnectionString);
+
             var mokit = new List<Mokki>();
 
             using(var connection = new MySqlConnection(ConnectionString))
