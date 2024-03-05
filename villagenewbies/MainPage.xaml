@@ -15,24 +15,28 @@
                 TextColor="#2E4053" />
 
             <Button Text="Mökit"
+                    x:Name="AvaaMokit"
                     FontSize="Medium"
                     BackgroundColor="#3498DB"
                     TextColor="White"
                     CornerRadius="10"/>
 
             <Button Text="Palvelut"
+                    x:Name="AvaaPalvelut"
                     FontSize="Medium"
                     BackgroundColor="#3498DB"
                     TextColor="White"
                     CornerRadius="10"/>
 
             <Button Text="Varaukset"
+                    x:Name="AvaaVaraukset"
                     FontSize="Medium"
                     BackgroundColor="#3498DB"
                     TextColor="White"
                     CornerRadius="10"/>
 
             <Button Text="Asiakkaat"
+                    x:Name="AvaaAsiakkaat"
                     FontSize="Medium"
                     BackgroundColor="#3498DB"
                     TextColor="White"
