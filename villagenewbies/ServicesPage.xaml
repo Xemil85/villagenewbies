@@ -3,10 +3,21 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="VillageNewbies.ServicesPage"
              Title="Palvelut">
-    <VerticalStackLayout>
-        <Label 
-            Text="Palvelut"
-            VerticalOptions="Center" 
-            HorizontalOptions="Center" />
+    <VerticalStackLayout Spacing="15" Padding="10">
+        <!-- TODO Mahdollinen suodatus -->
+
+        <!-- Lista palveluista -->
+        <CollectionView x:Name="ServicesCollectionView">
+            <CollectionView.ItemTemplate>
+                <DataTemplate>
+                    <Grid Padding="10" ColumnDefinitions="*,*,*,*">
+                        <Label Grid.Column="0" Text="{Binding nimi}" FontAttributes="Bold"/>
+                        <Label Grid.Column="1" Text="{Binding kuvaus}"/>
+                        <Label Grid.Column="2" Text="{Binding hinta, StringFormat='Hinta: {0:C}'}"/>
+                        <Label Grid.Column="3" Text="{Binding alv, StringFormat='ALV: {0}%'}"/>
+                    </Grid>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
     </VerticalStackLayout>
 </ContentPage>

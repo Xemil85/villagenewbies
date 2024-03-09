@@ -3,11 +3,25 @@
              x:Class="VillageNewbies.Views.CabinsPage"
              Title="Mökit">
 
-    <StackLayout Padding="20" Spacing="10">
-        <!-- Sisältö tulee tähän -->
-        <Label Text="Mökkien lista"
-               FontSize="Medium"
-               HorizontalOptions="Center" />
-    </StackLayout>
+    <VerticalStackLayout>
+        <!-- Alueiden alasvetovalikko -->
+        <Picker x:Name="AreaPicker"
+                Title="Valitse alue"
+                 SelectedIndexChanged="OnAreaSelected">
+        </Picker>
 
+        <!-- Mökkien lista -->
+        <CollectionView x:Name="CabinsCollectionView">
+            <CollectionView.ItemTemplate>
+                <DataTemplate>
+                    <VerticalStackLayout Padding="10">
+                        <Label Text="{Binding mokkinimi}"
+                               FontAttributes="Bold"/>
+                        <Label Text="{Binding kuvaus}"/>
+                        <!-- Lisää tarvittavat tiedot tähän -->
+                    </VerticalStackLayout>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+    </VerticalStackLayout>
 </ContentPage>
