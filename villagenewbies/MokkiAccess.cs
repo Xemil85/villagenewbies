@@ -38,6 +38,7 @@ namespace VillageNewbies
                         var mokki = new Mokki
                         {
                             mokki_id = reader.GetInt32("mokki_id"),
+                            alue_id = reader.GetInt32("alue_id"),
                             mokkinimi = reader.GetString("mokkinimi"),
                             kuvaus = reader.GetString("kuvaus"),
                             varustelu = reader.GetString("varustelu")
