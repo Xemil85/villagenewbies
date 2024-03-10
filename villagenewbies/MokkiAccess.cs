@@ -21,7 +21,6 @@ namespace VillageNewbies
             var env = Environment.GetEnvironmentVariables();
 
             string ConnectionString = $"server={env["SERVER"]};port={env["SERVER_PORT"]};database={env["SERVER_DATABASE"]};user={env["SERVER_USER"]};password={env["SERVER_PASSWORD"]}";
-            Debug.WriteLine(ConnectionString);
 
             var mokit = new List<Mokki>();
 
@@ -50,6 +49,88 @@ namespace VillageNewbies
                 }
 
                 return mokit;
+            }
+        }
+
+        public async Task<List<Palvelu>> FetchAllPalveluAsync()
+        {
+            string projectDirectory = System.AppDomain.CurrentDomain.BaseDirectory;
+            var projectRoot = Path.GetFullPath(Path.Combine(projectDirectory, @"..\..\..\..\..\"));
+
+            DotNetEnv.Env.Load(projectRoot);
+            var env = Environment.GetEnvironmentVariables();
+
+            string ConnectionString = $"server={env["SERVER"]};port={env["SERVER_PORT"]};database={env["SERVER_DATABASE"]};user={env["SERVER_USER"]};password={env["SERVER_PASSWORD"]}";
+
+            var palvelut = new List<Palvelu>();
+
+            using (var connection = new MySqlConnection(ConnectionString))
+            {
+                await connection.OpenAsync();
+
+                using (var command = new MySqlCommand("SELECT * FROM palvelu;", connection))
+
+                using (var reader = await command.ExecuteReaderAsync())
+                {
+                    while (await reader.ReadAsync())
+                    {
+                        var palvelu = new Palvelu
+                        {
+                            palvelu_id = reader.GetInt32("palvelu_id"),
+                            alue_id = reader.GetInt32("alue_id"),
+                            nimi = reader.GetString("nimi"),
+                            tyyppi = reader.GetInt32("tyyppi"),
+                            kuvaus = reader.GetString("kuvaus"),
+                            hinta = reader.GetDouble("hinta"),
+                            alv = reader.GetDouble("alv"),
+                        };
+
+                        palvelut.Add(palvelu);
+                    }
+                }
+
+                return palvelut;
+            }
+        }
+
+        public async Task<List<Asiakas>> FetchAllAsiakasAsync()
+        {
+            string projectDirectory = System.AppDomain.CurrentDomain.BaseDirectory;
+            var projectRoot = Path.GetFullPath(Path.Combine(projectDirectory, @"..\..\..\..\..\"));
+
+            DotNetEnv.Env.Load(projectRoot);
+            var env = Environment.GetEnvironmentVariables();
+
+            string ConnectionString = $"server={env["SERVER"]};port={env["SERVER_PORT"]};database={env["SERVER_DATABASE"]};user={env["SERVER_USER"]};password={env["SERVER_PASSWORD"]}";
+
+            var asiakkaat = new List<Asiakas>();
+
+            using (var connection = new MySqlConnection(ConnectionString))
+            {
+                await connection.OpenAsync();
+
+                using (var command = new MySqlCommand("SELECT * FROM asiakas;", connection))
+
+                using (var reader = await command.ExecuteReaderAsync())
+                {
+                    while (await reader.ReadAsync())
+                    {
+                        var asiakas = new Asiakas
+                        {
+                            asiakas_id = reader.GetInt32("asiakas_id"),
+                            postinro = reader.GetInt32("postinro"),
+                            etunimi = reader.GetString("etunimi"),
+                            sukunimi = reader.GetString("sukunimi"),
+                            lahiosoite = reader.GetString("lahiosoite"),
+                            email = reader.GetString("email"),
+                            puhelinnro = reader.GetString("puhelinnro"),
+                        };
+
+                        asiakkaat.Add(asiakas);
+                    }
+                }
+
+                return asiakkaat;
             }
         }
     }

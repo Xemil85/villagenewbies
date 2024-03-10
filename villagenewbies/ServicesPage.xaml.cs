@@ -16,37 +16,19 @@ public partial class ServicesPage : ContentPage
         LoadPalvelut();
     }
 
-    private void LoadPalvelut()
-    {
-        // Oletetaan, ett‰ saadaan palveluiden tiedot tietokannasta seuraavasti:
-        List<Palvelu> palvelutFromDb = GetServicesFromDatabase();
-        foreach (var palvelu in palvelutFromDb)
-        {
-            Palvelut.Add(palvelu);
-        }
-    }
-
-    private List<Palvelu> GetServicesFromDatabase()
+    private async Task LoadPalvelut()
     {
         // T‰m‰ on pseudokoodia. TODO Toteuta oikea tietokantahaku
-        return new List<Palvelu>
+        var mokkiAccess = new MokkiAccess();
+        var palveluList = await mokkiAccess.FetchAllPalveluAsync();
+        MainThread.InvokeOnMainThreadAsync(() =>
+        {
+            foreach (var palvelu in palveluList)
             {
-                // Oletetaan ett‰ tuodaan t‰ll‰ tavoin palvelu-instansseja tietokannan tiedoista
-                new Palvelu { nimi = "Koiravaljakkoajelu", kuvaus = "Opastettu koiravaljakkoajelu...", hinta = 150.00, alv = 24 },
-                // Lis‰‰ kaikki palvelut...
-            };
+                Palvelut.Add(palvelu);
+            }
+            ServicesCollectionView.ItemsSource = Palvelut;
+        });
     }
-}
-
-// T‰m‰ luokka kuvaa palvelua ja sen kentti‰ tietokannassas
-public class Palvelu
-{
-    public int palvelu_id { get; set; }
-    public int alue_id { get; set; }
-    public string nimi { get; set; }
-    public int tyyppi { get; set; } // Saattaa olla mahdollisesti parempi k‰ytt‰‰ enum?
-    public string kuvaus { get; set; }
-    public double hinta { get; set; }
-    public double alv { get; set; }
 }
 
