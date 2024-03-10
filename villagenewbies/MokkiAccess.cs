@@ -40,6 +40,7 @@ namespace VillageNewbies
                             mokki_id = reader.GetInt32("mokki_id"),
                             alue_id = reader.GetInt32("alue_id"),
                             mokkinimi = reader.GetString("mokkinimi"),
+                            hinta = reader.GetDouble("hinta"),
                             kuvaus = reader.GetString("kuvaus"),
                             varustelu = reader.GetString("varustelu")
                         };

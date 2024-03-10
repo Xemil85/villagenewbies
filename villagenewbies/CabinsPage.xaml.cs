@@ -22,6 +22,13 @@ namespace VillageNewbies.Views
             { 8, "Himos" },
         };
 
+        private readonly Dictionary<int, string> _hintaLuokat = new Dictionary<int, string>
+        {
+            {1, "Edullinen" },
+            {2, "Keskiluokka" },
+            {3, "Premium" }
+        };
+
         public ObservableCollection<Mokki> Mokit { get; private set; }
 
         public CabinsPage()
@@ -29,6 +36,7 @@ namespace VillageNewbies.Views
             InitializeComponent();
             Mokit = new ObservableCollection<Mokki>();
             AreaPicker.ItemsSource = _alueNimet.Values.ToList(); // Alueiden nimet Pickeriin
+            HintaPicker.ItemsSource = _hintaLuokat.Values.ToList();
             LoadMokitAsync();
         }
 
@@ -59,6 +67,34 @@ namespace VillageNewbies.Views
 
             var filteredMokit = Mokit.Where(m => m.alue_id == selectedAreaId).ToList();
             CabinsCollectionView.ItemsSource = filteredMokit;
+        }
+
+        private void onPriceSelected(object sender, EventArgs e)
+        {
+            if (HintaPicker.SelectedIndex == -1)
+                return;
+
+            var selectedPriceName = HintaPicker.SelectedItem.ToString();
+            int selectedPriceId = _hintaLuokat.FirstOrDefault(x => x.Value == selectedPriceName).Key;
+            Debug.WriteLine("Hinta id: {0}", selectedPriceId);
+
+            if (selectedPriceId == 1)
+            {
+                var filteredHinta = Mokit.Where(m => m.hinta >= 70 && m.hinta <= 100).ToList();
+                CabinsCollectionView.ItemsSource = filteredHinta;
+            }
+
+            else if (selectedPriceId == 2)
+            {
+                var filteredHinta = Mokit.Where(m => m.hinta >= 105 && m.hinta <= 120).ToList();
+                CabinsCollectionView.ItemsSource = filteredHinta;
+            }
+
+            else if(selectedPriceId == 3)
+            {
+                var filteredHinta = Mokit.Where(m => m.hinta >= 130).ToList();
+                CabinsCollectionView.ItemsSource = filteredHinta;
+            }
         }
     }
 }
