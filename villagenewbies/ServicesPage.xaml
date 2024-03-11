@@ -6,6 +6,19 @@
     <VerticalStackLayout Spacing="15" Padding="10">
         <!-- TODO Mahdollinen suodatus -->
 
+        <Grid RowSpacing="10" Padding="20">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+            <Label Text="Palvelun nimi" FontSize="20" Grid.Column="0" TextDecorations="Underline" />
+            <Label Text="Kuvaus" FontSize="20" Grid.Column="1" TextDecorations="Underline" />
+            <Label Text="Hinta" FontSize="20" Grid.Column="2" TextDecorations="Underline" />
+            <Label Text="ALV %" FontSize="20" Grid.Column="3" TextDecorations="Underline" />
+        </Grid>
+
         <!-- Lista palveluista -->
         <CollectionView x:Name="ServicesCollectionView" HeightRequest="500">
             <CollectionView.ItemTemplate>

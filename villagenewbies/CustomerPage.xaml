@@ -6,11 +6,27 @@
     <VerticalStackLayout>
         <Label 
             Text="Asiakkaat"
+            FontSize="20"
             VerticalOptions="Center" 
             HorizontalOptions="Center" />
 
         <Button x:Name="LisaaAsiakas" Text="Lisää asiakas" WidthRequest="150" />
 
+
+        <Grid RowSpacing="10" Padding="20">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+            <Label Text="Etunimi" FontSize="20" Grid.Column="0" TextDecorations="Underline" />
+            <Label Text="Sukunimi" FontSize="20" Grid.Column="1" TextDecorations="Underline" />
+            <Label Text="Lähiosoite" FontSize="20" Grid.Column="2" TextDecorations="Underline" />
+            <Label Text="Postinumero" FontSize="20" Grid.Column="3" TextDecorations="Underline" />
+        </Grid>
+        
+        
         <CollectionView x:Name="CustomersCollectionView" HeightRequest="500">
             <CollectionView.ItemTemplate>
                 <DataTemplate>
