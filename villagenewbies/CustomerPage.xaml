@@ -8,5 +8,20 @@
             Text="Asiakkaat"
             VerticalOptions="Center" 
             HorizontalOptions="Center" />
+
+        <Button x:Name="LisaaAsiakas" Text="Lisää asiakas" WidthRequest="150" />
+
+        <CollectionView x:Name="CustomersCollectionView" HeightRequest="500">
+            <CollectionView.ItemTemplate>
+                <DataTemplate>
+                    <Grid Padding="10" ColumnDefinitions="*,*,*,*">
+                        <Label Grid.Column="0" Text="{Binding etunimi}"/>
+                        <Label Grid.Column="1" Text="{Binding sukunimi}"/>
+                        <Label Grid.Column="2" Text="{Binding lahiosoite}"/>
+                        <Label Grid.Column="3" Text="{Binding postinro}"/>
+                    </Grid>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
     </VerticalStackLayout>
 </ContentPage>

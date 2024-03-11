@@ -7,23 +7,25 @@
         <!-- Alueiden alasvetovalikko -->
         <Picker x:Name="AreaPicker"
                 Title="Valitse alue"
-                 SelectedIndexChanged="OnAreaSelected">
+                SelectedIndexChanged="OnAreaSelected"
+                WidthRequest="200">
         </Picker>
 
         <Picker x:Name="HintaPicker"
                 Title="Valitse hintaluokka"
-                SelectedIndexChanged="onPriceSelected">
+                SelectedIndexChanged="onPriceSelected"
+                WidthRequest="200">
         </Picker>
 
         <!-- Mökkien lista -->
-        <CollectionView x:Name="CabinsCollectionView">
+        <CollectionView x:Name="CabinsCollectionView" HeightRequest="500">
             <CollectionView.ItemTemplate>
                 <DataTemplate>
                     <VerticalStackLayout Padding="10">
                         <Label Text="{Binding mokkinimi}"
                                FontAttributes="Bold"/>
                         <Label Text="{Binding kuvaus}"/>
-                        <Label Text="{Binding hinta}" />
+                        <Label Text="{Binding hinta, StringFormat='Hinta: {0:C}'}" />
                         <!-- Lisää tarvittavat tiedot tähän -->
                     </VerticalStackLayout>
                 </DataTemplate>

@@ -7,7 +7,7 @@
         <!-- TODO Mahdollinen suodatus -->
 
         <!-- Lista palveluista -->
-        <CollectionView x:Name="ServicesCollectionView">
+        <CollectionView x:Name="ServicesCollectionView" HeightRequest="500">
             <CollectionView.ItemTemplate>
                 <DataTemplate>
                     <Grid Padding="10" ColumnDefinitions="*,*,*,*">
