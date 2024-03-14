@@ -8,5 +8,35 @@
             Text="Anna asiakkaan tiedot"
             VerticalOptions="Center" 
             HorizontalOptions="Center" />
+
+        <HorizontalStackLayout>
+            <Entry x:Name="etunimi" Placeholder="Etunimi" MinimumWidthRequest="300"
+               HorizontalOptions="Center" Margin="30,10,0,0"></Entry>
+            <Entry x:Name="sukunimi" Placeholder="Sukunimi" MinimumWidthRequest="300"
+               HorizontalOptions="Center" Margin="30,10,0,0"></Entry>
+        </HorizontalStackLayout>
+
+        
+        <HorizontalStackLayout>
+            <Entry x:Name="lähiosoite" Placeholder="Lähiosoite" MinimumWidthRequest="300" 
+               HorizontalOptions="Center" Margin="30,10,0,0"></Entry>
+            <Entry x:Name="postinro" Placeholder="Postinumero" MinimumWidthRequest="300"
+               HorizontalOptions="Center" Margin="30,10,0,0"></Entry>
+            <Entry x:Name="toimipaikka" Placeholder="Postitoimipaikka" MinimumWidthRequest="300"
+               HorizontalOptions="Center" Margin="30,10,0,0" ></Entry>    
+        </HorizontalStackLayout>
+
+        <HorizontalStackLayout>
+            <Entry x:Name="puhelinnro" Placeholder="Puhelin" MinimumWidthRequest="300" 
+        HorizontalOptions="Start" Margin="30,10,0,0"></Entry>
+            <Entry x:Name="sähköposti" Placeholder="Sähköposti" MinimumWidthRequest="300"
+        HorizontalOptions="Start" Margin="30,10,0,0"></Entry>
+        </HorizontalStackLayout>
+
+
+
     </VerticalStackLayout>
+    
+    
+    
 </ContentPage>
