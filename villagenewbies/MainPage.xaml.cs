@@ -32,6 +32,9 @@
         {
             await Navigation.PushAsync(new CabinsPage());
         }
+
         
+
+
     }
 }
