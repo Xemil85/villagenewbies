@@ -17,6 +17,16 @@
                 WidthRequest="200">
         </Picker>
 
+        <Button Text="Hae"
+         Margin="10"
+         x:Name="HaeMokit"
+         FontSize="Medium"
+         BackgroundColor="#3498DB"
+         TextColor="White"
+         WidthRequest="100" 
+         HeightRequest="30"
+         CornerRadius="10"/>
+
         <!-- Mökkien lista -->
         <CollectionView x:Name="CabinsCollectionView" HeightRequest="500">
             <CollectionView.ItemTemplate>
