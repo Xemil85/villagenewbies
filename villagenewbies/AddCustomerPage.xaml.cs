@@ -1,4 +1,5 @@
 using MySql.Data.MySqlClient;
+using System.Diagnostics;
 
 namespace VillageNewbies;
 
@@ -28,20 +29,23 @@ public partial class AddCustomerPage : ContentPage
        
 
 
-
-        var uusiAsiakas = new Asiakas
+        if (int.TryParse(postinro.Text, out _))
         {
-            etunimi = etunimi.Text,
-            sukunimi = sukunimi.Text,
-            lahiosoite = lähiosoite.Text,
-            postinro = int.Parse(postinro.Text),
-            email = sähköposti.Text,
-            puhelinnro = puhelinnro.Text
-        };
+            var uusiAsiakas = new Asiakas
+            {
+                etunimi = etunimi.Text,
+                sukunimi = sukunimi.Text,
+                lahiosoite = lähiosoite.Text,
+                postinro = postinro.Text,
+                email = sähköposti.Text,
+                puhelinnro = puhelinnro.Text
+            };
+
+            var databaseAccess = new DatabaseAccess();
+            await databaseAccess.LisaaAsiakasTietokantaan(uusiAsiakas);
+        }
 
 
-        var databaseAccess = new DatabaseAccess();
-        await databaseAccess.LisaaAsiakasTietokantaan(uusiAsiakas);
 
         // lisää tähän: palaa edelliselle sivulle tai anna käyttäjälle palaute onnistuneesta lisäyksestä
         
@@ -60,7 +64,13 @@ public partial class AddCustomerPage : ContentPage
     {
         public async Task LisaaAsiakasTietokantaan(Asiakas uusiAsiakas)
         {
-            string connectionString = "server=localhost;database=vn;user=;password=;";
+            string projectDirectory = System.AppDomain.CurrentDomain.BaseDirectory;
+            var projectRoot = Path.GetFullPath(Path.Combine(projectDirectory, @"..\..\..\..\..\"));
+
+            DotNetEnv.Env.Load(projectRoot);
+            var env = Environment.GetEnvironmentVariables();
+
+            string connectionString = $"server={env["SERVER"]};port={env["SERVER_PORT"]};database={env["SERVER_DATABASE"]};user={env["SERVER_USER"]};password={env["SERVER_PASSWORD"]}";
             using (var connection = new MySqlConnection(connectionString))
             {
                 try
@@ -71,7 +81,7 @@ public partial class AddCustomerPage : ContentPage
 
                     using (var command = new MySqlCommand(query, connection))
                     {
-                        
+                        Debug.WriteLine(uusiAsiakas.postinro);
                         command.Parameters.AddWithValue("@Postinro", uusiAsiakas.postinro);
                         command.Parameters.AddWithValue("@Etunimi", uusiAsiakas.etunimi);
                         command.Parameters.AddWithValue("@Sukunimi", uusiAsiakas.sukunimi);
@@ -90,7 +100,7 @@ public partial class AddCustomerPage : ContentPage
                 catch (Exception ex)
                 {
                     // Käsittely mahdollisille poikkeuksille
-                    Console.WriteLine(ex.Message);
+                    Debug.WriteLine(ex.Message);
                 }
             }
         }

@@ -118,7 +118,7 @@ namespace VillageNewbies
                         var asiakas = new Asiakas
                         {
                             asiakas_id = reader.GetInt32("asiakas_id"),
-                            postinro = reader.GetInt32("postinro"),
+                            postinro = reader.GetString("postinro"),
                             etunimi = reader.GetString("etunimi"),
                             sukunimi = reader.GetString("sukunimi"),
                             lahiosoite = reader.GetString("lahiosoite"),
