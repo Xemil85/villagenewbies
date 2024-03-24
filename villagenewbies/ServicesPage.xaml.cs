@@ -18,7 +18,7 @@ public partial class ServicesPage : ContentPage
 
     private async Task LoadPalvelut()
     {
-        // Tämä on pseudokoodia. TODO Toteuta oikea tietokantahaku
+        //TODO Toteuta oikea tietokantahaku
         var mokkiAccess = new MokkiAccess();
         var palveluList = await mokkiAccess.FetchAllPalveluAsync();
         MainThread.InvokeOnMainThreadAsync(() =>

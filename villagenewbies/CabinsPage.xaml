@@ -33,10 +33,17 @@
                 <DataTemplate>
                     <VerticalStackLayout Padding="10">
                         <Label Text="{Binding mokkinimi}"
-                               FontAttributes="Bold"/>
+                       FontAttributes="Bold"/>
                         <Label Text="{Binding kuvaus}"/>
                         <Label Text="{Binding hinta, StringFormat='Hinta: {0:C}'}" />
                         <!-- Lisää tarvittavat tiedot tähän -->
+                        <Button Text="Tee varaus"
+                        Command="{Binding Path=BindingContext.MakeReservationCommand, Source={RelativeSource AncestorType={x:Type ContentPage}}}"
+                        CommandParameter="{Binding}"
+                        BackgroundColor="#4CAF50"
+                        TextColor="White"
+                        Margin="0,10,0,0"
+                        CornerRadius="5"/>
                     </VerticalStackLayout>
                 </DataTemplate>
             </CollectionView.ItemTemplate>
