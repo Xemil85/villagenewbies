@@ -27,6 +27,26 @@
          HeightRequest="30"
          CornerRadius="10"/>
 
+        <Button Text="Lisää Mökki"
+         Margin="10"
+         x:Name="LisaaMokki"
+         FontSize="12"
+         BackgroundColor="BlueViolet"
+         TextColor="White"
+         WidthRequest="100" 
+         HeightRequest="30"
+         CornerRadius="10"/>
+
+        <Button Text="Poista Mökki"
+         Margin="10"
+         x:Name="poistaMokki"
+         FontSize="12"
+         BackgroundColor="DarkGreen"
+         TextColor="White"
+         WidthRequest="100" 
+         HeightRequest="30"
+         CornerRadius="10"/>
+
         <!-- Mökkien lista -->
         <CollectionView x:Name="CabinsCollectionView" HeightRequest="500">
             <CollectionView.ItemTemplate>
