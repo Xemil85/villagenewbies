@@ -1,14 +1,19 @@
 using Google.Protobuf.WellKnownTypes;
 using Microsoft.Maui.Controls;
+using CommunityToolkit.Maui.Views;
 using System;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
+using System.Windows.Input;
 
 
 namespace VillageNewbies.Views
 {
+
     public partial class CabinsPage : ContentPage
     {
+        public ICommand MakeReservationCommand { get; private set; }
+
         // Alueiden nimien mappaus
         private readonly Dictionary<int, string> _alueNimet = new Dictionary<int, string>
         {
@@ -35,11 +40,12 @@ namespace VillageNewbies.Views
         {
             InitializeComponent();
             Mokit = new ObservableCollection<Mokki>();
-            AreaPicker.ItemsSource = _alueNimet.Values.ToList(); // Alueiden nimet Pickeriin
+            AreaPicker.ItemsSource = _alueNimet.Values.ToList();
             HintaPicker.ItemsSource = _hintaLuokat.Values.ToList();
             LoadMokitAsync();
-        }
 
+            MakeReservationCommand = new Command(ShowPopup);
+        }
 
         private async Task LoadMokitAsync()
         {
@@ -54,9 +60,15 @@ namespace VillageNewbies.Views
                 CabinsCollectionView.ItemsSource = Mokit;
             });
         }
+        // Popup kun painetaan Tee Varaus nappia
+        // TODO Korjaa tämä paska perkele vitun navigointi
+        private async void ShowPopup()
+        {
+            var reservationPopup = new ReservationPopup();
+            await this.ShowPopupAsync(reservationPopup);
+        }
 
         // Kutsutaan, kun alue valitaan Pickeristä
-        //TODO Alueen valinnan jälkeen mökkien uusi suodatus toimimaan 
         private void OnAreaSelected(object sender, EventArgs e)
         {
             if (AreaPicker.SelectedIndex == -1)
@@ -68,6 +80,7 @@ namespace VillageNewbies.Views
             var filteredMokit = Mokit.Where(m => m.alue_id == selectedAreaId).ToList();
             CabinsCollectionView.ItemsSource = filteredMokit;
         }
+
 
         private void onPriceSelected(object sender, EventArgs e)
         {
@@ -94,6 +107,8 @@ namespace VillageNewbies.Views
             {
                 var filteredHinta = Mokit.Where(m => m.hinta >= 130).ToList();
                 CabinsCollectionView.ItemsSource = filteredHinta;
+
+
             }
         }
     }

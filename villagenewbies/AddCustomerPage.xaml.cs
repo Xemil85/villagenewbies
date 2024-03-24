@@ -1,4 +1,5 @@
 using MySql.Data.MySqlClient;
+using System.Diagnostics;
 
 namespace VillageNewbies;
 
@@ -12,22 +13,49 @@ public partial class AddCustomerPage : ContentPage
     // asiakkaan vienti tietokantaan
     private async void LisaaAsiakas_Clicked(object sender, EventArgs e)
     {
-        
-        var uusiAsiakas = new Asiakas
+        // jos kentät tyhjät ja yritetään tallentaa
+        if (string.IsNullOrWhiteSpace(etunimi.Text) ||
+        string.IsNullOrWhiteSpace(sukunimi.Text) ||
+        string.IsNullOrWhiteSpace(lähiosoite.Text) ||
+        string.IsNullOrWhiteSpace(postinro.Text) ||
+        string.IsNullOrWhiteSpace(sähköposti.Text) ||
+        string.IsNullOrWhiteSpace(puhelinnro.Text))
         {
-            etunimi = etunimi.Text,
-            sukunimi = sukunimi.Text,
-            lahiosoite = lähiosoite.Text,
-            postinro = int.Parse(postinro.Text),
-            email = sähköposti.Text,
-            puhelinnro = puhelinnro.Text
-        };
+            // Näytä varoitusikkuna
+            await DisplayAlert("Täyttämättömät tiedot", "Täytä kaikki asiakastiedot ennen lähettämistä.", "OK");
+            return; // Lopeta metodin suoritus tähän
+        }
+
+       
 
 
-        var databaseAccess = new DatabaseAccess();
-        await databaseAccess.LisaaAsiakasTietokantaan(uusiAsiakas);
+        if (int.TryParse(postinro.Text, out _))
+        {
+            var uusiAsiakas = new Asiakas
+            {
+                etunimi = etunimi.Text,
+                sukunimi = sukunimi.Text,
+                lahiosoite = lähiosoite.Text,
+                postinro = postinro.Text,
+                email = sähköposti.Text,
+                puhelinnro = puhelinnro.Text
+            };
+
+            var databaseAccess = new DatabaseAccess();
+            await databaseAccess.LisaaAsiakasTietokantaan(uusiAsiakas);
+        }
+
+
 
         // lisää tähän: palaa edelliselle sivulle tai anna käyttäjälle palaute onnistuneesta lisäyksestä
+        
+        etunimi.Text = "";
+        sukunimi.Text = "";
+        lähiosoite.Text = "";
+        postinro.Text = "";
+        toimipaikka.Text = "";
+        sähköposti.Text = "";
+        puhelinnro.Text = "";
     }
       
        
@@ -36,7 +64,13 @@ public partial class AddCustomerPage : ContentPage
     {
         public async Task LisaaAsiakasTietokantaan(Asiakas uusiAsiakas)
         {
-            string connectionString = "server=localhost;database=vn;user=root;password=;";
+            string projectDirectory = System.AppDomain.CurrentDomain.BaseDirectory;
+            var projectRoot = Path.GetFullPath(Path.Combine(projectDirectory, @"..\..\..\..\..\"));
+
+            DotNetEnv.Env.Load(projectRoot);
+            var env = Environment.GetEnvironmentVariables();
+
+            string connectionString = $"server={env["SERVER"]};port={env["SERVER_PORT"]};database={env["SERVER_DATABASE"]};user={env["SERVER_USER"]};password={env["SERVER_PASSWORD"]}";
             using (var connection = new MySqlConnection(connectionString))
             {
                 try
@@ -47,7 +81,7 @@ public partial class AddCustomerPage : ContentPage
 
                     using (var command = new MySqlCommand(query, connection))
                     {
-                        
+                        Debug.WriteLine(uusiAsiakas.postinro);
                         command.Parameters.AddWithValue("@Postinro", uusiAsiakas.postinro);
                         command.Parameters.AddWithValue("@Etunimi", uusiAsiakas.etunimi);
                         command.Parameters.AddWithValue("@Sukunimi", uusiAsiakas.sukunimi);
@@ -57,11 +91,16 @@ public partial class AddCustomerPage : ContentPage
 
                         await command.ExecuteNonQueryAsync();
                     }
+                    
+
+                    
+
+
                 }
                 catch (Exception ex)
                 {
                     // Käsittely mahdollisille poikkeuksille
-                    Console.WriteLine(ex.Message);
+                    Debug.WriteLine(ex.Message);
                 }
             }
         }
