@@ -45,8 +45,6 @@ namespace VillageNewbies.Views
             AreaPicker.ItemsSource = _alueNimet.Values.ToList();
             HintaPicker.ItemsSource = _hintaLuokat.Values.ToList();
             LoadMokitAsync();
-
-            MakeReservationCommand = new Command(ShowPopup);
         }
         private async void LisaaMokki_Clicked(object? sender, EventArgs e)
         {
