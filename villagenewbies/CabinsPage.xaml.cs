@@ -12,7 +12,6 @@ namespace VillageNewbies.Views
 
     public partial class CabinsPage : ContentPage
     {
-        public ICommand MakeReservationCommand { get; private set; }
 
         // Alueiden nimien mappaus
         private readonly Dictionary<int, string> _alueNimet = new Dictionary<int, string>
@@ -46,7 +45,6 @@ namespace VillageNewbies.Views
             AreaPicker.ItemsSource = _alueNimet.Values.ToList();
             HintaPicker.ItemsSource = _hintaLuokat.Values.ToList();
             LoadMokitAsync();
-            LisaaMokki.Clicked += LisaaMokki_Clicked;
 
             MakeReservationCommand = new Command(ShowPopup);
         }
@@ -67,13 +65,6 @@ namespace VillageNewbies.Views
                 }
                 CabinsCollectionView.ItemsSource = Mokit;
             });
-        }
-        // Popup kun painetaan Tee Varaus nappia
-        // TODO Korjaa tämä paska perkele vitun navigointi
-        private async void ShowPopup()
-        {
-            var reservationPopup = new ReservationPopup();
-            await this.ShowPopupAsync(reservationPopup);
         }
 
         // Kutsutaan, kun alue valitaan Pickeristä
@@ -118,6 +109,12 @@ namespace VillageNewbies.Views
 
 
             }
+        }
+
+        public void OpenReservation(object sender, EventArgs e)
+        {
+            var popup = new ReservationView();
+            this.ShowPopup(popup);
         }
     }
 }
