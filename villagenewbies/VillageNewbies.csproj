@@ -66,6 +66,9 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <Compile Update="AddCabinPage.xaml.cs">
+	    <DependentUpon>AddCabinPage.xaml</DependentUpon>
+	  </Compile>
 	  <Compile Update="CabinsPage.xaml.cs">
 	    <DependentUpon>CabinsPage.xaml</DependentUpon>
 	  </Compile>
@@ -84,6 +87,9 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <MauiXaml Update="AddCabinPage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
 	  <MauiXaml Update="CabinsPage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>

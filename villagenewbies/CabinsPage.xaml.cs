@@ -33,6 +33,9 @@ namespace VillageNewbies.Views
             {2, "Keskiluokka" },
             {3, "Premium" }
         };
+       
+
+       
 
         public ObservableCollection<Mokki> Mokit { get; private set; }
 
@@ -43,8 +46,13 @@ namespace VillageNewbies.Views
             AreaPicker.ItemsSource = _alueNimet.Values.ToList();
             HintaPicker.ItemsSource = _hintaLuokat.Values.ToList();
             LoadMokitAsync();
+            LisaaMokki.Clicked += LisaaMokki_Clicked;
 
             MakeReservationCommand = new Command(ShowPopup);
+        }
+        private async void LisaaMokki_Clicked(object? sender, EventArgs e)
+        {
+            await Navigation.PushAsync(new AddCabinPage());
         }
 
         private async Task LoadMokitAsync()

@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="VillageNewbies.AddCabinPage"
+             Title="Lisää Mökki">
+
+        <VerticalStackLayout>
+            <Label 
+            Text="Anna Mökin tiedot"
+            VerticalOptions="Center" 
+            HorizontalOptions="Center" />
+
+            <HorizontalStackLayout>
+                <Entry x:Name="mokkinimi" Placeholder="Mökinnimi" MinimumWidthRequest="300"
+               HorizontalOptions="Center" Margin="30,10,0,0"></Entry>
+                <Entry x:Name="katuosoite" Placeholder="Katuosoite" MinimumWidthRequest="300"
+               HorizontalOptions="Center" Margin="30,10,0,0"></Entry>
+            </HorizontalStackLayout>
+
+
+            <HorizontalStackLayout>
+               <Entry x:Name="postinro" Placeholder="Postinumero" MinimumWidthRequest="300"
+               HorizontalOptions="Center" Margin="30,10,0,0"></Entry>
+                <Entry x:Name="hinta" Placeholder="Hinta" MinimumWidthRequest="300"
+               HorizontalOptions="Center" Margin="30,10,0,0" ></Entry>
+            </HorizontalStackLayout>
+
+            <HorizontalStackLayout>
+                <Entry x:Name="henkilomaara" Placeholder="Henkilömäärä" MinimumWidthRequest="300" 
+        HorizontalOptions="Start" Margin="30,10,0,0"></Entry>
+                <Entry x:Name="kuvaus" Placeholder="Kuvaus" MinimumWidthRequest="300"
+        HorizontalOptions="Start" Margin="30,10,0,0"></Entry>
+            </HorizontalStackLayout>
+
+        <HorizontalStackLayout>
+            <Entry x:Name="varustelu" Placeholder="Varustelu" MinimumWidthRequest="300" 
+        HorizontalOptions="Start" Margin="30,10,0,0"></Entry>
+        </HorizontalStackLayout>
+                
+        <HorizontalStackLayout>
+                <Button Text="Lisää Asiakas" Margin="30,10,0,0" />
+
+
+
+            </HorizontalStackLayout>
+
+
+
+        </VerticalStackLayout>
+
+
+
+    </ContentPage>

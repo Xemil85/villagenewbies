@@ -133,55 +133,7 @@ namespace VillageNewbies
                 return asiakkaat;
             }
         }
-       /* public async Task<List<Mokki>> HaeMokit(string valittuAlue, string valittuHintaluokka)
-        {
-            var mokit = new List<Mokki>();
-
-            string connectionString = "server=localhost;user=root;database=vn;port=3306;password=martta;";
-            using (var connection = new MySqlConnection(connectionString))
-            {
-                try
-                {
-                    await connection.OpenAsync();
-
-                    // Oletetaan, että tietokantataulussa käytetään samankaltaisia merkkijonoja 'Edullinen', 'Keskiluokka', 'Premium'
-                    string query = "SELECT * FROM mokki WHERE alue = @valittuAlue AND hintaluokka = @valittuHintaluokka";
-
-                    using (var command = new MySqlCommand(query, connection))
-                    {
-                        command.Parameters.AddWithValue("@valittuAlue", valittuAlue);
-                        command.Parameters.AddWithValue("@valittuHintaluokka", valittuHintaluokka);
-
-                        using (var reader = await command.ExecuteReaderAsync())
-                        {
-                            while (await reader.ReadAsync())
-                            {
-                                var mokki = new Mokki()
-                                {
-                                    // Oletetaan, että sinulla on Mokki-luokka, jolla on sopivat ominaisuudet
-                                    mokki_id = reader.GetInt32("mokki_id"),
-                                    mokkinimi = reader.GetString("mokkinimi"),
-                                    katuosoite = reader.GetString("katuosoite"),
-                                    kuvaus = reader.GetString("kuvaus"),
-                                    alue_id = reader.GetInt32("alue_id"),
-                                    postinro = reader.GetInt32("postinro"),
-                                    hinta = reader.GetDouble("hinta"),
-                                    // ... muut mökin tiedot
-                                };
-                                mokit.Add(mokki);
-                            }
-                        }
-                    }
-                }
-                catch (MySqlException ex)
-                {
-                    // Käsittely tietokantavirheille
-                    Console.WriteLine(ex.Message);
-                }
-            }
-
-            return mokit;
-        }*/
+      
 
 
 

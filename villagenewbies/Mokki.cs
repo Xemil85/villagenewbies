@@ -16,6 +16,7 @@ namespace VillageNewbies
         public double hinta { get; set; }
         public string kuvaus { get; set; }
         public string varustelu { get; set; }
+        public int henkilomaara { get; set; }
     }
 
     public class Palvelu
