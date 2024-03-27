@@ -5,6 +5,8 @@
              Title="Palvelut">
     <VerticalStackLayout Spacing="15" Padding="10">
 
+        <Button x:Name="LisaaPalvelu" Text="Lisää palvelu" WidthRequest="150" />
+
         <Grid RowSpacing="10" Padding="20">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*" />

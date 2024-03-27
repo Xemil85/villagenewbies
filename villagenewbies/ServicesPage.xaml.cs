@@ -14,6 +14,12 @@ public partial class ServicesPage : ContentPage
         Palvelut = new ObservableCollection<Palvelu>();
         ServicesCollectionView.ItemsSource = Palvelut;
         LoadPalvelut();
+        LisaaPalvelu.Clicked += LisaaPalvelu_Clicked;
+    }
+
+    private async void LisaaPalvelu_Clicked(object? sender, EventArgs e)
+    {
+        await Navigation.PushAsync(new AddServicesPage());
     }
 
     private async Task LoadPalvelut()
