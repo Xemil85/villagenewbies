@@ -21,6 +21,7 @@
                 <ColumnDefinition Width="*" />
                 <ColumnDefinition Width="*" />
                 <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
             <Label Text="Etunimi" FontSize="20" Grid.Column="0" TextDecorations="Underline" />
             <Label Text="Sukunimi" FontSize="20" Grid.Column="1" TextDecorations="Underline" />
@@ -28,22 +29,25 @@
             <Label Text="Postinumero" FontSize="20" Grid.Column="3" TextDecorations="Underline" />
             <Label Text="Sähköposti" FontSize="20" Grid.Column="4" TextDecorations="Underline" />
             <Label Text="Puhelin" FontSize="20" Grid.Column="5" TextDecorations="Underline" />
+            <Label Text="Muokkaa" FontSize="20" Grid.Column="6" TextDecorations="Underline" />
         </Grid>
-        
-        
+
+
         <CollectionView x:Name="CustomersCollectionView" HeightRequest="500">
-            <CollectionView.ItemTemplate>
-                <DataTemplate>
-                    <Grid Padding="10" ColumnDefinitions="*,*,*,*,*,*">
-                        <Label Grid.Column="0" Text="{Binding etunimi}"/>
-                        <Label Grid.Column="1" Text="{Binding sukunimi}"/>
-                        <Label Grid.Column="2" Text="{Binding lahiosoite}"/>
-                        <Label Grid.Column="3" Text="{Binding postinro}"/>
-                        <Label Grid.Column="4" Text="{Binding email}"/>
-                        <Label Grid.Column="5" Text="{Binding puhelinnro}"/>
-                    </Grid>
-                </DataTemplate>
-            </CollectionView.ItemTemplate>
+        <CollectionView.ItemTemplate>
+            <DataTemplate>
+                <Grid Padding="10" ColumnDefinitions="*,*,*,*,*,*,*">
+                    <Label Grid.Column="0" Text="{Binding etunimi}"/>
+                    <Label Grid.Column="1" Text="{Binding sukunimi}"/>
+                    <Label Grid.Column="2" Text="{Binding lahiosoite}"/>
+                    <Label Grid.Column="3" Text="{Binding postinro}"/>
+                    <Label Grid.Column="4" Text="{Binding email}"/>
+                    <Label Grid.Column="5" Text="{Binding puhelinnro}"/>
+                    <Button Grid.Column="6" BackgroundColor="Red" WidthRequest="5"/>
+                </Grid>
+            </DataTemplate>
+        </CollectionView.ItemTemplate>
         </CollectionView>
+
     </VerticalStackLayout>
 </ContentPage>

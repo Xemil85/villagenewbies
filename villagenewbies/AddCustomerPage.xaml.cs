@@ -1,5 +1,6 @@
 using MySql.Data.MySqlClient;
 using System.Diagnostics;
+using System.Text.RegularExpressions;
 
 namespace VillageNewbies;
 
@@ -13,6 +14,18 @@ public partial class AddCustomerPage : ContentPage
     // asiakkaan vienti tietokantaan
     private async void LisaaAsiakas_Clicked(object sender, EventArgs e)
     {
+        var puhelinnumero = puhelinnro.Text;
+        //var puhelinnumeroRegex = new Regex(@"^\+?\d+$");
+        var puhelinnumeroRegex = new Regex(@"^(\+358\d{9}|0\d{9})$");
+        var puhelinnumeroOK = puhelinnumeroRegex.IsMatch(puhelinnumero);
+
+        if (!puhelinnumeroOK)
+        {
+            // Näytä virheilmoitus
+            await DisplayAlert("Virheellinen puhelinnumero", "Syötä puhelinnumero muodossa +358451234567 tai 0451234567.", "OK");
+            return; // Lopeta metodin suoritus tähän
+        }
+
         // jos kentät tyhjät ja yritetään tallentaa
         if (string.IsNullOrWhiteSpace(etunimi.Text) ||
         string.IsNullOrWhiteSpace(sukunimi.Text) ||
@@ -57,13 +70,15 @@ public partial class AddCustomerPage : ContentPage
         sähköposti.Text = "";
         puhelinnro.Text = "";
     }
-      
-       
+
+
 
     public class DatabaseAccess
     {
         public async Task LisaaAsiakasTietokantaan(Asiakas uusiAsiakas)
         {
+
+
             string projectDirectory = System.AppDomain.CurrentDomain.BaseDirectory;
             var projectRoot = Path.GetFullPath(Path.Combine(projectDirectory, @"..\..\..\..\..\"));
 
@@ -91,9 +106,6 @@ public partial class AddCustomerPage : ContentPage
 
                         await command.ExecuteNonQueryAsync();
                     }
-                    
-
-                    
 
 
                 }
@@ -104,7 +116,12 @@ public partial class AddCustomerPage : ContentPage
                 }
             }
         }
+       
+
+
     }
-}
 
     
+}
+
+

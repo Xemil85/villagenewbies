@@ -32,4 +32,6 @@ public partial class CustomerPage : ContentPage
             CustomersCollectionView.ItemsSource = Asiakkaat;
         });
     }
+
+    
 }
