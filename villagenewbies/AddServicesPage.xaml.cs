@@ -30,7 +30,7 @@ public partial class AddServicesPage : ContentPage
         string.IsNullOrWhiteSpace(palveluhinta.Text))
         {
             // Näytä varoitusikkuna
-            await DisplayAlert("Täyttämättömät tiedot", "Täytä kaikki asiakastiedot ennen lähettämistä.", "OK");
+            await DisplayAlert("Täyttämättömät tiedot", "Täytä kaikki palvelutiedot ennen lähettämistä.", "OK");
             return; // Lopeta metodin suoritus tähän
         }
 
@@ -46,6 +46,11 @@ public partial class AddServicesPage : ContentPage
 
         var databaseAccess = new DatabaseAccess();
         await databaseAccess.LisaaPalveluTietokantaan(uusiPalvelu);
+
+        AreaPicker.SelectedIndex = -1;
+        palvelunimi.Text = "";
+        palvelukuvaus.Text = "";
+        palveluhinta.Text = "";
     }
 
     private void OnAreaSelected(object sender, EventArgs e)
