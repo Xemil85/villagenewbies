@@ -9,8 +9,14 @@
             Text="Anna Mökin tiedot"
             VerticalOptions="Center" 
             HorizontalOptions="Center" />
-
-            <HorizontalStackLayout>
+        <HorizontalStackLayout>
+            <Entry x:Name="mokki_id" Placeholder="MökkiID" MinimumWidthRequest="300"
+    HorizontalOptions="Center" Margin="30,10,0,0"></Entry>
+            <Entry x:Name="alue_id" Placeholder="AlueID" MinimumWidthRequest="300"
+    HorizontalOptions="Center" Margin="30,10,0,0"></Entry>
+        </HorizontalStackLayout>
+            
+        <HorizontalStackLayout>
                 <Entry x:Name="mokkinimi" Placeholder="Mökinnimi" MinimumWidthRequest="300"
                HorizontalOptions="Center" Margin="30,10,0,0"></Entry>
                 <Entry x:Name="katuosoite" Placeholder="Katuosoite" MinimumWidthRequest="300"
@@ -38,7 +44,7 @@
         </HorizontalStackLayout>
                 
         <HorizontalStackLayout>
-                <Button Text="Lisää Asiakas" Margin="30,10,0,0" />
+                <Button Text="Lisää Mökki" Margin="30,10,0,0" Clicked="LisaaMokki_Clicked" />
 
 
 

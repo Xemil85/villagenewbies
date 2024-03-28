@@ -45,10 +45,17 @@ namespace VillageNewbies.Views
             AreaPicker.ItemsSource = _alueNimet.Values.ToList();
             HintaPicker.ItemsSource = _hintaLuokat.Values.ToList();
             LoadMokitAsync();
+            LisaaMokki.Clicked += LisaaMokki_Clicked;
+            LisaaAlue.Clicked += LisaaAlue_Clicked;
         }
         private async void LisaaMokki_Clicked(object? sender, EventArgs e)
         {
             await Navigation.PushAsync(new AddCabinPage());
+        }
+
+        private async void LisaaAlue_Clicked(object? sender, EventArgs e)
+        {
+            await Navigation.PushAsync(new AddAreaPage());
         }
 
         private async Task LoadMokitAsync()

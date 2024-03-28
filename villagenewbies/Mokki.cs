@@ -18,6 +18,11 @@ namespace VillageNewbies
         public string varustelu { get; set; }
         public int henkilomaara { get; set; }
     }
+    public class Alue
+    {
+        public string nimi { get; set; }
+        public int alue_id { get; set; }    
+    }
 
     public class Palvelu
     {

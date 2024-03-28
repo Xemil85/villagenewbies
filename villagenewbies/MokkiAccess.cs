@@ -39,6 +39,9 @@ namespace VillageNewbies
                             mokki_id = reader.GetInt32("mokki_id"),
                             alue_id = reader.GetInt32("alue_id"),
                             mokkinimi = reader.GetString("mokkinimi"),
+                            katuosoite = reader.GetString("katuosoite"),
+                            postinro = reader.GetInt32("postinro"),
+                            henkilomaara = reader.GetInt32("henkilomaara"),
                             hinta = reader.GetDouble("hinta"),
                             kuvaus = reader.GetString("kuvaus"),
                             varustelu = reader.GetString("varustelu")
@@ -133,7 +136,43 @@ namespace VillageNewbies
                 return asiakkaat;
             }
         }
-      
+
+        public async Task<List<Alue>> FetchAllAlueAsync()
+        {
+            string projectDirectory = System.AppDomain.CurrentDomain.BaseDirectory;
+            var projectRoot = Path.GetFullPath(Path.Combine(projectDirectory, @"..\..\..\..\..\"));
+
+            DotNetEnv.Env.Load(projectRoot);
+            var env = Environment.GetEnvironmentVariables();
+
+            string ConnectionString = $"server={env["SERVER"]};port={env["SERVER_PORT"]};database={env["SERVER_DATABASE"]};user={env["SERVER_USER"]};password={env["SERVER_PASSWORD"]}";
+
+            var alueet = new List<Alue>();
+
+            using (var connection = new MySqlConnection(ConnectionString))
+            {
+                await connection.OpenAsync();
+
+                using (var command = new MySqlCommand("SELECT * FROM alue;", connection))
+
+                using (var reader = await command.ExecuteReaderAsync())
+                {
+                    while (await reader.ReadAsync())
+                    {
+                        var alue = new Alue
+                        {
+                            alue_id = reader.GetInt32("alue_id"),
+                            nimi = reader.GetString("nimi"),    
+                        };
+
+                        alueet.Add(alue);
+                    }
+                }
+
+                return alueet;
+            }
+        }
+
 
 
 
