@@ -5,22 +5,26 @@ namespace VillageNewbies;
 
 public partial class AddServicesPage : ContentPage
 {
-    private readonly Dictionary<int, string> _alueNimet = new Dictionary<int, string>
-        {
-            { 1, "Ylläs" },
-            { 2, "Ruka" },
-            { 3, "Pyhä" },
-            { 4, "Levi" },
-            { 5, "Syöte" },
-            { 6, "Vuokatti" },
-            { 7, "Tahko" },
-            { 8, "Himos" },
-        };
+    private Dictionary<int, string> _alueNimet = new Dictionary<int, string>();
+    private int? selectedAreaId;
     public AddServicesPage()
 	{
 		InitializeComponent();
-        AreaPicker.ItemsSource = _alueNimet.Values.ToList();
+        //AreaPicker.ItemsSource = ladatutAlueet.Select(a => a.nimi).ToList();
+        Task.Run(LataaAlueet);
         Lisaapalvelu.Clicked += Lisaapalvelu_Clicked;
+        LataaAlueet();
+    }
+
+    private async void LataaAlueet()
+    {
+        var alueetAccess = new MokkiAccess(); // Oletetaan, että tämä luokka hakee tietokannasta
+        var alueet = await alueetAccess.FetchAllAlueAsync();
+
+        // Muunna haetut alueet sanakirjaksi
+        _alueNimet = alueet.ToDictionary(a => a.alue_id, a => a.nimi);
+        AreaPicker.ItemsSource = _alueNimet.Values.ToList();
+        
     }
 
     private async void Lisaapalvelu_Clicked(object? sender, EventArgs e)
@@ -37,7 +41,7 @@ public partial class AddServicesPage : ContentPage
 
         var uusiPalvelu = new Palvelu
         {
-            alue_id = AreaPicker.SelectedIndex,
+            alue_id = selectedAreaId.Value,
             nimi = palvelunimi.Text,
             kuvaus = palvelukuvaus.Text,
             hinta = double.Parse(palveluhinta.Text),
@@ -56,10 +60,13 @@ public partial class AddServicesPage : ContentPage
     private void OnAreaSelected(object sender, EventArgs e)
     {
         if (AreaPicker.SelectedIndex == -1)
+        {
+            selectedAreaId = null;
             return;
+        }
 
         var selectedAreaName = AreaPicker.SelectedItem.ToString();
-        int selectedAreaId = _alueNimet.FirstOrDefault(x => x.Value == selectedAreaName).Key;
+        selectedAreaId = _alueNimet.FirstOrDefault(x => x.Value == selectedAreaName).Key;
     }
 
     public class DatabaseAccess
