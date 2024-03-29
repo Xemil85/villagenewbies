@@ -49,6 +49,16 @@
         HeightRequest="30"
         CornerRadius="10"/>
 
+        <Button Text="Poista Alue"
+         Margin="10"
+         x:Name="PoistaAlue"
+         FontSize="12"
+         BackgroundColor="DarkGreen"
+         TextColor="White"
+         WidthRequest="100" 
+         HeightRequest="30"
+         CornerRadius="10"/>
+
         <!-- Mökkien lista -->
         <CollectionView x:Name="CabinsCollectionView" HeightRequest="500">
             <CollectionView.ItemTemplate>

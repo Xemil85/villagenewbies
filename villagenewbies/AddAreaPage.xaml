@@ -8,21 +8,16 @@
             Text="Welcome to .NET MAUI!"
             VerticalOptions="Center" 
             HorizontalOptions="Center" />
-   
-
-    <HorizontalStackLayout>
-        <Entry x:Name="nimi" Placeholder="Alueen nimi" MinimumWidthRequest="300"
-    HorizontalOptions="Center" Margin="30,10,0,0"></Entry>
-     </HorizontalStackLayout>
+        <HorizontalStackLayout>
+            <Entry x:Name="nimi" Placeholder="Alueen nimi" MinimumWidthRequest="300"
+HorizontalOptions="Center" Margin="30,10,0,0"></Entry>
+        </HorizontalStackLayout>
 
 
         <HorizontalStackLayout>
             <Button Text="Lisää Alue" Margin="30,10,0,0" Clicked="LisaaAlue_Clicked" />
         </HorizontalStackLayout>
-
-
-
-
+  
     </VerticalStackLayout>
 </ContentPage>
     

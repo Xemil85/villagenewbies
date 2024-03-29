@@ -37,6 +37,7 @@ namespace VillageNewbies.Views
        
 
         public ObservableCollection<Mokki> Mokit { get; private set; }
+       
 
         public CabinsPage()
         {
@@ -47,6 +48,7 @@ namespace VillageNewbies.Views
             LoadMokitAsync();
             LisaaMokki.Clicked += LisaaMokki_Clicked;
             LisaaAlue.Clicked += LisaaAlue_Clicked;
+            PoistaAlue.Clicked += PoistaAlue_Clicked;
         }
         private async void LisaaMokki_Clicked(object? sender, EventArgs e)
         {
@@ -57,6 +59,12 @@ namespace VillageNewbies.Views
         {
             await Navigation.PushAsync(new AddAreaPage());
         }
+
+        private async void PoistaAlue_Clicked(object? sender, EventArgs e)
+        {
+            await Navigation.PushAsync(new DeleteAreaPage());
+        }
+
 
         private async Task LoadMokitAsync()
         {
@@ -71,6 +79,8 @@ namespace VillageNewbies.Views
                 CabinsCollectionView.ItemsSource = Mokit;
             });
         }
+
+       
 
         // Kutsutaan, kun alue valitaan Pickeristä
         private void OnAreaSelected(object sender, EventArgs e)
