@@ -33,5 +33,24 @@ public partial class CustomerPage : ContentPage
         });
     }
 
-    
+    // lis‰tty t‰h‰n asiakkaan tietojen muokkaus
+
+    private async void MuokkaaAsiakasta_Clicked(object sender, EventArgs e)
+    {
+        if (!(sender is Button button)) return;
+
+        var asiakas = button.CommandParameter as Asiakas;
+        if (asiakas == null)
+        {
+            await DisplayAlert("Virhe", "Asiakastietojen lataaminen ep‰onnistui.", "OK");
+            return;
+        }
+
+        // Siirryt‰‰n muokkaussivulle ja v‰litet‰‰n asiakas-olio konstruktorin kautta
+        await Navigation.PushAsync(new AddCustomerPage(asiakas));
+    }
+
+    //t‰h‰n loppuu asiakkaan tietojen muokkaus
+
+
 }

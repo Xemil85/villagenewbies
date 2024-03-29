@@ -43,7 +43,8 @@
                     <Label Grid.Column="3" Text="{Binding postinro}"/>
                     <Label Grid.Column="4" Text="{Binding email}"/>
                     <Label Grid.Column="5" Text="{Binding puhelinnro}"/>
-                    <Button Grid.Column="6" BackgroundColor="Red" WidthRequest="5"/>
+                    <Button Grid.Column="6" WidthRequest="5" CommandParameter="{Binding .}"
+                     Clicked="MuokkaaAsiakasta_Clicked" />
                 </Grid>
             </DataTemplate>
         </CollectionView.ItemTemplate>

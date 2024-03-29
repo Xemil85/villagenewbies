@@ -6,10 +6,38 @@ namespace VillageNewbies;
 
 public partial class AddCustomerPage : ContentPage
 {
-	public AddCustomerPage()
-	{
-		InitializeComponent();
-	}
+    private Asiakas _asiakas; // Jäsenmuuttuja lisätään tässä, tämä lisätty koodi
+
+    public AddCustomerPage()
+    {
+        InitializeComponent();
+    }
+        //lisätty koodi
+
+    public AddCustomerPage(Asiakas asiakas) : this()
+    {
+            _asiakas = asiakas;
+        // Täytä kentät asiakkaan tiedoilla
+
+        if (_asiakas != null)
+        {
+            etunimi.Text = _asiakas.etunimi;
+            sukunimi.Text = _asiakas.sukunimi;
+            lähiosoite.Text = _asiakas.lahiosoite;
+            postinro.Text = _asiakas.postinro.ToString(); // Olettaen että postinro on tietotyyppiä, joka vaatii muunnoksen stringiksi
+            puhelinnro.Text = _asiakas.puhelinnro;
+            sähköposti.Text = _asiakas.email;
+            // Huomioi, että 'toimipaikka' puuttuu Asiakas-luokasta tässä esimerkissä
+        }
+
+    }
+
+    // tähän lisätty 3
+
+
+    // tähän lisätty 3 loppuu
+
+        
 
     // asiakkaan vienti tietokantaan
     private async void LisaaAsiakas_Clicked(object sender, EventArgs e)
@@ -38,9 +66,7 @@ public partial class AddCustomerPage : ContentPage
             await DisplayAlert("Täyttämättömät tiedot", "Täytä kaikki asiakastiedot ennen lähettämistä.", "OK");
             return; // Lopeta metodin suoritus tähän
         }
-
-       
-
+             
 
         if (int.TryParse(postinro.Text, out _))
         {
@@ -71,6 +97,18 @@ public partial class AddCustomerPage : ContentPage
         puhelinnro.Text = "";
     }
 
+    private async void PoistaAsiakasTietokannasta_Clicked(object sender, EventArgs e)
+    {
+        var vastaus = await DisplayAlert("Vahvista poisto", "Haluatko varmasti poistaa tämän asiakkaan?", "Kyllä", "Ei");
+        if (vastaus)
+        {
+            var databaseAccess = new DatabaseAccess();
+            await databaseAccess.PoistaAsiakasTietokannasta(_asiakas.asiakas_id);
+            await DisplayAlert("Poistettu", "Asiakas on poistettu onnistuneesti.", "OK");
+            // Palaa tarvittaessa edelliselle sivulle
+            await Navigation.PopAsync();
+        }
+    }
 
 
     public class DatabaseAccess
@@ -116,7 +154,37 @@ public partial class AddCustomerPage : ContentPage
                 }
             }
         }
-       
+
+
+
+        //tähän lisäys asiakkaan poistoon
+        public async Task PoistaAsiakasTietokannasta(int asiakasId)
+        {
+            string connectionString = "server=localhost;database=vn;user=;password=;";
+            using (var connection = new MySqlConnection(connectionString))
+            {
+                try
+                {
+                    await connection.OpenAsync();
+
+                    var query = "DELETE FROM asiakas WHERE asiakas_id = @AsiakasId";
+
+                    using (var command = new MySqlCommand(query, connection))
+                    {
+                        command.Parameters.AddWithValue("@AsiakasId", asiakasId);
+                        await command.ExecuteNonQueryAsync();
+                    }
+                }
+                catch (Exception ex)
+                {
+                    // Käsittely mahdollisille poikkeuksille
+                    Console.WriteLine(ex.Message);
+                }
+            }
+        }
+
+
+        // ja tähän loppuu asiakkaan poist
 
 
     }
