@@ -2,34 +2,24 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="VillageNewbies.DeleteAreaPage"
+             x:Name ="DeleteArea"
              Title="Poista Alue">
-
     <VerticalStackLayout>
         <Label 
             Text="Welcome to .NET MAUI!"
             VerticalOptions="Center" 
             HorizontalOptions="Center" />
 
-        <Grid RowSpacing="10" Padding="20">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*" />
-
-            </Grid.ColumnDefinitions>
-            <Label Text="Alue" FontSize="20" Grid.Column="0" TextDecorations="Underline" />
-
-        </Grid>
-
-
         <CollectionView x:Name="AreasCollectionView" HeightRequest="500">
             <CollectionView.ItemTemplate>
                 <DataTemplate>
                     <Grid Padding="10" ColumnDefinitions="*,*,*,*,*,*,*">
                         <Label Grid.Column="0" Text="{Binding nimi}"/>
-
-                        <Button Grid.Column="1" Text="Poista Alue" FontSize="12" BackgroundColor="DarkGreen" WidthRequest="90"/>
+                        <Button Grid.Column="1" WidthRequest="90" FontSize="12" Text="Poista Alue" BackgroundColor="DarkGreen" Clicked="PoistaAlue_Clicked" CommandParameter="{Binding .}" />
                     </Grid>
                 </DataTemplate>
             </CollectionView.ItemTemplate>
         </CollectionView>
-    </VerticalStackLayout>
+
+</VerticalStackLayout>
 </ContentPage>
