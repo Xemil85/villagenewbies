@@ -43,6 +43,7 @@ public partial class AddServicesPage : ContentPage
         {
             alue_id = selectedAreaId.Value,
             nimi = palvelunimi.Text,
+            tyyppi = int.Parse(Palvelutyyppi.Text),
             kuvaus = palvelukuvaus.Text,
             hinta = double.Parse(palveluhinta.Text),
             alv = 24.00
@@ -53,6 +54,7 @@ public partial class AddServicesPage : ContentPage
 
         AreaPicker.SelectedIndex = -1;
         palvelunimi.Text = "";
+        Palvelutyyppi.Text = "";
         palvelukuvaus.Text = "";
         palveluhinta.Text = "";
     }
@@ -86,12 +88,13 @@ public partial class AddServicesPage : ContentPage
                 {
                     await connection.OpenAsync();
 
-                    var query = "INSERT INTO palvelu (alue_id, nimi, kuvaus, hinta, alv) VALUES (@Alue_id, @Nimi, @Kuvaus, @Hinta, @Alv)";
+                    var query = "INSERT INTO palvelu (alue_id, nimi, tyyppi, kuvaus, hinta, alv) VALUES (@Alue_id, @Nimi, @Tyyppi, @Kuvaus, @Hinta, @Alv)";
 
                     using (var command = new MySqlCommand(query, connection))
                     {
                         command.Parameters.AddWithValue("@Alue_id", uusiPalvelu.alue_id);
                         command.Parameters.AddWithValue("@Nimi", uusiPalvelu.nimi);
+                        command.Parameters.AddWithValue("@Tyyppi", uusiPalvelu.tyyppi);
                         command.Parameters.AddWithValue("@Kuvaus", uusiPalvelu.kuvaus);
                         command.Parameters.AddWithValue("@Hinta", uusiPalvelu.hinta);
                         command.Parameters.AddWithValue("@Alv", uusiPalvelu.alv);

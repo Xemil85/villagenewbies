@@ -18,6 +18,7 @@
         />
 
         <Entry x:Name="palvelunimi" Placeholder="Palvelun nimi" WidthRequest="150" MinimumWidthRequest="300" Margin="30,10,0,0" />
+        <Entry x:Name="Palvelutyyppi" Placeholder="Palvelun tyyppi" WidthRequest="150" MinimumWidthRequest="300" Margin="30,10,0,0"/>
         <Entry x:Name="palvelukuvaus" Placeholder="Palvelun kuvaus" WidthRequest="150" MinimumWidthRequest="300" Margin="30,10,0,0" />
         <Entry x:Name="palveluhinta" Placeholder="Palvelun hinta" WidthRequest="150"  MinimumWidthRequest="300" Margin="30,10,0,0" />
         <Button x:Name="Lisaapalvelu" Text="Lisää palvelu" Margin="30,10,0,0" WidthRequest="150" />

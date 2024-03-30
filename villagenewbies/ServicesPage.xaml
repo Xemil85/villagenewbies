@@ -30,7 +30,7 @@
                         <Label Grid.Column="1" Text="{Binding kuvaus}"/>
                         <Label Grid.Column="2" Text="{Binding hinta, StringFormat='Hinta: {0:C}'}"/>
                         <Label Grid.Column="3" Text="{Binding alv, StringFormat='ALV: {0}%'}"/>
-                        <Button x:Name="Poistapalvelu" Grid.Column="4" Text="Poista palvelu" WidthRequest="150" />
+                        <Button Clicked="Poistapalvelu" CommandParameter="{Binding .}" Grid.Column="4" Text="Poista palvelu" WidthRequest="150" />
                     </Grid>
                 </DataTemplate>
             </CollectionView.ItemTemplate>
