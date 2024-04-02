@@ -1,3 +1,4 @@
+using CommunityToolkit.Maui.Views;
 using Microsoft.Maui.Controls;
 using MySql.Data.MySqlClient;
 using System.Collections.ObjectModel;
@@ -58,6 +59,22 @@ public partial class ServicesPage : ContentPage
         {
             await DisplayAlert("Virhe", "Alueen poistaminen epäonnistui.", "OK");
         }
+    }
+
+    public async void Muokkaapalvelu(object sender, EventArgs e)
+    {
+        if (!(sender is Button button)) return;
+
+        var palvelu = button.CommandParameter as Palvelu;
+
+        if (palvelu == null)
+        {
+            await DisplayAlert("Virhe", "Asiakastietojen lataaminen epäonnistui.", "OK");
+            return;
+        }
+
+        var popup = new ChangeServices(palvelu);
+        this.ShowPopup(popup);
     }
 
     public partial class DatabaseAccess

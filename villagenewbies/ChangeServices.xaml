@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<toolkit:Popup xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+             x:Class="VillageNewbies.ChangeServices"
+               Color="#F5F5F5">
+    <VerticalStackLayout Spacing="15" Padding="10">
+        <Label
+            TextColor="Black"
+            Text="Muokkaa palvelun tietoja"
+            VerticalOptions="Center" 
+            HorizontalOptions="Center" FontSize="20" />
+
+        <Entry x:Name="palvelunimi" TextColor="Black" Placeholder="Palvelun nimi" />
+        <Entry x:Name="Palvelutyyppi" TextColor="Black" Placeholder="Palvelun tyyppi" />
+        <Entry x:Name="palvelukuvaus" TextColor="Black" Placeholder="Palvelun kuvaus" />
+        <Entry x:Name="palveluhinta" TextColor="Black" Placeholder="Palvelun hinta" />
+        <Button x:Name="TallennaPalvelu" Text="Tallenna" />
+    </VerticalStackLayout>
+</toolkit:Popup>
