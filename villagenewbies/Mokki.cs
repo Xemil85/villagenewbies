@@ -39,6 +39,7 @@ namespace VillageNewbies
     {
         public int asiakas_id { get; set; }
         public string postinro { get; set; }
+        public string toimipaikka { get; set; }
         public string etunimi { get; set; }
         public string sukunimi { get; set; }
         public string lahiosoite { get; set; }
