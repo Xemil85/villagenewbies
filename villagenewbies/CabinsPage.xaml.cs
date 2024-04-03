@@ -32,12 +32,12 @@ namespace VillageNewbies.Views
             {2, "Keskiluokka" },
             {3, "Premium" }
         };
-       
 
-       
+
+
 
         public ObservableCollection<Mokki> Mokit { get; private set; }
-       
+
 
         public CabinsPage()
         {
@@ -80,7 +80,7 @@ namespace VillageNewbies.Views
             });
         }
 
-       
+
 
         // Kutsutaan, kun alue valitaan Pickeristä
         private void OnAreaSelected(object sender, EventArgs e)
@@ -117,7 +117,7 @@ namespace VillageNewbies.Views
                 CabinsCollectionView.ItemsSource = filteredHinta;
             }
 
-            else if(selectedPriceId == 3)
+            else if (selectedPriceId == 3)
             {
                 var filteredHinta = Mokit.Where(m => m.hinta >= 130).ToList();
                 CabinsCollectionView.ItemsSource = filteredHinta;
@@ -125,14 +125,7 @@ namespace VillageNewbies.Views
 
             }
         }
-
-        public void OpenReservation(object sender, EventArgs e)
-        {
-            var popup = new ReservationView();
-            this.ShowPopup(popup);
-        }
     }
 }
-    
 
-
+        
