@@ -51,6 +51,7 @@ public partial class AddServicesPage : ContentPage
 
         var databaseAccess = new DatabaseAccess();
         await databaseAccess.LisaaPalveluTietokantaan(uusiPalvelu);
+        await DisplayAlert("Palvelu lisätty", "Uusi palvelu on onnistuneesti lisätty.", "OK");
 
         AreaPicker.SelectedIndex = -1;
         palvelunimi.Text = "";
