@@ -3,10 +3,33 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="VillageNewbies.BookingPage"
              Title="Varaukset">
-    <VerticalStackLayout>
-        <Label 
-            Text="Varaukset"
-            VerticalOptions="Center" 
-            HorizontalOptions="Center" />
-    </VerticalStackLayout>
+
+    <ScrollView>
+        <VerticalStackLayout Spacing="20" Padding="20">
+
+            <!-- Placeholder-nappi uuden varauksen tekemiseen -->
+            <Frame BackgroundColor="#f0f0f0" Padding="10" CornerRadius="10">
+                <VerticalStackLayout>
+                    <Label Text="Tee uusi varaus" FontAttributes="Bold"/>
+                    <Button Text="Uusi varaus"
+                            BackgroundColor="Blue"
+                            TextColor="White"
+                            Margin="5"
+                            HorizontalOptions="FillAndExpand"
+                            Command="{Binding UusiVarausCommand}" />
+                    <!-- Oletetaan, että komento UusiVarausCommand on määritelty ViewModelissä -->
+                </VerticalStackLayout>
+            </Frame>
+
+            <!-- Placeholder varauksien listalle -->
+            <CollectionView x:Name="BookingsCollectionView">
+                <CollectionView.ItemTemplate>
+                    <DataTemplate>
+                        <!-- Tänne tulee varauksen tiedot -->
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+
+        </VerticalStackLayout>
+    </ScrollView>
 </ContentPage>

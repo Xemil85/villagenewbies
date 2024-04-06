@@ -32,18 +32,17 @@ namespace VillageNewbies.Views
             {2, "Keskiluokka" },
             {3, "Premium" }
         };
-       
 
-       
+
+
 
         public ObservableCollection<Mokki> Mokit { get; private set; }
-       
+
 
         public CabinsPage()
         {
             InitializeComponent();
             Mokit = new ObservableCollection<Mokki>();
-            CabinsCollectionView.ItemsSource = Mokit;
             AreaPicker.ItemsSource = _alueNimet.Values.ToList();
             HintaPicker.ItemsSource = _hintaLuokat.Values.ToList();
             LoadMokitAsync();
@@ -66,29 +65,13 @@ namespace VillageNewbies.Views
             await Navigation.PushAsync(new DeleteAreaPage());
         }
 
-        private async void MuokkaaMokkia_Clicked(object sender, EventArgs e)
-        {
-            if (!(sender is Button button)) return;
 
-            var mokki = button.CommandParameter as Mokki;
-            if (mokki == null)
-            {
-                await DisplayAlert("Virhe", "Mökkien lataaminen epäonnistui.", "OK");
-                return;
-            }
-
-            // Siirrytään muokkaussivulle ja välitetään mökki-olio konstruktorin kautta
-            await Navigation.PushAsync(new AddCabinPage(mokki));
-        }
-
-
-        public async Task LoadMokitAsync()
+        private async Task LoadMokitAsync()
         {
             var mokkiAccess = new MokkiAccess();
             var mokitList = await mokkiAccess.FetchAllMokitAsync();
             MainThread.InvokeOnMainThreadAsync(() =>
             {
-                Mokit.Clear(); // Tyhjennä kokoelma ennen uusien elementtien lisäämistä
                 foreach (var mokki in mokitList)
                 {
                     Mokit.Add(mokki);
@@ -96,11 +79,8 @@ namespace VillageNewbies.Views
                 CabinsCollectionView.ItemsSource = Mokit;
             });
         }
-        protected override void OnAppearing()
-        {
-            base.OnAppearing();
-            LoadMokitAsync(); // Päivitä mökkilista täällä
-        }
+
+
 
         // Kutsutaan, kun alue valitaan Pickeristä
         private void OnAreaSelected(object sender, EventArgs e)
@@ -137,7 +117,7 @@ namespace VillageNewbies.Views
                 CabinsCollectionView.ItemsSource = filteredHinta;
             }
 
-            else if(selectedPriceId == 3)
+            else if (selectedPriceId == 3)
             {
                 var filteredHinta = Mokit.Where(m => m.hinta >= 130).ToList();
                 CabinsCollectionView.ItemsSource = filteredHinta;
@@ -145,14 +125,7 @@ namespace VillageNewbies.Views
 
             }
         }
-
-        public void OpenReservation(object sender, EventArgs e)
-        {
-            var popup = new ReservationView();
-            this.ShowPopup(popup);
-        }
     }
 }
-    
 
-
+        
