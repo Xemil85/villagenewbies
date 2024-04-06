@@ -1,13 +1,42 @@
 using MySql.Data.MySqlClient;
+using System.Collections.ObjectModel;
 using System.Diagnostics;
 namespace VillageNewbies;
 
 public partial class AddAreaPage : ContentPage
+
 {
-	public AddAreaPage()
+    private DatabaseAccess databaseAccess = new DatabaseAccess();
+    public ObservableCollection<Alue> Alueet { get; private set; }
+    public AddAreaPage()
 	{
 		InitializeComponent();
-	}
+        Alueet = new ObservableCollection<Alue>();
+        AreasCollectionView.ItemsSource = Alueet;
+        LoadAlueetAsync();
+    }
+
+    private async Task LoadAlueetAsync()
+    {
+        var alueetAccess = new MokkiAccess();
+        var alueetList = await alueetAccess.FetchAllAlueAsync();
+        MainThread.InvokeOnMainThreadAsync(() =>
+        {
+            Alueet.Clear();
+            foreach (var alue in alueetList)
+            {
+                Alueet.Add(alue);
+            }
+            AreasCollectionView.ItemsSource = Alueet;
+        });
+    }
+    protected override void OnAppearing()
+    {
+        base.OnAppearing();
+        LoadAlueetAsync(); // Päivitä mökkilista täällä
+    }
+
+
     private async void LisaaAlue_Clicked(object sender, EventArgs e)
     {
         // jos kentät tyhjät ja yritetään tallentaa
@@ -27,6 +56,8 @@ public partial class AddAreaPage : ContentPage
         await databaseAccess.LisaaAlueTietokantaan(uusiAlue);
 
         nimi.Text = "";
+        //await Navigation.PopAsync();
+        await LoadAlueetAsync(); // päivitä alueiden lista
     }
 }
 

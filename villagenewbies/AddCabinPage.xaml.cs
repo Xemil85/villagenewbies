@@ -14,6 +14,7 @@ public partial class AddCabinPage : ContentPage
     public AddCabinPage()
     {
         InitializeComponent();
+       
         Mokit = new ObservableCollection<Mokki>();       
     }
 
@@ -87,6 +88,7 @@ public partial class AddCabinPage : ContentPage
         varustelu.Text = "";
 
         await Navigation.PopAsync();
+        
 
     }
 

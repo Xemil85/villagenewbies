@@ -47,6 +47,7 @@ public partial class DeleteAreaPage : ContentPage
         {
             await DisplayAlert("Virhe", "Alueen poistaminen epäonnistui.", "OK");
         }
+       // await Navigation.PopAsync();
     }
 }
 

@@ -1,0 +1,31 @@
+ <Grid RowSpacing="10" Padding="20">
+     <Grid.ColumnDefinitions>
+         <ColumnDefinition Width="*" />
+        
+     </Grid.ColumnDefinitions>
+     <Label Text="Alue" FontSize="20" Grid.Column="0" TextDecorations="Underline" />
+    
+ </Grid>
+
+
+ <CollectionView x:Name="AreasCollectionView" HeightRequest="500">
+     <CollectionView.ItemTemplate>
+         <DataTemplate>
+             <Grid Padding="10" ColumnDefinitions="*,*,*,*,*,*,*">
+                 <Label Grid.Column="0" Text="{Binding nimi}"/>
+                
+                 <Button Grid.Column="1" Text="Poista Alue" BackgroundColor="Red" WidthRequest="5"/>
+             </Grid>
+         </DataTemplate>
+     </CollectionView.ItemTemplate>
+ </CollectionView>
+
+     
+
+
+<Button Grid.Column="1" 
+        Command="{Binding PoistaAlueCommand}"
+        CommandParameter="{Binding .}"
+        Text="Poista Alue" 
+        FontSize="12" 
+        BackgroundColor="DarkGreen" />

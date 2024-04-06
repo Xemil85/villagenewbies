@@ -1,0 +1,5 @@
+INSERT INTO asiakas (asiakas_id, postinro, etunimi, sukunimi,lahiosoite, email, puhelinnro)
+VALUES (1,70100,'Mikko','Miettinen','Torikatu 2 a 5','mikko.miettinen@email.com',044-1234567);
+
+INSERT INTO posti(postinro, toimipaikka)
+VALUES ( 70100,'Kuopio');

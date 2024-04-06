@@ -17,7 +17,18 @@ HorizontalOptions="Center" Margin="30,10,0,0"></Entry>
         <HorizontalStackLayout>
             <Button Text="Lisää Alue" Margin="30,10,0,0" Clicked="LisaaAlue_Clicked" />
         </HorizontalStackLayout>
-  
+        
+
+            <CollectionView x:Name="AreasCollectionView" HeightRequest="500">
+            <CollectionView.ItemTemplate>
+                <DataTemplate>
+                    <Grid Padding="10" ColumnDefinitions="*,*,*,*,*,*,*">
+                        <Label Grid.Column="0" Text="{Binding nimi}"/>
+                    </Grid>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+
     </VerticalStackLayout>
 </ContentPage>
     
