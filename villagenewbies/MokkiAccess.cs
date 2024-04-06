@@ -71,7 +71,7 @@ namespace VillageNewbies
             {
                 await connection.OpenAsync();
 
-                using (var command = new MySqlCommand("SELECT * FROM palvelu;", connection))
+                using (var command = new MySqlCommand("select palvelu_id, palvelu.alue_id, palvelu.nimi, alue.nimi as sijainti, tyyppi, kuvaus, hinta, alv from palvelu inner join alue on palvelu.alue_id = alue.alue_id", connection))
 
                 using (var reader = await command.ExecuteReaderAsync())
                 {
@@ -82,6 +82,7 @@ namespace VillageNewbies
                             palvelu_id = reader.GetInt32("palvelu_id"),
                             alue_id = reader.GetInt32("alue_id"),
                             nimi = reader.GetString("nimi"),
+                            sijainti = reader.GetString("sijainti"),
                             tyyppi = reader.GetInt32("tyyppi"),
                             kuvaus = reader.GetString("kuvaus"),
                             hinta = reader.GetDouble("hinta"),

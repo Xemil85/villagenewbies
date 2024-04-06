@@ -15,24 +15,27 @@
                 <ColumnDefinition Width="*" />
                 <ColumnDefinition Width="*" />
                 <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
             <Label Text="Palvelun nimi" FontSize="20" Grid.Column="0" TextDecorations="Underline" />
-            <Label Text="Kuvaus" FontSize="20" Grid.Column="1" TextDecorations="Underline" />
-            <Label Text="Hinta" FontSize="20" Grid.Column="2" TextDecorations="Underline" />
-            <Label Text="ALV %" FontSize="20" Grid.Column="3" TextDecorations="Underline" />
+            <Label Text="Sijainti" FontSize="20" Grid.Column="1" TextDecorations="Underline" />
+            <Label Text="Kuvaus" FontSize="20" Grid.Column="2" TextDecorations="Underline" />
+            <Label Text="Hinta" FontSize="20" Grid.Column="3" TextDecorations="Underline" />
+            <Label Text="ALV %" FontSize="20" Grid.Column="4" TextDecorations="Underline" />
         </Grid>
 
         <!-- Lista palveluista -->
         <CollectionView x:Name="ServicesCollectionView" HeightRequest="500">
             <CollectionView.ItemTemplate>
                 <DataTemplate>
-                    <Grid Padding="10" ColumnDefinitions="*,*,*,*,*,*">
+                    <Grid Padding="10" ColumnDefinitions="*,*,*,*,*,*,*">
                         <Label Grid.Column="0" Text="{Binding nimi}" FontAttributes="Bold"/>
-                        <Label Grid.Column="1" Text="{Binding kuvaus}"/>
-                        <Label Grid.Column="2" Text="{Binding hinta, StringFormat='Hinta: {0:C}'}"/>
-                        <Label Grid.Column="3" Text="{Binding alv, StringFormat='ALV: {0}%'}"/>
-                        <Button Clicked="Poistapalvelu" CommandParameter="{Binding .}" Grid.Column="4" Text="Poista" WidthRequest="100" />
-                        <Button Clicked="Muokkaapalvelu" CommandParameter="{Binding .}" Grid.Column="5" Text="Muokkaa" WidthRequest="100" />
+                        <Label Grid.Column="1" Text="{Binding sijainti}" />
+                        <Label Grid.Column="2" Text="{Binding kuvaus}"/>
+                        <Label Grid.Column="3" Text="{Binding hinta, StringFormat='Hinta: {0:C}'}"/>
+                        <Label Grid.Column="4" Text="{Binding alv, StringFormat='ALV: {0}%'}"/>
+                        <Button Clicked="Poistapalvelu" CommandParameter="{Binding .}" Grid.Column="5" Text="Poista" WidthRequest="100" />
+                        <Button Clicked="Muokkaapalvelu" CommandParameter="{Binding .}" Grid.Column="6" Text="Muokkaa" WidthRequest="100" />
                     </Grid>
                 </DataTemplate>
             </CollectionView.ItemTemplate>

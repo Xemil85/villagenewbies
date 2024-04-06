@@ -29,6 +29,7 @@ namespace VillageNewbies
         public int palvelu_id { get; set; }
         public int alue_id { get; set; }
         public string nimi { get; set; }
+        public string sijainti { get; set; }
         public int tyyppi { get; set; } // Saattaa olla mahdollisesti parempi käyttää enum?
         public string kuvaus { get; set; }
         public double hinta { get; set; }
