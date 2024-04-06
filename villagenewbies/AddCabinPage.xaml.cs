@@ -25,8 +25,8 @@ public partial class AddCabinPage : ContentPage
 
         if (_mokki != null)
         {
-            mokki_id.Text = _mokki.ToString();
-            alue_id.Text = _mokki.ToString();
+            mokki_id.Text = _mokki.mokki_id.ToString();
+            alue_id.Text = _mokki.alue_id.ToString();
             mokkinimi.Text = _mokki.mokkinimi;
             katuosoite.Text = _mokki.katuosoite;
             postinro.Text = _mokki.postinro.ToString(); // Olettaen että postinro on tietotyyppiä, joka vaatii muunnoksen stringiksi
@@ -94,25 +94,9 @@ public partial class AddCabinPage : ContentPage
 
     private async void TallennaMokki_Clicked(object sender, EventArgs e)
     {
-        // Oletetaan, että olet luonut muokattavaMokki-olion johonkin sopivaan kohtaan luokassa ja se on alustettu olemassa olevilla tiedoilla.
-        // Nyt, oletetaan myös, että käyttöliittymäkentät on sidottu tähän muokattavaMokki-olioon kaksisuuntaisella sidoksella.
-
-        // Jos jokin kentistä on tyhjä tai ei mene läpi tietotyypin tarkistuksesta, näytetään virheviesti
-        // Päivitä muokattavaMokki-olion ominaisuuksia tarpeen mukaan.
-        // Oletetaan, että käyttöliittymän kontrollit on sidottu muokattavaMokki-olioon.
-        // Varmista ensin, että mokki_id.Text on kokonaisluku
+        
         var muokattavaMokki = new Mokki();
-        /*{
-            mokki_id = int.Parse(mokki_id.Text),
-            alue_id = int.Parse(alue_id.Text),
-            mokkinimi = mokkinimi.Text,
-            katuosoite = katuosoite.Text,
-            postinro = int.Parse(postinro.Text),
-            hinta = double.Parse(hinta.Text),
-            henkilomaara = int.Parse(henkilomaara.Text),
-            kuvaus = kuvaus.Text,
-            varustelu = varustelu.Text
-        };*/
+       
 
         if (!string.IsNullOrWhiteSpace(mokki_id.Text) && int.TryParse(mokki_id.Text, out int parsedMokkiId))
         {
@@ -167,37 +151,12 @@ public partial class AddCabinPage : ContentPage
             muokattavaMokki.varustelu = varustelu.Text;
         }
 
-
-        // Tarkista, onko jotain muutettu, ennen kuin yritetään päivittää tietokantaan.
-        /*if (muokattavaMokki.IsDirty) // Oletetaan, että on IsDirty-ominaisuus, joka kertoo, onko oliota muokattu.
-            
-                var success = await databaseAccess.PaivitaMokinTiedot(muokattavaMokki);
-                if (success)
-                {
-                    await DisplayAlert("Onnistui", "Mökin tiedot tallennettu onnistuneesti.", "OK");
-                    // Tässä kohtaa voit päivittää käyttöliittymän tai navigoida takaisin pääsivulle.
-                }
-                else 
-                {
-                    await DisplayAlert("Virhe", "Mökin tietojen tallentaminen epäonnistui.", "OK");
-                }
-            
-            else
-            {
-                await DisplayAlert("Ei muutoksia", "Ei tehty muutoksia tallennettavaksi.", "OK");
-            }*/
-
-        // Päivitetään muokattavaMokki-olion tiedot käyttöliittymästä saaduilla tiedoilla
-       /* muokattavaMokki.mokki_id = int.Parse(mokki_id.Text);
-        muokattavaMokki.alue_id = int.Parse(alue_id.Text);
-        muokattavaMokki.mokkinimi = mokkinimi.Text;
-        muokattavaMokki.katuosoite = katuosoite.Text;
-        muokattavaMokki.postinro = int.Parse(postinro.Text);
-        muokattavaMokki.hinta = double.Parse(hinta.Text);
-        muokattavaMokki.henkilomaara = int.Parse(henkilomaara.Text);
-        muokattavaMokki.kuvaus = kuvaus.Text;
-        muokattavaMokki.varustelu = varustelu.Text;*/
-
+        // Päivitetään _mokki-olion tiedot
+        if (muokattavaMokki == null)
+        {
+            muokattavaMokki = new Mokki();
+        }
+   
         // Kutsutaan DatabaseAccess-luokan päivitysmetodia
         var success = await databaseAccess.PaivitaMokinTiedot(muokattavaMokki);
         if (success)
@@ -210,9 +169,11 @@ public partial class AddCabinPage : ContentPage
             await DisplayAlert("Virhe", "Mökin tietojen tallentaminen epäonnistui.", "OK");
         }
         await Navigation.PopAsync();
+
+      
     }
 
-   private async void PoistaMokki_Clicked(object sender, EventArgs e)
+    private async void PoistaMokki_Clicked(object sender, EventArgs e)
     {
         var vastaus = await DisplayAlert("Vahvista poisto", "Haluatko varmasti poistaa tämän Mökin?", "Kyllä", "Ei");
         if (vastaus)
@@ -314,9 +275,9 @@ public partial class AddCabinPage : ContentPage
             {
                 await connection.OpenAsync();
 
-                var query = @"
-                UPDATE mokki SET
-                    alue_id = @AlueId;
+                var query =
+                    @"UPDATE mokki 
+                SET alue_id = @AlueId,
                     mokkinimi = @Mokkinimi,
                     katuosoite = @Katuosoite,
                     postinro = @Postinro,
