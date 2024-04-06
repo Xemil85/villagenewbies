@@ -41,6 +41,20 @@
                     BackgroundColor="#3498DB"
                     TextColor="White"
                     CornerRadius="10"/>
+            
+            <Button Text="Laskutus"
+                    x:Name="AvaaLaskut"
+                    FontSize="Medium"
+                    BackgroundColor="#3498DB"
+                    TextColor="White"
+                    CornerRadius="10"/>
+
+            <Button Text="Raportointi"
+                    x:Name="AvaaRaportit"
+                    FontSize="Medium"
+                    BackgroundColor="#3498DB"
+                    TextColor="White"
+                    CornerRadius="10"/>
 
         </VerticalStackLayout>
     </ScrollView>

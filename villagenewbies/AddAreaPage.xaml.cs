@@ -13,39 +13,27 @@ public partial class AddAreaPage : ContentPage
         // jos kentät tyhjät ja yritetään tallentaa
         if (string.IsNullOrWhiteSpace(nimi.Text))
             
-
         {// Näytä virheviesti tai käsittele virhetilanne tässä
             await DisplayAlert("Täyttämättömät tiedot", "Täytä kaikki tiedot ennen lähettämistä.", "Ok");
-            return; // Lopeta metodin suoritus tähän
+            return; 
         }
 
         var uusiAlue = new Alue
         {
-           
             nimi = nimi.Text
-           
         };
 
         var databaseAccess = new DatabaseAccess();
         await databaseAccess.LisaaAlueTietokantaan(uusiAlue);
 
-
-       
         nimi.Text = "";
-       
-
     }
-
 }
-
-
 
 public partial class DatabaseAccess
 {
     public async Task LisaaAlueTietokantaan(Alue uusiAlue)
     {
-
-
         string projectDirectory = System.AppDomain.CurrentDomain.BaseDirectory;
         var projectRoot = Path.GetFullPath(Path.Combine(projectDirectory, @"..\..\..\..\..\"));
 
@@ -69,8 +57,6 @@ public partial class DatabaseAccess
                     
                     await command.ExecuteNonQueryAsync();
                 }
-
-
             }
             catch (Exception ex)
             {
@@ -79,9 +65,6 @@ public partial class DatabaseAccess
             }
         }
     }
-
-
-
 }
 
     
