@@ -81,6 +81,20 @@ namespace VillageNewbies.Views
             LoadMokitAsync(); // Päivitä mökkilista täällä
         }
 
+        private async void Varaamokki(object sender, EventArgs e)
+        {
+            if (!(sender is Button button)) return;
+
+            var mokki = button.CommandParameter as Mokki;
+            if (mokki == null)
+            {
+                await DisplayAlert("Virhe", "Mökintietojen lataaminen epäonnistui.", "OK");
+                return;
+            }
+
+            // Siirrytään muokkaussivulle ja välitetään asiakas-olio konstruktorin kautta
+            await Navigation.PushAsync(new SelectServices(mokki));
+        }
     }
 }
 

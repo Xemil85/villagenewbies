@@ -22,6 +22,7 @@
                 <ColumnDefinition Width="*" />
                 <ColumnDefinition Width="*" />
                 <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
             <Label Text="Mökki_id" FontSize="20" Grid.Column="0" TextDecorations="Underline" />
             <Label Text="Alue_id" FontSize="20" Grid.Column="1" TextDecorations="Underline" />
@@ -39,7 +40,7 @@
         <CollectionView x:Name="CabinsCollectionView" HeightRequest="500">
             <CollectionView.ItemTemplate>
                 <DataTemplate>
-                    <Grid Padding="10" ColumnDefinitions="*,*,*,*,*,*,*,*,*,*">
+                    <Grid Padding="10" ColumnDefinitions="*,*,*,*,*,*,*,*,*,*,*">
                         <Label Grid.Column="0" Text="{Binding mokki_id}"/>
                         <Label Grid.Column="1" Text="{Binding alue_id}"/>
                         <Label Grid.Column="2" Text="{Binding mokkinimi}"/>
@@ -51,6 +52,7 @@
                         <Label Grid.Column="8" Text="{Binding varustelu}"/>
                         <Button Grid.Column="9" WidthRequest="100" HorizontalOptions="Start" Text="Muokkaa Mökkiä" FontSize="10" CommandParameter="{Binding .}"
                      Clicked="MuokkaaMokkia_Clicked" />
+                        <Button Grid.Column="10" Text="Varaa mökki" Clicked="Varaamokki" CommandParameter="{Binding .}" />
                     </Grid>
                 </DataTemplate>
             </CollectionView.ItemTemplate>

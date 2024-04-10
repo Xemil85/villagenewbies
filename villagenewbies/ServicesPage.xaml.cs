@@ -11,7 +11,6 @@ public partial class ServicesPage : ContentPage
 {
     private DatabaseAccess databaseAccess = new DatabaseAccess();
     public ObservableCollection<Palvelu> Palvelut { get; private set; }
-
     public ServicesPage()
     {
         InitializeComponent();
@@ -19,7 +18,6 @@ public partial class ServicesPage : ContentPage
         ServicesCollectionView.ItemsSource = Palvelut;
         LoadPalvelut();
         LisaaPalvelu.Clicked += LisaaPalvelu_Clicked;
-        
     }
 
     private async void LisaaPalvelu_Clicked(object? sender, EventArgs e)
