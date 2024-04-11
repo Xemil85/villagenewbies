@@ -96,6 +96,9 @@
 	  <MauiXaml Update="AddServicesPage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
+	  <MauiXaml Update="BookingForm.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
 	  <MauiXaml Update="CabinsPage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>

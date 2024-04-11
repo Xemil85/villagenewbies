@@ -2,10 +2,11 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="VillageNewbies.SelectServices"
-             Title="SelectServices">
+             Title="Valitse palvelu">
     <VerticalStackLayout>
         <Grid RowSpacing="10" Padding="20">
             <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
                 <ColumnDefinition Width="*" />
                 <ColumnDefinition Width="*" />
                 <ColumnDefinition Width="*" />
@@ -23,12 +24,13 @@
         <CollectionView x:Name="ServicesCollectionView" HeightRequest="500">
             <CollectionView.ItemTemplate>
                 <DataTemplate>
-                    <Grid Padding="10" ColumnDefinitions="*,*,*,*,*">
+                    <Grid Padding="10" ColumnDefinitions="*,*,*,*,*,*">
                         <Label Grid.Column="0" Text="{Binding nimi}" FontAttributes="Bold"/>
                         <Label Grid.Column="1" Text="{Binding sijainti}" />
                         <Label Grid.Column="2" Text="{Binding kuvaus}"/>
                         <Label Grid.Column="3" Text="{Binding hinta, StringFormat='Hinta: {0:C}'}"/>
                         <Label Grid.Column="4" Text="{Binding alv, StringFormat='ALV: {0}%'}"/>
+                        <Button Grid.Column="5" Text="Valitse palvelu" Clicked="Valitsepalvelu" CommandParameter="{Binding .}" />
                     </Grid>
                 </DataTemplate>
             </CollectionView.ItemTemplate>

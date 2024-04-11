@@ -97,6 +97,48 @@ namespace VillageNewbies
             }
         }
 
+        public async Task<List<Palvelu>> FetchAllPalveluWithAlueAsync(int alueid)
+        {
+            string projectDirectory = System.AppDomain.CurrentDomain.BaseDirectory;
+            var projectRoot = Path.GetFullPath(Path.Combine(projectDirectory, @"..\..\..\..\..\"));
+
+            DotNetEnv.Env.Load(projectRoot);
+            var env = Environment.GetEnvironmentVariables();
+
+            string ConnectionString = $"server={env["SERVER"]};port={env["SERVER_PORT"]};database={env["SERVER_DATABASE"]};user={env["SERVER_USER"]};password={env["SERVER_PASSWORD"]}";
+
+            var palvelut = new List<Palvelu>();
+
+            using (var connection = new MySqlConnection(ConnectionString))
+            {
+                await connection.OpenAsync();
+
+                using (var command = new MySqlCommand($"select palvelu_id, palvelu.alue_id, palvelu.nimi, alue.nimi as sijainti, tyyppi, kuvaus, hinta, alv from palvelu inner join alue on palvelu.alue_id = alue.alue_id where palvelu.alue_id = {alueid}", connection))
+
+                using (var reader = await command.ExecuteReaderAsync())
+                {
+                    while (await reader.ReadAsync())
+                    {
+                        var palvelu = new Palvelu
+                        {
+                            palvelu_id = reader.GetInt32("palvelu_id"),
+                            alue_id = reader.GetInt32("alue_id"),
+                            nimi = reader.GetString("nimi"),
+                            sijainti = reader.GetString("sijainti"),
+                            tyyppi = reader.GetInt32("tyyppi"),
+                            kuvaus = reader.GetString("kuvaus"),
+                            hinta = reader.GetDouble("hinta"),
+                            alv = reader.GetDouble("alv"),
+                        };
+
+                        palvelut.Add(palvelu);
+                    }
+                }
+
+                return palvelut;
+            }
+        }
+
         public async Task<List<Asiakas>> FetchAllAsiakasAsync()
         {
             string projectDirectory = System.AppDomain.CurrentDomain.BaseDirectory;
