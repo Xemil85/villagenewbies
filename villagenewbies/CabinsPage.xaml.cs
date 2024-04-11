@@ -24,6 +24,7 @@ namespace VillageNewbies.Views
            // AreaPicker.ItemsSource = _alueNimet.Values.ToList();
             //HintaPicker.ItemsSource = _hintaLuokat.Values.ToList();
             LoadMokitAsync();
+            Debug.WriteLine(Aloituspaiva.Date.ToString("yyyy-MM-dd HH:mm:ss"));
            // LisaaMokki.Clicked += LisaaMokki_Clicked;
            // LisaaAlue.Clicked += LisaaAlue_Clicked;
            // PoistaAlue.Clicked += PoistaAlue_Clicked;
@@ -92,8 +93,11 @@ namespace VillageNewbies.Views
                 return;
             }
 
+            var aloitusPaiva = Aloituspaiva.Date.ToString("yyyy-MM-dd");
+            var lopetusPaiva = Lopetuspaiva.Date.ToString("yyyy-MM-dd");
+
             // Siirryt‰‰n muokkaussivulle ja v‰litet‰‰n asiakas-olio konstruktorin kautta
-            await Navigation.PushAsync(new SelectServices(mokki));
+            await Navigation.PushAsync(new SelectServices(mokki, aloitusPaiva, lopetusPaiva));
         }
     }
 }

@@ -6,10 +6,14 @@ public partial class SelectServices : ContentPage
 {
     public ObservableCollection<Palvelu> Palvelut { get; private set; }
     private Mokki _mokki;
-    public SelectServices(Mokki mokki)
+    private string _aloitusPaiva;
+    private string _lopetusPaiva;
+    public SelectServices(Mokki mokki, string aloitusPaiva, string lopetusPaiva)
 	{
 		InitializeComponent();
 		_mokki = mokki;
+        _aloitusPaiva = aloitusPaiva;
+        _lopetusPaiva = lopetusPaiva;
         Palvelut = new ObservableCollection<Palvelu>();
         ServicesCollectionView.ItemsSource = Palvelut;
         LoadPalvelut();
@@ -40,6 +44,6 @@ public partial class SelectServices : ContentPage
             await DisplayAlert("Virhe", "Palvelutietojen lataaminen epäonnistui.", "OK");
             return;
         }
-        await Navigation.PushAsync(new BookingForm(_mokki, palvelu));
+        await Navigation.PushAsync(new BookingForm(_mokki, palvelu, _aloitusPaiva, _lopetusPaiva));
     }
 }

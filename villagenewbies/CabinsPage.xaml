@@ -8,6 +8,8 @@
             <Button Text="Lisää Mökki" Margin="30,10,0,0" BackgroundColor="DarkViolet" Clicked="LisaaMokki_Clicked" />
             <Button Text="Lisää Alue" Margin="30,10,0,0" BackgroundColor="DarkBlue" Clicked="LisaaAlue_Clicked"/>
             <Button Text="Poista Alue" Margin="30,10,0,0" BackgroundColor="DarkGreen" Clicked="PoistaAlue_Clicked" />
+            <DatePicker x:Name="Aloituspaiva" Format="yyyy-MM-dd" />
+            <DatePicker x:Name="Lopetuspaiva" Format="yyyy-MM-dd" />
         </HorizontalStackLayout>
 
         <Grid RowSpacing="10" Padding="20">

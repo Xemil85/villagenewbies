@@ -21,7 +21,7 @@ namespace VillageNewbies
     public class Alue
     {
         public string nimi { get; set; }
-        public int alue_id { get; set; }    
+        public int alue_id { get; set; }
     }
 
     public class Palvelu
@@ -46,5 +46,16 @@ namespace VillageNewbies
         public string lahiosoite { get; set; }
         public string email { get; set; }
         public string puhelinnro { get; set; }
+    }
+
+    public class Varaus
+    {
+        public int varaus_id { get; set; }
+        public int asiakas_id { get; set; }
+        public int mokki_id { get; set; }
+        public string varattu_pvm { get; set; }
+        public string vahvistus_pvm { get; set; }
+        public string varattu_alkupvm { get; set; }
+        public string varattu_loppupvm { get; set; }
     }
 }
