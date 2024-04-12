@@ -117,6 +117,9 @@
 	  <MauiXaml Update="DeleteAreaPage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
+	  <MauiXaml Update="Reportage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
 	  <MauiXaml Update="SelectServices.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>

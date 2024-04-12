@@ -10,6 +10,7 @@
             AvaaPalvelut.Clicked += AvaaPalvelut_Clicked;
             AvaaVaraukset.Clicked += AvaaVaraukset_Clicked;
             AvaaAsiakkaat.Clicked += AvaaAsiakkaat_Clicked;
+            AvaaRaportit.Clicked += AvaaRaportit_Clicked;
         }
 
         private async void AvaaAsiakkaat_Clicked(object? sender, EventArgs e)
@@ -34,7 +35,10 @@
         }
 
         
-
+        private async void AvaaRaportit_Clicked(object? sender, EventArgs e)
+        {
+            await Navigation.PushAsync(new Reportage());
+        }
 
     }
 }

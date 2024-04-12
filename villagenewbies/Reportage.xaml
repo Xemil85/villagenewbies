@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="VillageNewbies.Reportage"
+             Title="Raportointi">
+    <VerticalStackLayout Spacing="20" Padding="30">
+        <Label 
+            Text="Varaustilanne"
+            VerticalOptions="Center" 
+            HorizontalOptions="Center" />
+
+        <Label Text="Valitse alue:"/>
+        <Picker x:Name="AreaPicker" Title="Valitse alue"/>
+
+        <Label Text="Alkupäivämäärä:"/>
+        <DatePicker x:Name="StartDatePicker" Format="D"/>
+
+        <Label Text="Loppupäivämäärä:"/>
+        <DatePicker x:Name="EndDatePicker" Format="D"/>
+
+
+        <CollectionView x:Name="AreasCollectionView2" HeightRequest="500">
+            <CollectionView.ItemTemplate>
+                <DataTemplate>
+                    <Grid Padding="10" ColumnDefinitions="*,*,*,*,*,*,*">
+                    <Label Grid.Column="0" Text="{Binding nimi}"/>
+                    </Grid>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+
+    </VerticalStackLayout>
+</ContentPage>
