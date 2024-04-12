@@ -1,5 +1,6 @@
 using MySql.Data.MySqlClient;
 using System.Collections.ObjectModel;
+using System.Text.RegularExpressions;
 
 namespace VillageNewbies;
 
@@ -57,13 +58,18 @@ public partial class CustomerPage : ContentPage
     private async void HaeSukunimellä_Clicked(object sender, EventArgs e)
     {
         string alkuKirjain = Sukunimi.Text; // Ota tekstikentän arvo
-        if (string.IsNullOrWhiteSpace(alkuKirjain))
+        if (string.IsNullOrWhiteSpace(alkuKirjain) )
         {
             await DisplayAlert("Huomio", "Anna vähintään yksi kirjain sukunimen alkukirjaimeksi.", "OK");
             return;
         }
 
-        
+        if (!Regex.IsMatch(alkuKirjain, @"^[A-ZÄÖÅ]+$"))
+        {
+            await DisplayAlert("Virhe", "Syötä vain kirjaimia (A-ZÄÖÅ).", "OK");
+            return;
+        }
+
         var asiakkaat = await databaseAccess.HaeAsiakkaatAlkukirjaimella(alkuKirjain);
         Asiakkaat.Clear(); // Tyhjennä nykyiset asiakkaat
         foreach (var asiakas in asiakkaat)
