@@ -30,10 +30,11 @@
                         <Label Grid.Column="2" Text="{Binding kuvaus}"/>
                         <Label Grid.Column="3" Text="{Binding hinta, StringFormat='Hinta: {0:C}'}"/>
                         <Label Grid.Column="4" Text="{Binding alv, StringFormat='ALV: {0}%'}"/>
-                        <Button Grid.Column="5" Text="Valitse palvelu" Clicked="Valitsepalvelu" CommandParameter="{Binding .}" />
+                        <CheckBox Grid.Column="5" IsChecked="{Binding IsSelected}" CheckedChanged="CheckBox_CheckedChanged" BindingContext="{Binding .}" />
                     </Grid>
                 </DataTemplate>
             </CollectionView.ItemTemplate>
         </CollectionView>
+        <Button Grid.Column="5" WidthRequest="200" Text="Valitse palvelu" Clicked="Valitsepalvelu" CommandParameter="{Binding .}" />
     </VerticalStackLayout>
 </ContentPage>

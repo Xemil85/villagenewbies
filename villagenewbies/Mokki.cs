@@ -58,4 +58,11 @@ namespace VillageNewbies
         public string varattu_alkupvm { get; set; }
         public string varattu_loppupvm { get; set; }
     }
+
+    public class Varauksen_Palvelut
+    {
+        public int varaus_id { get; set; }
+        public int palvelu_id { get; set; }
+        public int lkm { get; set; }
+    }
 }
