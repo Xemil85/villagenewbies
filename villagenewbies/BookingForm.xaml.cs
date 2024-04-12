@@ -8,22 +8,21 @@ namespace VillageNewbies;
 public partial class BookingForm : ContentPage
 {
 	private Mokki _mokki;
-    private Palvelu _palvelu;
+    private List<Palvelu> selectedServices;
     private string _aloitusPaiva;
     private string _lopetusPaiva;
     private List<Asiakas> _asiakkaat;
     private Dictionary<int, string> _asiakasNimet = new Dictionary<int, string>();
     private int? selectedAsiakasId;
 
-    public BookingForm(Mokki mokki, Palvelu palvelu, string aloitusPaiva, string lopetusPaiva)
+    public BookingForm(Mokki mokki, List<Palvelu> palvelu, string aloitusPaiva, string lopetusPaiva)
 	{
 		InitializeComponent();
         _mokki = mokki;
-        _palvelu = palvelu;
+        selectedServices = palvelu;
         _aloitusPaiva = aloitusPaiva;
         _lopetusPaiva = lopetusPaiva;
         LataaAsiakkaat();
-        string formattedNow = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture);
         TeeVaraus.Clicked += TeeVaraus_Clicked;
     }
 
@@ -33,7 +32,7 @@ public partial class BookingForm : ContentPage
         DateTime lopetusPaiva = DateTime.Parse(_lopetusPaiva);
 
         // Otetaan aika TimePicker-komponentista
-        TimeSpan aloitusAika = Aloitusaika.Time;
+        TimeSpan aloitusAika = new TimeSpan(18, 0, 0);
         TimeSpan lopetusAika = new TimeSpan(14, 0, 0); // Esimerkissä lopetusaika on kovakoodattu klo 14:00
 
         // Yhdistetään aloituspaivamaara ja -aika
@@ -51,7 +50,22 @@ public partial class BookingForm : ContentPage
         };
 
         var databaseAccess = new DatabaseAccess();
-        await databaseAccess.LisaaVarausTietokantaan(uusiVaraus);
+        var varausId = await databaseAccess.LisaaVarausTietokantaan(uusiVaraus);
+
+        if (selectedServices.Count > 0)
+        {
+            foreach (var palvelu in selectedServices)
+            {
+                var palveluVaraus = new Varauksen_Palvelut
+                {
+                    varaus_id = varausId, // Oletetaan, että LisaaVarausTietokantaan palauttaa uuden varaus_id:n
+                    palvelu_id = palvelu.palvelu_id,
+                    lkm = selectedServices.Count
+                };
+                await databaseAccess.LisaaVarauksenPalvelutTietokantaan(palveluVaraus);
+            }
+        }
+
         await DisplayAlert("Uusi varaus lisätty", "Uusi varaus on onnistuneesti lisätty.", "OK");
 
         Asiakaspicker.SelectedIndex = -1;
@@ -101,7 +115,7 @@ public partial class BookingForm : ContentPage
 
     public class DatabaseAccess
     {
-        public async Task LisaaVarausTietokantaan(Varaus uusiVaraus)
+        public async Task<int> LisaaVarausTietokantaan(Varaus uusiVaraus)
         {
             string projectDirectory = System.AppDomain.CurrentDomain.BaseDirectory;
             var projectRoot = Path.GetFullPath(Path.Combine(projectDirectory, @"..\..\..\..\..\"));
@@ -116,8 +130,8 @@ public partial class BookingForm : ContentPage
                 {
                     await connection.OpenAsync();
 
-                    var query = "INSERT INTO varaus (asiakas_id, mokki_mokki_id, varattu_pvm, vahvistus_pvm, varattu_alkupvm, varattu_loppupvm) VALUES (@Asiakas_id, @Mokki_id, @Varattu_pvm, @Vahvistus_pvm, @Varattu_alkupvm, @Varattu_loppupvm)";
-
+                    var query = @"INSERT INTO varaus (asiakas_id, mokki_mokki_id, varattu_pvm, vahvistus_pvm, varattu_alkupvm, varattu_loppupvm) VALUES (@Asiakas_id, @Mokki_id, @Varattu_pvm, @Vahvistus_pvm, @Varattu_alkupvm, @Varattu_loppupvm);
+                          SELECT LAST_INSERT_ID();";
                     using (var command = new MySqlCommand(query, connection))
                     {
                         command.Parameters.AddWithValue("@Asiakas_id", uusiVaraus.asiakas_id);
@@ -127,6 +141,42 @@ public partial class BookingForm : ContentPage
                         command.Parameters.AddWithValue("@Varattu_alkupvm", uusiVaraus.varattu_alkupvm);
                         command.Parameters.AddWithValue("@Varattu_loppupvm", uusiVaraus.varattu_loppupvm);
 
+                        int varausId = Convert.ToInt32(await command.ExecuteScalarAsync());
+                        return varausId;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    // Käsittely mahdollisille poikkeuksille
+                    Debug.WriteLine(ex.Message);
+                    throw;
+                }
+            }
+        }
+
+        public async Task LisaaVarauksenPalvelutTietokantaan(Varauksen_Palvelut uusiVarauksenPalvelut)
+        {
+            string projectDirectory = System.AppDomain.CurrentDomain.BaseDirectory;
+            var projectRoot = Path.GetFullPath(Path.Combine(projectDirectory, @"..\..\..\..\..\"));
+
+            DotNetEnv.Env.Load(projectRoot);
+            var env = Environment.GetEnvironmentVariables();
+
+            string connectionString = $"server={env["SERVER"]};port={env["SERVER_PORT"]};database={env["SERVER_DATABASE"]};user={env["SERVER_USER"]};password={env["SERVER_PASSWORD"]}";
+            using (var connection = new MySqlConnection(connectionString))
+            {
+                try
+                {
+                    await connection.OpenAsync();
+
+                    var query = "INSERT INTO varauksen_palvelut (varaus_id, palvelu_id, lkm) VALUES (@Varaus_id, @Palvelu_id, @Lkm)";
+
+                    using (var command = new MySqlCommand(query, connection))
+                    {
+                        command.Parameters.AddWithValue("@Varaus_id", uusiVarauksenPalvelut.varaus_id);
+                        command.Parameters.AddWithValue("@Palvelu_id", uusiVarauksenPalvelut.palvelu_id);
+                        command.Parameters.AddWithValue("@Lkm", uusiVarauksenPalvelut.lkm);
+                        
                         await command.ExecuteNonQueryAsync();
                     }
                 }

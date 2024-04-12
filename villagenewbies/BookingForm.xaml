@@ -14,7 +14,6 @@
             SelectedIndexChanged="OnAsiakasSelected"
             WidthRequest="300"
         />
-        <TimePicker x:Name="Aloitusaika" VerticalOptions="Center" />
         <Entry x:Name="Sahkoposti" WidthRequest="300" Placeholder="Sähköposti"/>
         <Entry x:Name="Etunimi" WidthRequest="300" Placeholder="Etunimi" />
         <Entry x:Name="Sukunimi" WidthRequest="300" Placeholder="Sukunimi" />
