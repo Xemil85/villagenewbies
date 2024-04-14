@@ -10,6 +10,7 @@
             AvaaPalvelut.Clicked += AvaaPalvelut_Clicked;
             AvaaVaraukset.Clicked += AvaaVaraukset_Clicked;
             AvaaAsiakkaat.Clicked += AvaaAsiakkaat_Clicked;
+            AvaaLaskut.Clicked += AvaaLaskut_Clicked;
             AvaaRaportit.Clicked += AvaaRaportit_Clicked;
         }
 
