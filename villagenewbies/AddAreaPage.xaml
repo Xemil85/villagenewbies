@@ -10,12 +10,20 @@
             HorizontalOptions="Center" />
         <HorizontalStackLayout>
             <Entry x:Name="nimi" Placeholder="Alueen nimi" MinimumWidthRequest="300"
-HorizontalOptions="Center" Margin="30,10,0,0"></Entry>
+             HorizontalOptions="Center" Margin="30,10,0,0"></Entry>
+            <Entry x:Name="alue_id"
+           Placeholder="Alue ID"
+           MinimumWidthRequest="300"
+           HorizontalOptions="Center"
+           Margin="30,10,0,0"
+           BackgroundColor="White"
+           TextColor="Black"/>
         </HorizontalStackLayout>
 
 
         <HorizontalStackLayout>
             <Button Text="Lisää Alue" Margin="30,10,0,0" Clicked="LisaaAlue_Clicked" />
+            <Button Text="Tallenna" Margin="30,10,0,0" BackgroundColor="Plum" Clicked="TallennaAlue_Clicked"/>
         </HorizontalStackLayout>
         
 
@@ -24,6 +32,9 @@ HorizontalOptions="Center" Margin="30,10,0,0"></Entry>
                 <DataTemplate>
                     <Grid Padding="10" ColumnDefinitions="*,*,*,*,*,*,*">
                         <Label Grid.Column="0" Text="{Binding nimi}"/>
+                        <Label Grid.Column="1" Text="{Binding alue_id}" TextColor="White"/>
+                        <Button Grid.Column="2" WidthRequest="200" HorizontalOptions="Start" Text="Muokkaa Aluetta" BackgroundColor="Plum" FontSize="10" 
+                                CommandParameter="{Binding .}" Clicked="MuokkaaAlue_Clicked"/>
                     </Grid>
                 </DataTemplate>
             </CollectionView.ItemTemplate>
