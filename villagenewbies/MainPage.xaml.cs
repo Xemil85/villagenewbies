@@ -34,7 +34,11 @@
             await Navigation.PushAsync(new CabinsPage());
         }
 
-        
+        private async void AvaaLaskut_Clicked(object? sender, EventArgs e)
+        {
+            await Navigation.PushAsync(new BillsPage());
+        }
+
         private async void AvaaRaportit_Clicked(object? sender, EventArgs e)
         {
             await Navigation.PushAsync(new Reportage());
