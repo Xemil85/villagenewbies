@@ -65,4 +65,16 @@ namespace VillageNewbies
         public int palvelu_id { get; set; }
         public int lkm { get; set; }
     }
+
+    public class Lasku
+    {
+        public int LaskuId { get; set; }
+        public int VarausId { get; set; }
+        public double Summa { get; set; }
+        public double Alv { get; set; }
+        public bool Maksettu { get; set; }
+    }
+    
+
+
 }

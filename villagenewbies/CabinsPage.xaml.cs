@@ -31,6 +31,7 @@ namespace VillageNewbies.Views
             //PoistaMokki.Clicked += PoistaMokki_Clicked;
             
         }
+
         private async void LisaaMokki_Clicked(object? sender, EventArgs e)
         {
             await Navigation.PushAsync(new AddCabinPage());
