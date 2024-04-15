@@ -6,21 +6,6 @@
 
     <ScrollView>
         <VerticalStackLayout Spacing="20" Padding="20">
-
-            <!-- Placeholder-nappi uuden varauksen tekemiseen -->
-            <Frame BackgroundColor="#f0f0f0" Padding="10" CornerRadius="10">
-                <VerticalStackLayout>
-                    <Label Text="Tee uusi varaus" FontAttributes="Bold"/>
-                    <Button Text="Uusi varaus"
-                            BackgroundColor="Blue"
-                            TextColor="White"
-                            Margin="5"
-                            HorizontalOptions="FillAndExpand"
-                            Command="{Binding UusiVarausCommand}" />
-                    <!-- Oletetaan, että komento UusiVarausCommand on määritelty ViewModelissä -->
-                </VerticalStackLayout>
-            </Frame>
-
             <!-- Placeholder varauksien listalle -->
             <CollectionView x:Name="BookingsCollectionView">
                 <CollectionView.ItemTemplate>
