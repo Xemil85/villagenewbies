@@ -10,6 +10,7 @@ namespace VillageNewbies
     {
         public int mokki_id { get; set; }
         public int alue_id { get; set; }
+        public string sijainti { get; set; }
         public int postinro { get; set; }
         public string mokkinimi { get; set; }
         public string katuosoite { get; set; }

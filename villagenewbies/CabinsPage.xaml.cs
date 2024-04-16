@@ -10,27 +10,50 @@ using System.Windows.Input;
 namespace VillageNewbies.Views
 {
 
+ 
+
     public partial class CabinsPage : ContentPage
     {
+            private readonly Dictionary<int, string> _alueNimet = new Dictionary<int, string>
+            {
+              { 1, "Ylläs" },
+              { 2, "Ruka" },
+              { 3, "Pyhä" },
+              { 4, "Levi" },
+              { 5, "Syöte" },
+              { 6, "Vuokatti" },
+              { 7, "Tahko" },
+              { 8, "Himos" },
+            };
 
+            private readonly Dictionary<int, string> _hintaLuokat = new Dictionary<int, string>
+            {
+              {1, "Edullinen" },
+              {2, "Keskiluokka" },
+              {3, "Premium" }
+            };
+
+        private DatabaseAccess databaseAccess = new DatabaseAccess();
         public ObservableCollection<Mokki> Mokit { get; private set; }
-
+        //private Mokki _mokki;
 
         public CabinsPage()
         {
             InitializeComponent();
-            Mokit = new ObservableCollection<Mokki>();
+            //_mokki = new Mokki();
             CabinsCollectionView.ItemsSource = Mokit;
-           // AreaPicker.ItemsSource = _alueNimet.Values.ToList();
-            //HintaPicker.ItemsSource = _hintaLuokat.Values.ToList();
-            LoadMokitAsync();
+            AreaPicker.ItemsSource = _alueNimet.Values.ToList();
+            HintaPicker.ItemsSource = _hintaLuokat.Values.ToList();
+            LoadMokit();
             Debug.WriteLine(Aloituspaiva.Date.ToString("yyyy-MM-dd HH:mm:ss"));
-           // LisaaMokki.Clicked += LisaaMokki_Clicked;
-           // LisaaAlue.Clicked += LisaaAlue_Clicked;
-           // PoistaAlue.Clicked += PoistaAlue_Clicked;
-            //PoistaMokki.Clicked += PoistaMokki_Clicked;
             
+            // LisaaMokki.Clicked += LisaaMokki_Clicked;
+            // LisaaAlue.Clicked += LisaaAlue_Clicked;
+            // PoistaAlue.Clicked += PoistaAlue_Clicked;
+            //PoistaMokki.Clicked += PoistaMokki_Clicked;
+
         }
+
 
         private async void LisaaMokki_Clicked(object? sender, EventArgs e)
         {
@@ -63,8 +86,8 @@ namespace VillageNewbies.Views
         }
 
 
-        private async Task LoadMokitAsync()
-        {
+        private async Task LoadMokit()
+        {   
             var mokkiAccess = new MokkiAccess();
             var mokitList = await mokkiAccess.FetchAllMokitAsync();
             MainThread.InvokeOnMainThreadAsync(() =>
@@ -80,7 +103,7 @@ namespace VillageNewbies.Views
         protected override void OnAppearing()
         {
             base.OnAppearing();
-            LoadMokitAsync(); // Päivitä mökkilista täällä
+            LoadMokit(); // Päivitä mökkilista täällä
         }
 
         private async void Varaamokki(object sender, EventArgs e)

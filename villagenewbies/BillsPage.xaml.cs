@@ -2,8 +2,8 @@ namespace VillageNewbies;
 
 public partial class BillsPage : ContentPage
 {
-	public BillsPage()
+	/*public BillsPage()
 	{
 		InitializeComponent();
-	}
+	}*/
 }

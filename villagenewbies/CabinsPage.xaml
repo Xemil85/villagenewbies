@@ -3,7 +3,9 @@
              x:Class="VillageNewbies.Views.CabinsPage"
              Title="Mökit">
 
-    <VerticalStackLayout>
+   
+
+                    <VerticalStackLayout>
         <HorizontalStackLayout>
             <Button Text="Lisää Mökki" Margin="30,10,0,0" BackgroundColor="DarkViolet" Clicked="LisaaMokki_Clicked" />
             <Button Text="Lisää Alue" Margin="30,10,0,0" BackgroundColor="DarkBlue" Clicked="LisaaAlue_Clicked"/>
@@ -27,7 +29,7 @@
                 <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
             <Label Text="Mökki_id" FontSize="20" Grid.Column="0" TextDecorations="Underline" />
-            <Label Text="Alue_id" FontSize="20" Grid.Column="1" TextDecorations="Underline" />
+            <Label Text="Sijainti" FontSize="20" Grid.Column="1" TextDecorations="Underline" />
             <Label Text="Mökkinimi" FontSize="20" Grid.Column="2" TextDecorations="Underline" />
             <Label Text="Katuosoite" FontSize="20" Grid.Column="3" TextDecorations="Underline" />
             <Label Text="Postinro" FontSize="20" Grid.Column="4" TextDecorations="Underline" />
@@ -44,7 +46,7 @@
                 <DataTemplate>
                     <Grid Padding="10" ColumnDefinitions="*,*,*,*,*,*,*,*,*,*,*">
                         <Label Grid.Column="0" Text="{Binding mokki_id}"/>
-                        <Label Grid.Column="1" Text="{Binding alue_id}"/>
+                        <Label Grid.Column="1" Text="{Binding sijainti}" />
                         <Label Grid.Column="2" Text="{Binding mokkinimi}"/>
                         <Label Grid.Column="3" Text="{Binding katuosoite}"/>
                         <Label Grid.Column="4" Text="{Binding postinro}"/>
@@ -59,6 +61,48 @@
                 </DataTemplate>
             </CollectionView.ItemTemplate>
         </CollectionView>
+
+        <Grid Padding="10">
+
+            <!-- Gridin rivit -->
+
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+
+                <!-- Ensimmäinen rivi, jossa alueiden picker -->
+
+                <RowDefinition Height="Auto" />
+
+                <!-- Toinen rivi, jossa hintaluokka picker -->
+
+                <RowDefinition Height="*" />
+
+                <!-- Kolmas rivi, jossa mökkien lista -->
+
+            </Grid.RowDefinitions>
+
+
+            <!-- Gridin sarakkeet -->
+
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+
+            <Picker x:Name="AreaPicker"
+         Title="Valitse alue"
+         SelectedIndexChanged="OnAreaSelected"
+         WidthRequest="200"
+         Grid.Row="0"
+         Grid.Column="0" />
+
+            <Picker x:Name="HintaPicker"
+         Title="Valitse hintaluokka"
+         SelectedIndexChanged="onPriceSelected"
+         WidthRequest="200"
+         Grid.Row="1"
+         Grid.Column="0" />
+        </Grid>
     </VerticalStackLayout>
 
 </ContentPage>
