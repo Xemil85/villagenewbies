@@ -28,7 +28,7 @@ namespace VillageNewbies
             {
                 await connection.OpenAsync();
 
-                using (var command = new MySqlCommand("select mokki_id, mokki.alue_id, mokkinimi, alue.nimi as sijainti, katuosoite, postinro, henkilomaara, hinta, kuvaus, varustelu,  from mokki inner join alue on mokki.alue_id = alue.alue_id where mokki.alue_id", connection))
+                using (var command = new MySqlCommand("select mokki_id, mokki.alue_id, mokkinimi, alue.nimi as sijainti, katuosoite, postinro, henkilomaara, hinta, kuvaus, varustelu from mokki inner join alue on mokki.alue_id = alue.alue_id", connection))
 
                 using (var reader = await command.ExecuteReaderAsync())
                 {
@@ -56,7 +56,7 @@ namespace VillageNewbies
             }
         }
 
-        public async Task<List<Mokki>> FetchAllMokitWithAlueAsync(int alueid)
+        /*public async Task<List<Mokki>> FetchAllMokitWithAlueAsync(int alueid)
         {
             string projectDirectory = System.AppDomain.CurrentDomain.BaseDirectory;
             var projectRoot = Path.GetFullPath(Path.Combine(projectDirectory, @"..\..\..\..\..\"));
@@ -98,7 +98,7 @@ namespace VillageNewbies
 
                 return mokit;
             }
-        }
+        }*/
 
         public async Task<List<Palvelu>> FetchAllPalveluAsync()
         {
