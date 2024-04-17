@@ -55,6 +55,22 @@ namespace VillageNewbies
             }
         }
 
+        public async Task<Mokki> FetchMokkiByIdAsync(int mokkiId)
+        {
+            var kaikkiMokit = await FetchAllMokitAsync();
+            var mokki = kaikkiMokit.FirstOrDefault(m => m.mokki_id == mokkiId);
+            if (mokki != null)
+            {
+                return mokki;
+            }
+            else
+            {
+                // Heitä poikkeus tai käsittele tilanne, jos mökkiä ei löydy
+                throw new Exception("Mökkiä ei löytynyt annetulla ID:llä.");
+            }
+        }
+
+
         public async Task<List<Palvelu>> FetchAllPalveluAsync()
         {
             string projectDirectory = System.AppDomain.CurrentDomain.BaseDirectory;
@@ -180,6 +196,15 @@ namespace VillageNewbies
             }
         }
 
+        public async Task<Asiakas> FetchAsiakasByIdAsync(int asiakasId)
+        {
+            // Kutsu olemassaolevaa metodia, joka palauttaa kaikki asiakkaat
+            var kaikkiAsiakkaat = await FetchAllAsiakasAsync();
+            // Etsi ja palauta oikea asiakas listasta
+            return kaikkiAsiakkaat.FirstOrDefault(a => a.asiakas_id == asiakasId);
+        }
+
+
         public async Task<List<Alue>> FetchAllAlueAsync()
         {
             string projectDirectory = System.AppDomain.CurrentDomain.BaseDirectory;
@@ -215,13 +240,5 @@ namespace VillageNewbies
                 return alueet;
             }
         }
-
-
-
-
-
-
-
-
     }
 }
