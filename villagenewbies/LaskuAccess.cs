@@ -45,30 +45,53 @@ public class LaskuAccess
         return laskut;
     }
 
-    public async Task<int> TallennaLasku(Lasku uusiLasku, byte[] pdfContent)
+    public async Task<int> TallennaLaskuIlmanPdf(Lasku uusiLasku)
     {
         using (var connection = new MySqlConnection(ConnectionString))
         {
             await connection.OpenAsync();
 
             string query = @"
-            INSERT INTO lasku (varaus_id, summa, alv, maksettu, pdf_content) 
-            VALUES (@VarausId, @Summa, @Alv, @Maksettu, @PdfContent);
+            INSERT INTO lasku (varaus_id, summa, alv, maksettu) 
+            VALUES (@VarausId, @Summa, @Alv, @Maksettu);
             SELECT LAST_INSERT_ID();";
 
             using (var command = new MySqlCommand(query, connection))
             {
-                // Asetetaan parametrit SQL-komennolle.
                 command.Parameters.AddWithValue("@VarausId", uusiLasku.VarausId);
                 command.Parameters.AddWithValue("@Summa", uusiLasku.Summa);
                 command.Parameters.AddWithValue("@Alv", uusiLasku.Alv);
                 command.Parameters.AddWithValue("@Maksettu", uusiLasku.Maksettu);
-                command.Parameters.AddWithValue("@PdfContent", pdfContent);
 
-                // Suorita komento, joka lisää laskun ja palauttaa luodun laskun ID:n.
+                // Suorita komento ja palauta luodun laskun ID
                 int laskuId = Convert.ToInt32(await command.ExecuteScalarAsync());
-                return laskuId; // Palauta laskun ID.
+                return laskuId;
+            }
+        }
+    }
+
+    public async Task PaivitaLaskuunPdf(int laskuId, byte[] pdfContent)
+    {
+        using (var connection = new MySqlConnection(ConnectionString))
+        {
+            await connection.OpenAsync();
+
+            string query = @"
+            UPDATE lasku 
+            SET pdf_content = @PdfContent 
+            WHERE lasku_id = @LaskuId;";
+
+            using (var command = new MySqlCommand(query, connection))
+            {
+                command.Parameters.AddWithValue("@PdfContent", pdfContent);
+                command.Parameters.AddWithValue("@LaskuId", laskuId);
+
+                // Suorita komento
+                await command.ExecuteNonQueryAsync();
             }
         }
     }
 }
+
+
+  

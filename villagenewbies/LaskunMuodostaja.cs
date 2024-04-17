@@ -38,8 +38,8 @@ namespace VillageNewbies
                 Maksettu = false
             };
 
-            // Tallenna laskun tiedot ensin tietokantaan ilman PDF-tiedostoa
-            int laskuId = await _laskuAccess.TallennaLasku(lasku);
+            // Tallenna lasku tietokantaan ja hanki laskuId
+            int laskuId = await _laskuAccess.TallennaLaskuIlmanPdf(lasku);
 
             // Luo PDF lasku iText7-kirjastolla muistivirrassa
             using (MemoryStream memoryStream = new MemoryStream())
@@ -66,14 +66,16 @@ namespace VillageNewbies
                 // Tallennetaan laskun PDF-tiedoston sisältö tietokantaan
                 byte[] pdfContent = memoryStream.ToArray();
 
+                // Päivitä laskun tietue tietokantaan lisäämällä PDF-tiedoston sisältö
+                await _laskuAccess.PaivitaLaskuunPdf(laskuId, pdfContent);
+
             }
         }
-    
-
+   
         private double LaskeKokonaishinta(Varaus varaus, Mokki mokki, List<Palvelu> palvelut)
         {
-            DateTime alkupvm = DateTime.Parse(varaus.varattu_alkupvm);
-            DateTime loppupvm = DateTime.Parse(varaus.varattu_loppupvm);
+            DateTime alkupvm = DateTime.Parse(varaus.varattu_alkupvm.ToString());
+            DateTime loppupvm = DateTime.Parse(varaus.varattu_loppupvm.ToString());
             TimeSpan varauksenKesto = loppupvm - alkupvm;
             int varauksenPaivat = varauksenKesto.Days;
 
