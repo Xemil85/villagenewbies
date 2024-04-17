@@ -216,7 +216,48 @@ namespace VillageNewbies
             }
         }
 
+        public async Task<List<Varaus>> FetchAllVarausAsync()
+        {
+            string projectDirectory = System.AppDomain.CurrentDomain.BaseDirectory;
+            var projectRoot = Path.GetFullPath(Path.Combine(projectDirectory, @"..\..\..\..\..\"));
 
+            DotNetEnv.Env.Load(projectRoot);
+            var env = Environment.GetEnvironmentVariables();
+
+            string ConnectionString = $"server={env["SERVER"]};port={env["SERVER_PORT"]};database={env["SERVER_DATABASE"]};user={env["SERVER_USER"]};password={env["SERVER_PASSWORD"]}";
+
+            var varaukset = new List<Varaus>();
+
+            using (var connection = new MySqlConnection(ConnectionString))
+            {
+                await connection.OpenAsync();
+
+                using (var command = new MySqlCommand("SELECT varaus.varaus_id, asiakas_id, mokki_mokki_id, COALESCE(varauksen_palvelut.lkm, 0) as maara, varattu_pvm, vahvistus_pvm, varattu_alkupvm, varattu_loppupvm, peruutettu FROM varaus LEFT JOIN varauksen_palvelut ON varaus.varaus_id = varauksen_palvelut.varaus_id GROUP BY varaus.varaus_id, asiakas_id, mokki_mokki_id, COALESCE(varauksen_palvelut.lkm, 0), varattu_pvm, vahvistus_pvm, varattu_alkupvm, varattu_loppupvm, peruutettu;", connection))
+
+                using (var reader = await command.ExecuteReaderAsync())
+                {
+                    while (await reader.ReadAsync())
+                    {
+                        var varaus = new Varaus
+                        {
+                            varaus_id = reader.GetInt32("varaus_id"),
+                            asiakas_id = reader.GetInt32("asiakas_id"),
+                            mokki_id = reader.GetInt32("mokki_mokki_id"),
+                            maara = reader.GetInt32("maara"),
+                            varattu_pvm = reader.GetDateTime("varattu_pvm"),
+                            vahvistus_pvm = reader.GetDateTime("vahvistus_pvm"),
+                            varattu_alkupvm = reader.GetDateTime("varattu_alkupvm"),
+                            varattu_loppupvm = reader.GetDateTime("varattu_loppupvm"),
+                            peruutettu = reader.GetInt32("peruutettu")
+                        };
+
+                        varaukset.Add(varaus);
+                    }
+                }
+
+                return varaukset;
+            }
+        }
 
 
 

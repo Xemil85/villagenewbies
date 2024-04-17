@@ -53,10 +53,12 @@ namespace VillageNewbies
         public int varaus_id { get; set; }
         public int asiakas_id { get; set; }
         public int mokki_id { get; set; }
-        public string varattu_pvm { get; set; }
-        public string vahvistus_pvm { get; set; }
-        public string varattu_alkupvm { get; set; }
-        public string varattu_loppupvm { get; set; }
+        public int maara { get; set; }
+        public DateTime varattu_pvm { get; set; }
+        public DateTime vahvistus_pvm { get; set; }
+        public DateTime varattu_alkupvm { get; set; }
+        public DateTime varattu_loppupvm { get; set; }
+        public int peruutettu { get; set; }
     }
 
     public class Varauksen_Palvelut

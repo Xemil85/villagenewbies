@@ -43,10 +43,10 @@ public partial class BookingForm : ContentPage
         {
             asiakas_id = selectedAsiakasId.Value,
             mokki_id = _mokki.mokki_id,
-            varattu_pvm = DateTime.Now.ToString("yyyy'-'MM'-'dd' 'HH':'mm':'ss"),
-            vahvistus_pvm = DateTime.Now.ToString("yyyy'-'MM'-'dd' 'HH':'mm':'ss"),
-            varattu_alkupvm = varattuAlkupvm.ToString("yyyy'-'MM'-'dd' 'HH':'mm':'ss"),
-            varattu_loppupvm = varattuLoppupvm.ToString("yyyy'-'MM'-'dd' 'HH':'mm':'ss")
+            varattu_pvm = DateTime.Now,
+            vahvistus_pvm = DateTime.Now,
+            varattu_alkupvm = varattuAlkupvm,
+            varattu_loppupvm = varattuLoppupvm
         };
 
         var databaseAccess = new DatabaseAccess();

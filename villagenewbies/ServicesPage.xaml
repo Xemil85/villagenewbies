@@ -28,7 +28,7 @@
         <CollectionView x:Name="ServicesCollectionView" HeightRequest="500">
             <CollectionView.ItemTemplate>
                 <DataTemplate>
-                    <Grid Padding="10" ColumnDefinitions="*,*,*,*,*,*,*,*">
+                    <Grid Padding="10" ColumnDefinitions="*,*,*,*,*,*,*">
                         <Label Grid.Column="0" Text="{Binding nimi}" FontAttributes="Bold"/>
                         <Label Grid.Column="1" Text="{Binding sijainti}" />
                         <Label Grid.Column="2" Text="{Binding kuvaus}"/>
