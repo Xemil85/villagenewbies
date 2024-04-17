@@ -258,7 +258,34 @@ namespace VillageNewbies
             {
                 await connection.OpenAsync();
 
-                using (var command = new MySqlCommand("SELECT varaus.varaus_id, asiakas_id, mokki_mokki_id, COALESCE(varauksen_palvelut.lkm, 0) as maara, varattu_pvm, vahvistus_pvm, varattu_alkupvm, varattu_loppupvm, peruutettu FROM varaus LEFT JOIN varauksen_palvelut ON varaus.varaus_id = varauksen_palvelut.varaus_id GROUP BY varaus.varaus_id, asiakas_id, mokki_mokki_id, COALESCE(varauksen_palvelut.lkm, 0), varattu_pvm, vahvistus_pvm, varattu_alkupvm, varattu_loppupvm, peruutettu;", connection))
+                string query = @"SELECT
+                                    varaus.varaus_id,
+                                    varaus.asiakas_id,
+                                    concat(asiakas.etunimi, ' ', asiakas.sukunimi) AS nimi,
+                                    mokki_id,-- Tässä liitämme asiakkaan nimen
+                                    mokki.mokkinimi AS mokkinimi, -- Tässä liitämme mökin nimen
+                                    COALESCE(varauksen_palvelut.lkm, 0) AS maara,
+                                    varaus.varattu_pvm,
+                                    varaus.vahvistus_pvm,
+                                    varaus.varattu_alkupvm,
+                                    varaus.varattu_loppupvm,
+                                    varaus.peruutettu
+                                FROM varaus
+                                LEFT JOIN varauksen_palvelut ON varaus.varaus_id = varauksen_palvelut.varaus_id
+                                LEFT JOIN asiakas ON varaus.asiakas_id = asiakas.asiakas_id -- Liitämme asiakas-taulun
+                                LEFT JOIN mokki ON varaus.mokki_mokki_id = mokki.mokki_id -- Liitämme mokki-taulun
+                                GROUP BY
+                                    varaus.varaus_id,
+                                    nimi,
+                                    mokki.mokkinimi,
+                                    COALESCE(varauksen_palvelut.lkm, 0),
+                                    varaus.varattu_pvm,
+                                    varaus.vahvistus_pvm,
+                                    varaus.varattu_alkupvm,
+                                    varaus.varattu_loppupvm,
+                                    varaus.peruutettu;";
+
+                using (var command = new MySqlCommand(query, connection))
 
                 using (var reader = await command.ExecuteReaderAsync())
                 {
@@ -267,8 +294,10 @@ namespace VillageNewbies
                         var varaus = new Varaus
                         {
                             varaus_id = reader.GetInt32("varaus_id"),
-                            asiakas_id = reader.GetInt32("asiakas_id"),
-                            mokki_id = reader.GetInt32("mokki_mokki_id"),
+                            //asiakas_id = reader.GetInt32("asiakas_id"),
+                            asiakaannimi = reader.GetString("nimi"),
+                            //mokki_id = reader.GetInt32("mokki_mokki_id"),
+                            mokkinimi = reader.GetString("mokkinimi"),
                             maara = reader.GetInt32("maara"),
                             varattu_pvm = reader.GetDateTime("varattu_pvm"),
                             vahvistus_pvm = reader.GetDateTime("vahvistus_pvm"),
