@@ -138,9 +138,10 @@ namespace VillageNewbies.Views
             var aloitusPaiva = Aloituspaiva.Date;
             var lopetusPaiva = Lopetuspaiva.Date;
 
-            if (lopetusPaiva <= aloitusPaiva)
+            // Tarkista, ettei aloitus- ja lopetuspäivät ole menneisyydessä tai että lopetuspäivä on ennen aloituspäivää
+            if (lopetusPaiva <= aloitusPaiva || aloitusPaiva <= DateTime.Today)
             {
-                await DisplayAlert("Virheellinen päivämäärä", "Lopetuspäivämäärän on oltava suurempi kuin aloituspäivämäärä. Tarkista päivämäärät ja yritä uudelleen.", "OK");
+                await DisplayAlert("Virheellinen päivämäärä", "Aloituspäivämäärän on oltava tulevaisuudessa ja lopetuspäivämäärän on oltava jälkeen aloituspäivän.", "OK");
                 return;
             }
 
@@ -155,6 +156,7 @@ namespace VillageNewbies.Views
 
             await Navigation.PushAsync(new SelectServices(mokki, aloitusPaiva.ToString("yyyy-MM-dd"), lopetusPaiva.ToString("yyyy-MM-dd")));
         }
+
 
 
 
