@@ -189,7 +189,6 @@ namespace VillageNewbies
                                 palvelu_id = reader.GetInt32("palvelu_id"),
                                 alue_id = reader.GetInt32("alue_id"),
                                 nimi = reader.GetString("nimi"),
-                                sijainti = reader.GetString("sijainti"),
                                 tyyppi = reader.GetInt32("tyyppi"),
                                 kuvaus = reader.GetString("kuvaus"),
                                 hinta = reader.GetDouble("hinta"),
