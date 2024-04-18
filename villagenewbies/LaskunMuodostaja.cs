@@ -34,20 +34,24 @@ namespace VillageNewbies
             {
                 VarausId = varaus.varaus_id,
                 Summa = kokonaishinta,
-                Alv = 0.24 * kokonaishinta, 
+                Alv = 0.24 * kokonaishinta,
                 Maksettu = false
             };
 
             // Tallenna lasku tietokantaan ja hanki laskuId
             int laskuId = await _laskuAccess.TallennaLaskuIlmanPdf(lasku);
 
-            // Luo PDF lasku iText7-kirjastolla muistivirrassa
-            using (MemoryStream memoryStream = new MemoryStream())
+            // Luo PDF-tiedoston nimi, joka sisältää laskun ID:n
+            string desktopPath = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
+            string pdfFileName = Path.Combine(desktopPath, $"Lasku_{laskuId}.pdf");
+
+            // Luo PDF lasku iText7-kirjastolla ja tallenna se paikallisesti
+            using (FileStream fileStream = new FileStream(pdfFileName, FileMode.Create, FileAccess.Write))
             {
-                PdfWriter writer = new PdfWriter(memoryStream);
+                PdfWriter writer = new PdfWriter(fileStream);
                 PdfDocument pdf = new PdfDocument(writer);
-                Document document = new Document(pdf);                         
-              
+                Document document = new Document(pdf);
+
                 // Lisää sisältöä PDF-dokumenttiin
                 document.Add(new Paragraph($"Lasku #{laskuId}"));
                 document.Add(new Paragraph($"Asiakkaan nimi: {asiakas.etunimi} {asiakas.sukunimi}"));
@@ -62,15 +66,10 @@ namespace VillageNewbies
                 }
                 // Suljetaan dokumentti
                 document.Close();
-
-                // Tallennetaan laskun PDF-tiedoston sisältö tietokantaan
-                byte[] pdfContent = memoryStream.ToArray();
-
-                // Päivitä laskun tietue tietokantaan lisäämällä PDF-tiedoston sisältö
-                await _laskuAccess.PaivitaLaskuunPdf(laskuId, pdfContent);
-
             }
         }
+
+               
    
         private double LaskeKokonaishinta(Varaus varaus, Mokki mokki, List<Palvelu> palvelut)
         {

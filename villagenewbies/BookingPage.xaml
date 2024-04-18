@@ -42,7 +42,8 @@
                             <Label Grid.Column="6" Text="{Binding varattu_alkupvm}"/>
                             <Label Grid.Column="7" Text="{Binding varattu_loppupvm}"/>
                             <Label Grid.Column="8" Text="{Binding peruutettu}"/>
-                        </Grid> 
+                        <Button Grid.Column="9" Text="Muodosta lasku" Clicked="OnMuodostaLaskuClicked" CommandParameter="{Binding varaus_id}"/>
+                    </Grid> 
                     </DataTemplate>
                 </CollectionView.ItemTemplate>
             </CollectionView>
