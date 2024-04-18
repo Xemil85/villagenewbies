@@ -20,10 +20,8 @@ namespace VillageNewbies
 
         public async Task LuoJaTallennaLaskuPdf(Varaus varaus, List<Palvelu> palvelut)
         {
-            // Hae mökin tiedot
+            // Hae mökin ja asiakkaan tiedot
             Mokki mokki = await _mokkiAccess.FetchMokkiByIdAsync(varaus.mokki_id);
-
-            // Hae asiakkaan tiedot
             Asiakas asiakas = await _mokkiAccess.FetchAsiakasByIdAsync(varaus.asiakas_id);
 
             // Laske kokonaishinta
@@ -37,9 +35,6 @@ namespace VillageNewbies
                 Alv = 0.24 * kokonaishinta,
                 Maksettu = false
             };
-
-            // Formatoidaan ALV kahdella desimaalilla
-            string formattedAlv = lasku.Alv.ToString("F2");
 
             // Tallenna lasku tietokantaan ja hanki laskuId
             int laskuId = await _laskuAccess.TallennaLaskuIlmanPdf(lasku);
@@ -60,20 +55,25 @@ namespace VillageNewbies
                 document.Add(new Paragraph($"Asiakkaan nimi: {asiakas.etunimi} {asiakas.sukunimi}"));
                 document.Add(new Paragraph($"Mökin nimi: {mokki.mokkinimi}"));
                 document.Add(new Paragraph($"Varausaika: {varaus.varattu_alkupvm} - {varaus.varattu_loppupvm}"));
-                document.Add(new Paragraph($"ALV: {formattedAlv}€"));
+                document.Add(new Paragraph($"ALV: {lasku.Alv.ToString("F2")}€"));
                 foreach (Palvelu palvelu in palvelut)
                 {
                     document.Add(new Paragraph($"{palvelu.nimi}: {palvelu.hinta}€ (ALV sisältyy hintaan)"));
                 }
                 document.Add(new Paragraph("\nMaksettava summa: " + String.Format("{0:0.00} €", lasku.Summa + lasku.Alv)));
-                document.Add(new Paragraph("Eräpäivä: " + DateTime.Now.AddDays(14).ToString("dd.MM.yyyy")));
+
+                // Eräpäivä 14 päivää varauksen loppumispäivämäärästä
+                DateTime erapaiva = varaus.varattu_loppupvm.AddDays(14);
+                document.Add(new Paragraph("Eräpäivä: " + erapaiva.ToString("dd.MM.yyyy")));
+
                 document.Add(new Paragraph("Tilinumero: FI12 3456 7890 1234 56"));
                 document.Add(new Paragraph("Viitenumero: 1234567"));
-                
+
                 // Suljetaan dokumentti
                 document.Close();
             }
         }
+
 
 
 

@@ -44,9 +44,9 @@
         </HorizontalStackLayout>
 
         <HorizontalStackLayout>
-            <Button Text="Lisää Mökki" Margin="30,10,0,0" BackgroundColor="DarkViolet" Clicked="LisaaMokki_Clicked" />
-            <Button Text="Tallenna" Margin="30,10,0,0" BackgroundColor="DarkBlue" Clicked="TallennaMokki_Clicked"/>
-            <Button Text="Poista Mökki" Margin="30,10,0,0" BackgroundColor="DarkGreen" Clicked="PoistaMokki_Clicked" />
+            <Button Text="Lisää Mökki" Margin="30,10,0,0" Clicked="LisaaMokki_Clicked" />
+            <Button Text="Tallenna" Margin="30,10,0,0" Clicked="TallennaMokki_Clicked"/>
+            <Button Text="Poista Mökki" Margin="30,10,0,0" Clicked="PoistaMokki_Clicked" />
         </HorizontalStackLayout>
 
 

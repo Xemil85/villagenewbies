@@ -53,31 +53,33 @@ public partial class BookingPage : ContentPage
 
     private async void PeruutaVaraus(object? sender, EventArgs e)
     {
-
         if (!(sender is Button button)) return;
         if (!(button.CommandParameter is Varaus varaus)) return;
 
-        if (varaus.vahvistus_pvm != null && varaus.vahvistus_pvm > new DateTime(1, 1, 1))
+        // Tarkista, onko nykyinen p‰iv‰m‰‰r‰ saavuttanut vahvistusp‰iv‰m‰‰r‰n
+        if (DateTime.Today >= varaus.vahvistus_pvm)
         {
-            await DisplayAlert("Peruutus estetty", "Vahvistettua varausta ei voi peruuttaa.", "OK");
-            return; // Keskeyt‰ peruutus, jos vahvistusp‰iv‰m‰‰r‰ on asetettu
+            await DisplayAlert("Peruutus estetty", "Vahvistettua varausta ei voi peruuttaa. Vahvistusp‰iv‰m‰‰r‰ on jo saavutettu tai ohitettu.", "OK");
+            return; // Keskeyt‰ peruutus, jos vahvistusp‰iv‰m‰‰r‰ on saavutettu tai mennyt
         }
 
-        bool confirm = await DisplayAlert("Vahvistus", $"Haluatko varmasti poistaa varauksen: {varaus.asiakkaannimi}, {varaus.mokkinimi} ?", "Kyll‰", "Ei");
+        // Pyyd‰ k‰ytt‰j‰lt‰ vahvistusta peruutukseen
+        bool confirm = await DisplayAlert("Vahvistus", $"Haluatko varmasti poistaa varauksen: {varaus.asiakkaannimi}, {varaus.mokkinimi}?", "Kyll‰", "Ei");
         if (!confirm) return;
 
-        // Toteuta tietokannasta poistaminen t‰ss‰. Oletetaan, ett‰ DatabaseAccess-luokallasi on metodi, joka hoitaa t‰m‰n.
+        // Toteuta tietokannasta poistaminen t‰ss‰
         var success = await databaseAccess.PeruutaVarausTietokannasta(varaus.varaus_id);
         if (success)
         {
             Varaukset.Remove(varaus);
+            await DisplayAlert("Peruutettu", "Varaus on peruutettu onnistuneesti.", "OK");
         }
         else
         {
             await DisplayAlert("Virhe", "Varauksen peruuttaminen ep‰onnistui.", "OK");
         }
-        // await Navigation.PopAsync();
     }
+
 
     public partial class DatabaseAccess
     {

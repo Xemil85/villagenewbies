@@ -31,24 +31,31 @@ public partial class BookingForm : ContentPage
         DateTime aloitusPaiva = DateTime.Parse(_aloitusPaiva);
         DateTime lopetusPaiva = DateTime.Parse(_lopetusPaiva);
 
-        // Otetaan aika TimePicker-komponentista
         TimeSpan aloitusAika = new TimeSpan(18, 0, 0);
-        TimeSpan lopetusAika = new TimeSpan(14, 0, 0); // Esimerkiss‰ lopetusaika on kovakoodattu klo 14:00
+        TimeSpan lopetusAika = new TimeSpan(14, 0, 0);
 
-        // Yhdistet‰‰n aloituspaivamaara ja -aika
         var varattuAlkupvm = new DateTime(aloitusPaiva.Year, aloitusPaiva.Month, aloitusPaiva.Day, aloitusAika.Hours, aloitusAika.Minutes, aloitusAika.Seconds);
         var varattuLoppupvm = new DateTime(lopetusPaiva.Year, lopetusPaiva.Month, lopetusPaiva.Day, lopetusAika.Hours, lopetusAika.Minutes, lopetusAika.Seconds);
+
+        DateTime vahvistusPvm;
+        if ((aloitusPaiva - DateTime.Today).TotalDays <= 14)
+        {
+            vahvistusPvm = DateTime.Today;  // Vahvistetaan heti, jos varaus on alle 14 p‰iv‰n p‰‰ss‰.
+        }
+        else
+        {
+            vahvistusPvm = aloitusPaiva.AddDays(-14);  // Aseta vahvistusp‰iv‰m‰‰r‰ 14 p‰iv‰‰ ennen alkup‰iv‰m‰‰r‰‰.
+        }
 
         var uusiVaraus = new Varaus
         {
             asiakas_id = selectedAsiakasId.Value,
             mokki_id = _mokki.mokki_id,
             varattu_pvm = DateTime.Now,
-            //vahvistus_pvm = DateTime.Now,
             varattu_alkupvm = varattuAlkupvm,
-            varattu_loppupvm = varattuLoppupvm
+            varattu_loppupvm = varattuLoppupvm,
+            vahvistus_pvm = vahvistusPvm
         };
-
         var databaseAccess = new DatabaseAccess();
         var varausId = await databaseAccess.LisaaVarausTietokantaan(uusiVaraus);
 
@@ -58,7 +65,7 @@ public partial class BookingForm : ContentPage
             {
                 var palveluVaraus = new Varauksen_Palvelut
                 {
-                    varaus_id = varausId, // Oletetaan, ett‰ LisaaVarausTietokantaan palauttaa uuden varaus_id:n
+                    varaus_id = varausId,
                     palvelu_id = palvelu.palvelu_id,
                     lkm = selectedServices.Count
                 };
@@ -77,6 +84,7 @@ public partial class BookingForm : ContentPage
 
         await Navigation.PushAsync(new MainPage());
     }
+
 
     private async void LataaAsiakkaat()
     {

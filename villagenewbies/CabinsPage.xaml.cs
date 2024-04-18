@@ -43,9 +43,16 @@ namespace VillageNewbies.Views
             AreaPicker.ItemsSource = _alueNimet.Values.ToList();
             HintaPicker.ItemsSource = _hintaLuokat.Values.ToList();
             LoadMokitAsync();
+            SetDefaultDates();
             Debug.WriteLine(Aloituspaiva.Date.ToString("yyyy-MM-dd HH:mm:ss"));
         }
 
+        // Aseta oletusp‰iv‰m‰‰r‰t aloitus- ja lopetusp‰iville
+        private void SetDefaultDates()
+        {
+            Aloituspaiva.Date = DateTime.Now; // Aseta aloitusp‰iv‰ nykyhetkeen
+            Lopetuspaiva.Date = DateTime.Now.AddDays(1); // Aseta lopetusp‰iv‰ yksi p‰iv‰ eteenp‰in
+        }
 
         private async void LisaaMokki_Clicked(object? sender, EventArgs e)
         {
@@ -115,7 +122,7 @@ namespace VillageNewbies.Views
             base.OnAppearing();
              LoadMokitAsync();// P‰ivit‰ lista  
         }
-       
+
 
         private async void Varaamokki(object sender, EventArgs e)
         {
@@ -128,12 +135,28 @@ namespace VillageNewbies.Views
                 return;
             }
 
-            var aloitusPaiva = Aloituspaiva.Date.ToString("yyyy-MM-dd");
-            var lopetusPaiva = Lopetuspaiva.Date.ToString("yyyy-MM-dd");
+            var aloitusPaiva = Aloituspaiva.Date;
+            var lopetusPaiva = Lopetuspaiva.Date;
 
-            // Siirryt‰‰n muokkaussivulle ja v‰litet‰‰n asiakas-olio konstruktorin kautta
-            await Navigation.PushAsync(new SelectServices(mokki, aloitusPaiva, lopetusPaiva));
+            if (lopetusPaiva <= aloitusPaiva)
+            {
+                await DisplayAlert("Virheellinen p‰iv‰m‰‰r‰", "Lopetusp‰iv‰m‰‰r‰n on oltava suurempi kuin aloitusp‰iv‰m‰‰r‰. Tarkista p‰iv‰m‰‰r‰t ja yrit‰ uudelleen.", "OK");
+                return;
+            }
+
+            var mokkiAccess = new MokkiAccess();
+            bool isAvailable = await mokkiAccess.IsCabinAvailable(mokki.mokki_id, aloitusPaiva, lopetusPaiva);
+
+            if (!isAvailable)
+            {
+                await DisplayAlert("Varaus ei onnistu", "Valitsemasi mˆkki on jo varattu valituille p‰iv‰m‰‰rille. Tarkista saatavuus ja yrit‰ uudelleen.", "OK");
+                return;
+            }
+
+            await Navigation.PushAsync(new SelectServices(mokki, aloitusPaiva.ToString("yyyy-MM-dd"), lopetusPaiva.ToString("yyyy-MM-dd")));
         }
+
+
 
 
         // Kutsutaan, kun alue valitaan Pickerist‰

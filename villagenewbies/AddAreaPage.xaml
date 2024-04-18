@@ -23,7 +23,7 @@
 
         <HorizontalStackLayout>
             <Button Text="Lisää Alue" Margin="30,10,0,0" Clicked="LisaaAlue_Clicked" />
-            <Button Text="Tallenna" Margin="30,10,0,0" BackgroundColor="Plum" Clicked="TallennaAlue_Clicked"/>
+            <Button Text="Tallenna" Margin="30,10,0,0" Clicked="TallennaAlue_Clicked"/>
         </HorizontalStackLayout>
         
 
@@ -33,7 +33,7 @@
                     <Grid Padding="10" ColumnDefinitions="*,*,*,*,*,*,*">
                         <Label Grid.Column="0" Text="{Binding nimi}"/>
                         <Label Grid.Column="1" Text="{Binding alue_id}" TextColor="White"/>
-                        <Button Grid.Column="2" WidthRequest="200" HorizontalOptions="Start" Text="Muokkaa Aluetta" BackgroundColor="Plum" FontSize="10" 
+                        <Button Grid.Column="2" WidthRequest="200" HorizontalOptions="Start" Text="Muokkaa Aluetta" FontSize="10" 
                                 CommandParameter="{Binding .}" Clicked="MuokkaaAlue_Clicked"/>
                     </Grid>
                 </DataTemplate>

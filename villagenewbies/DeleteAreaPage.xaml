@@ -15,7 +15,7 @@
                 <DataTemplate>
                     <Grid Padding="10" ColumnDefinitions="*,*,*,*,*,*,*">
                         <Label Grid.Column="0" Text="{Binding nimi}"/>
-                        <Button Grid.Column="1" WidthRequest="90" FontSize="12" Text="Poista Alue" BackgroundColor="DarkGreen" Clicked="PoistaAlue_Clicked" CommandParameter="{Binding .}" />
+                        <Button Grid.Column="1" WidthRequest="90" FontSize="12" Text="Poista Alue" Clicked="PoistaAlue_Clicked" CommandParameter="{Binding .}" />
                     </Grid>
                 </DataTemplate>
             </CollectionView.ItemTemplate>

@@ -9,11 +9,53 @@ using System.Data;
 using Microsoft.Maui.Controls;
 using System.Diagnostics;
 using Google.Protobuf.WellKnownTypes;
+using DotNetEnv;
 
 namespace VillageNewbies
 {
     public class MokkiAccess
     {
+        private string connectionString;
+
+        public MokkiAccess()
+        {
+            string projectDirectory = System.AppDomain.CurrentDomain.BaseDirectory;
+            var projectRoot = Path.GetFullPath(Path.Combine(projectDirectory, @"..\..\..\..\.."));
+            Env.Load(projectRoot);
+            var env = Environment.GetEnvironmentVariables();
+
+            connectionString = $"server={env["SERVER"]};port={env["SERVER_PORT"]};database={env["SERVER_DATABASE"]};user={env["SERVER_USER"]};password={env["SERVER_PASSWORD"]}";
+        }
+
+        public async Task<bool> IsCabinAvailable(int mokkiId, DateTime aloituspvm, DateTime lopetuspvm)
+        {
+            using (var connection = new MySqlConnection(connectionString))
+            {
+                await connection.OpenAsync();
+
+                string query = @"
+                    SELECT COUNT(*) 
+                    FROM varaus 
+                    WHERE mokki_mokki_id = @MokkiId 
+                    AND (
+                        (varattu_alkupvm < @Lopetuspvm AND varattu_loppupvm > @Aloituspvm) 
+                        OR (varattu_alkupvm BETWEEN @Aloituspvm AND @Lopetuspvm) 
+                        OR (varattu_loppupvm BETWEEN @Aloituspvm AND @Lopetuspvm)
+                    )
+                    AND peruutettu = 0";
+
+                using (var command = new MySqlCommand(query, connection))
+                {
+                    command.Parameters.AddWithValue("@MokkiId", mokkiId);
+                    command.Parameters.AddWithValue("@Aloituspvm", aloituspvm);
+                    command.Parameters.AddWithValue("@Lopetuspvm", lopetuspvm);
+
+                    var count = (long)await command.ExecuteScalarAsync();
+                    return count == 0;
+                }
+            }
+        }
+
         public async Task<List<Mokki>> FetchAllMokitAsync()
         {
             string projectDirectory = System.AppDomain.CurrentDomain.BaseDirectory;
@@ -412,4 +454,4 @@ namespace VillageNewbies
         }
     }
 }
-
+   

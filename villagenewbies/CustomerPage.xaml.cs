@@ -78,7 +78,7 @@ public partial class CustomerPage : ContentPage
         }
     }
 
-    //tähän loppuu asiakkaan tietojen muokkaus
+  
 
     public class DatabaseAccess
     {
