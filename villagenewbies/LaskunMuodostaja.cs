@@ -69,8 +69,8 @@ namespace VillageNewbies
             }
         }
 
-               
-   
+
+
         private double LaskeKokonaishinta(Varaus varaus, Mokki mokki, List<Palvelu> palvelut)
         {
             DateTime alkupvm = DateTime.Parse(varaus.varattu_alkupvm.ToString());
@@ -78,13 +78,15 @@ namespace VillageNewbies
             TimeSpan varauksenKesto = loppupvm - alkupvm;
             int varauksenPaivat = varauksenKesto.Days;
 
-            // Mökin hinta per päivä kerrottuna varauksen päivien määrällä
-            double mokinHinta = varauksenPaivat * mokki.hinta;
+            // Jos varaus kestää vähemmän kuin yhden vuorokauden, käsittele se yhden vuorokauden mittaisena.
+            if (varauksenPaivat == 0)
+            {
+                varauksenPaivat = 1;
+            }
 
-            // Palveluiden hinnat (oletetaan, että hinta on kokonaishinta koko varauksen ajalle ja sisältää ALV:n)
+            double mokinHinta = varauksenPaivat * mokki.hinta;
             double palveluidenHinta = palvelut.Sum(p => p.hinta);
 
-            // Kokonaishinta on mökin hinta plus palveluiden hinnat
             return mokinHinta + palveluidenHinta;
         }
     }
