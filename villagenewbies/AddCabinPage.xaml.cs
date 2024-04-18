@@ -13,8 +13,8 @@ public partial class AddCabinPage : ContentPage
 
     public AddCabinPage()
     {
-       InitializeComponent();
-       Mokit = new ObservableCollection<Mokki>();       
+        InitializeComponent();
+        Mokit = new ObservableCollection<Mokki>();
     }
 
     public AddCabinPage(Mokki mokki) : this()
@@ -24,11 +24,10 @@ public partial class AddCabinPage : ContentPage
 
         if (_mokki != null)
         {
-            mokki_id.Text = _mokki.mokki_id.ToString();
             alue_id.Text = _mokki.alue_id.ToString();
             mokkinimi.Text = _mokki.mokkinimi;
             katuosoite.Text = _mokki.katuosoite;
-            postinro.Text = _mokki.postinro.ToString(); 
+            postinro.Text = _mokki.postinro.ToString();
             hinta.Text = _mokki.hinta.ToString();
             kuvaus.Text = _mokki.kuvaus;
             henkilomaara.Text = _mokki.henkilomaara.ToString();
@@ -39,8 +38,8 @@ public partial class AddCabinPage : ContentPage
     private async void LisaaMokki_Clicked(object sender, EventArgs e)
     {
         // jos kentät tyhjät ja yritetään tallentaa
-        if (string.IsNullOrWhiteSpace(mokki_id.Text) ||
-            !int.TryParse(mokki_id.Text, out int parsedMokki_id) ||
+        if 
+            (
             string.IsNullOrWhiteSpace(alue_id.Text) ||
             !int.TryParse(alue_id.Text, out int parsedAlue_id) ||
             string.IsNullOrWhiteSpace(mokkinimi.Text) ||
@@ -61,7 +60,7 @@ public partial class AddCabinPage : ContentPage
 
         var uusiMokki = new Mokki
         {
-            mokki_id = int.Parse(mokki_id.Text),
+
             alue_id = int.Parse(alue_id.Text),
             mokkinimi = mokkinimi.Text,
             katuosoite = katuosoite.Text,
@@ -73,8 +72,7 @@ public partial class AddCabinPage : ContentPage
         };
 
         var databaseAccess = new DatabaseAccess();
-                  
-        mokki_id.Text = "";
+
         alue_id.Text = "";
         mokkinimi.Text = "";
         katuosoite.Text = "";
@@ -83,7 +81,7 @@ public partial class AddCabinPage : ContentPage
         kuvaus.Text = "";
         henkilomaara.Text = "";
         varustelu.Text = "";
-      
+
         await databaseAccess.LisaaMokkiTietokantaan(uusiMokki);
         await Navigation.PopAsync();
     }
@@ -91,11 +89,6 @@ public partial class AddCabinPage : ContentPage
     private async void TallennaMokki_Clicked(object sender, EventArgs e)
     {
         var muokattavaMokki = new Mokki();
-      
-        if (!string.IsNullOrWhiteSpace(mokki_id.Text) && int.TryParse(mokki_id.Text, out int parsedMokkiId))
-        {
-            muokattavaMokki.mokki_id = parsedMokkiId;
-        }
 
         // Tarkista alue_id ja päivitä, jos se on annettu ja se on kokonaisluku
         if (!string.IsNullOrWhiteSpace(alue_id.Text) && int.TryParse(alue_id.Text, out int parsedAlueId))
@@ -150,7 +143,7 @@ public partial class AddCabinPage : ContentPage
         {
             muokattavaMokki = new Mokki();
         }
-   
+
         // Kutsutaan DatabaseAccess-luokan päivitysmetodia
         var success = await databaseAccess.PaivitaMokinTiedot(muokattavaMokki);
         if (success)
@@ -162,7 +155,7 @@ public partial class AddCabinPage : ContentPage
         {
             await DisplayAlert("Virhe", "Mökin tietojen tallentaminen epäonnistui.", "OK");
         }
-        await Navigation.PopAsync(); 
+        await Navigation.PopAsync();
     }
 
     private async void PoistaMokki_Clicked(object sender, EventArgs e)
@@ -262,7 +255,7 @@ public partial class AddCabinPage : ContentPage
 
             string connectionString = $"server={env["SERVER"]};port={env["SERVER_PORT"]};database={env["SERVER_DATABASE"]};user={env["SERVER_USER"]};password={env["SERVER_PASSWORD"]}";
             using (var connection = new MySqlConnection(connectionString))
-         
+
             {
                 await connection.OpenAsync();
 
@@ -290,7 +283,7 @@ public partial class AddCabinPage : ContentPage
                     command.Parameters.AddWithValue("@Kuvaus", muokattuMokki.kuvaus);
                     command.Parameters.AddWithValue("@Henkilomaara", muokattuMokki.henkilomaara);
                     command.Parameters.AddWithValue("@Varustelu", muokattuMokki.varustelu);
-                    
+
 
                     var result = await command.ExecuteNonQueryAsync();
                     return result > 0; // Onnistuiko päivitys
@@ -299,9 +292,3 @@ public partial class AddCabinPage : ContentPage
         }
     }
 }
-
-
-
-
-
-    

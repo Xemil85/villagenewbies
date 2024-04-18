@@ -9,38 +9,42 @@
             Text="Anna Mökin tiedot"
             VerticalOptions="Center" 
             HorizontalOptions="Center" />
+
+        <!-- Ohjeet alueiden ID:lle -->
+        <Label Text="1: Ylläs, 2: Ruka, 3: Pyhä, 4: Levi, 5: Syöte, 6: Vuokatti, 7: Tahko, 8: Himos"
+               VerticalOptions="Center"
+               HorizontalOptions="Center"
+               Margin="10"/>
+
         <HorizontalStackLayout>
-            <Entry x:Name="mokki_id" Placeholder="MökkiID" MinimumWidthRequest="300"
-    HorizontalOptions="Center" Margin="30,10,0,0"></Entry>
             <Entry x:Name="alue_id" Placeholder="AlueID" MinimumWidthRequest="300"
-    HorizontalOptions="Center" Margin="30,10,0,0"></Entry>
+                   HorizontalOptions="Center" Margin="30,10,0,0"/>
         </HorizontalStackLayout>
 
         <HorizontalStackLayout>
             <Entry x:Name="mokkinimi" Placeholder="Mökinnimi" MinimumWidthRequest="300"
-               HorizontalOptions="Center" Margin="30,10,0,0"></Entry>
+                   HorizontalOptions="Center" Margin="30,10,0,0"></Entry>
             <Entry x:Name="katuosoite" Placeholder="Katuosoite" MinimumWidthRequest="300"
-               HorizontalOptions="Center" Margin="30,10,0,0"></Entry>
+                   HorizontalOptions="Center" Margin="30,10,0,0"></Entry>
         </HorizontalStackLayout>
-
 
         <HorizontalStackLayout>
             <Entry x:Name="postinro" Placeholder="Postinumero" MinimumWidthRequest="300"
-               HorizontalOptions="Center" Margin="30,10,0,0"></Entry>
+                   HorizontalOptions="Center" Margin="30,10,0,0"></Entry>
             <Entry x:Name="hinta" Placeholder="Hinta" MinimumWidthRequest="300"
-               HorizontalOptions="Center" Margin="30,10,0,0" ></Entry>
+                   HorizontalOptions="Center" Margin="30,10,0,0" ></Entry>
         </HorizontalStackLayout>
 
         <HorizontalStackLayout>
             <Entry x:Name="henkilomaara" Placeholder="Henkilömäärä" MinimumWidthRequest="300" 
-        HorizontalOptions="Start" Margin="30,10,0,0"></Entry>
+                   HorizontalOptions="Start" Margin="30,10,0,0"></Entry>
             <Entry x:Name="kuvaus" Placeholder="Kuvaus" MinimumWidthRequest="300"
-        HorizontalOptions="Start" Margin="30,10,0,0"></Entry>
+                   HorizontalOptions="Start" Margin="30,10,0,0"></Entry>
         </HorizontalStackLayout>
 
         <HorizontalStackLayout>
             <Entry x:Name="varustelu" Placeholder="Varustelu" MinimumWidthRequest="300" 
-        HorizontalOptions="Start" Margin="30,10,0,0"></Entry>
+                   HorizontalOptions="Start" Margin="30,10,0,0"></Entry>
         </HorizontalStackLayout>
 
         <HorizontalStackLayout>
@@ -48,8 +52,5 @@
             <Button Text="Tallenna" Margin="30,10,0,0" Clicked="TallennaMokki_Clicked"/>
             <Button Text="Poista Mökki" Margin="30,10,0,0" Clicked="PoistaMokki_Clicked" />
         </HorizontalStackLayout>
-
-
-
     </VerticalStackLayout>
 </ContentPage>
