@@ -57,6 +57,12 @@ public partial class BookingPage : ContentPage
         if (!(sender is Button button)) return;
         if (!(button.CommandParameter is Varaus varaus)) return;
 
+        if (varaus.vahvistus_pvm != null && varaus.vahvistus_pvm > new DateTime(1, 1, 1))
+        {
+            await DisplayAlert("Peruutus estetty", "Vahvistettua varausta ei voi peruuttaa.", "OK");
+            return; // Keskeyt‰ peruutus, jos vahvistusp‰iv‰m‰‰r‰ on asetettu
+        }
+
         bool confirm = await DisplayAlert("Vahvistus", $"Haluatko varmasti poistaa varauksen: {varaus.asiakkaannimi}, {varaus.mokkinimi} ?", "Kyll‰", "Ei");
         if (!confirm) return;
 
@@ -68,7 +74,7 @@ public partial class BookingPage : ContentPage
         }
         else
         {
-            await DisplayAlert("Virhe", "Alueen poistaminen ep‰onnistui.", "OK");
+            await DisplayAlert("Virhe", "Varauksen peruuttaminen ep‰onnistui.", "OK");
         }
         // await Navigation.PopAsync();
     }
