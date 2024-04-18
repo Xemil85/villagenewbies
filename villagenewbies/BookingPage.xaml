@@ -39,8 +39,8 @@
                             <Label Grid.Column="3" Text="{Binding maara}"/>
                             <Label Grid.Column="4" Text="{Binding varattu_pvm, StringFormat='{0:dd/MM/yyyy}'}"/>
                             <Label Grid.Column="5" Text="{Binding vahvistus_pvm, StringFormat='{0:dd/MM/yyyy}'}"/>
-                            <Label Grid.Column="6" Text="{Binding varattu_alkupvm}"/>
-                            <Label Grid.Column="7" Text="{Binding varattu_loppupvm}"/>
+                            <Label Grid.Column="6" Text="{Binding varattu_alkupvm, StringFormat='{0:dd/MM/yyyy}'}"/>
+                            <Label Grid.Column="7" Text="{Binding varattu_loppupvm, StringFormat='{0:dd/MM/yyyy}'}"/>
                             <Button Grid.Column="8" Text="Peruuta" WidthRequest="100" Clicked="PeruutaVaraus" CommandParameter="{Binding .}" />
                             <Button Grid.Column="9" Text="Muodosta lasku" Clicked="OnMuodostaLaskuClicked" CommandParameter="{Binding varaus_id}"/>
                         </Grid>
