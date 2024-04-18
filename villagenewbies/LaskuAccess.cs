@@ -45,7 +45,7 @@ public class LaskuAccess
         return laskut;
     }
 
-    public async Task<int> TallennaLasku(Lasku uusiLasku)
+    public async Task<int> TallennaLaskuIlmanPdf(Lasku uusiLasku)
     {
         using (var connection = new MySqlConnection(ConnectionString))
         {
@@ -58,17 +58,19 @@ public class LaskuAccess
 
             using (var command = new MySqlCommand(query, connection))
             {
-                // Asetetaan parametrit SQL-komennolle.
                 command.Parameters.AddWithValue("@VarausId", uusiLasku.VarausId);
                 command.Parameters.AddWithValue("@Summa", uusiLasku.Summa);
                 command.Parameters.AddWithValue("@Alv", uusiLasku.Alv);
                 command.Parameters.AddWithValue("@Maksettu", uusiLasku.Maksettu);
 
-                // Suorita komento, joka lisää laskun ja palauttaa luodun laskun ID:n.
+                // Suorita komento ja palauta luodun laskun ID
                 int laskuId = Convert.ToInt32(await command.ExecuteScalarAsync());
-                return laskuId; // Palauta laskun ID.
+                return laskuId;
             }
         }
     }
 }
 
+   
+
+  

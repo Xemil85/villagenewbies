@@ -31,7 +31,7 @@ namespace VillageNewbies
         public int alue_id { get; set; }
         public string nimi { get; set; }
         public string sijainti { get; set; }
-        public int tyyppi { get; set; } // Saattaa olla mahdollisesti parempi käyttää enum?
+        public int tyyppi { get; set; } 
         public string kuvaus { get; set; }
         public double hinta { get; set; }
         public double alv { get; set; }
@@ -53,11 +53,15 @@ namespace VillageNewbies
     {
         public int varaus_id { get; set; }
         public int asiakas_id { get; set; }
+        public string asiakkaannimi { get; set; }
         public int mokki_id { get; set; }
-        public string varattu_pvm { get; set; }
-        public string vahvistus_pvm { get; set; }
-        public string varattu_alkupvm { get; set; }
-        public string varattu_loppupvm { get; set; }
+        public string mokkinimi { get; set; }
+        public int maara { get; set; }
+        public DateTime varattu_pvm { get; set; }
+        public DateTime vahvistus_pvm { get; set; }
+        public DateTime varattu_alkupvm { get; set; }
+        public DateTime varattu_loppupvm { get; set; }
+        public int peruutettu { get; set; }
     }
 
     public class Varauksen_Palvelut
@@ -75,7 +79,4 @@ namespace VillageNewbies
         public double Alv { get; set; }
         public bool Maksettu { get; set; }
     }
-    
-
-
 }

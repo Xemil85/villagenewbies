@@ -7,7 +7,7 @@ namespace VillageNewbies;
 
 public partial class BookingForm : ContentPage
 {
-	private Mokki _mokki;
+    private Mokki _mokki;
     private List<Palvelu> selectedServices;
     private string _aloitusPaiva;
     private string _lopetusPaiva;
@@ -16,8 +16,8 @@ public partial class BookingForm : ContentPage
     private int? selectedAsiakasId;
 
     public BookingForm(Mokki mokki, List<Palvelu> palvelu, string aloitusPaiva, string lopetusPaiva)
-	{
-		InitializeComponent();
+    {
+        InitializeComponent();
         _mokki = mokki;
         selectedServices = palvelu;
         _aloitusPaiva = aloitusPaiva;
@@ -43,10 +43,10 @@ public partial class BookingForm : ContentPage
         {
             asiakas_id = selectedAsiakasId.Value,
             mokki_id = _mokki.mokki_id,
-            varattu_pvm = DateTime.Now.ToString("yyyy'-'MM'-'dd' 'HH':'mm':'ss"),
-            vahvistus_pvm = DateTime.Now.ToString("yyyy'-'MM'-'dd' 'HH':'mm':'ss"),
-            varattu_alkupvm = varattuAlkupvm.ToString("yyyy'-'MM'-'dd' 'HH':'mm':'ss"),
-            varattu_loppupvm = varattuLoppupvm.ToString("yyyy'-'MM'-'dd' 'HH':'mm':'ss")
+            varattu_pvm = DateTime.Now,
+            //vahvistus_pvm = DateTime.Now,
+            varattu_alkupvm = varattuAlkupvm,
+            varattu_loppupvm = varattuLoppupvm
         };
 
         var databaseAccess = new DatabaseAccess();
@@ -176,7 +176,7 @@ public partial class BookingForm : ContentPage
                         command.Parameters.AddWithValue("@Varaus_id", uusiVarauksenPalvelut.varaus_id);
                         command.Parameters.AddWithValue("@Palvelu_id", uusiVarauksenPalvelut.palvelu_id);
                         command.Parameters.AddWithValue("@Lkm", uusiVarauksenPalvelut.lkm);
-                        
+
                         await command.ExecuteNonQueryAsync();
                     }
                 }

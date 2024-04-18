@@ -4,57 +4,90 @@ using iText.Kernel.Pdf;
 using iText.Layout;
 using iText.Layout.Element;
 
+
 namespace VillageNewbies
 {
     public class LaskunMuodostaja
     {
         private readonly LaskuAccess _laskuAccess;
+        private readonly MokkiAccess _mokkiAccess;
 
         public LaskunMuodostaja()
         {
             _laskuAccess = new LaskuAccess();
-            // Oletetaan, että LaskuAccess-luokassa on metodi tallentamaan lasku tietokantaan.
+            _mokkiAccess = new MokkiAccess();
         }
 
-        public async Task LuoJaTallennaLaskuPdf(Varaus varaus, List<Palvelu> palvelut, string filePath)
+        public async Task LuoJaTallennaLaskuPdf(Varaus varaus, List<Palvelu> palvelut)
         {
-            // Tähän tulee logiikka laskun kokonaishinnan laskemiseksi
-            double kokonaishinta = LaskeKokonaishinta(varaus, palvelut);
+            // Hae mökin tiedot
+            Mokki mokki = await _mokkiAccess.FetchMokkiByIdAsync(varaus.mokki_id);
+
+            // Hae asiakkaan tiedot
+            Asiakas asiakas = await _mokkiAccess.FetchAsiakasByIdAsync(varaus.asiakas_id);
+
+            // Laske kokonaishinta
+            double kokonaishinta = LaskeKokonaishinta(varaus, mokki, palvelut);
 
             // Luodaan lasku-olio
             Lasku lasku = new Lasku
             {
                 VarausId = varaus.varaus_id,
                 Summa = kokonaishinta,
-                Alv = 0.24 * kokonaishinta, // Oletetaan että ALV on 24%
+                Alv = 0.24 * kokonaishinta,
                 Maksettu = false
             };
 
-            // Tallennetaan laskun tiedot tietokantaan
-            await _laskuAccess.TallennaLasku(lasku);
+            // Tallenna lasku tietokantaan ja hanki laskuId
+            int laskuId = await _laskuAccess.TallennaLaskuIlmanPdf(lasku);
 
-            // Tässä luodaan itse PDF
-            PdfWriter writer = new PdfWriter(filePath);
-            PdfDocument pdf = new PdfDocument(writer);
-            Document document = new Document(pdf);
+            // Luo PDF-tiedoston nimi, joka sisältää laskun ID:n
+            string desktopPath = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
+            string pdfFileName = Path.Combine(desktopPath, $"Lasku_{laskuId}.pdf");
 
-            // Lisää sisältöä PDF-dokumenttiin
-            document.Add(new Paragraph($"Lasku #{lasku.LaskuId}"));
-            // Lisää muita laskun tietoja...
+            // Luo PDF lasku iText7-kirjastolla ja tallenna se paikallisesti
+            using (FileStream fileStream = new FileStream(pdfFileName, FileMode.Create, FileAccess.Write))
+            {
+                PdfWriter writer = new PdfWriter(fileStream);
+                PdfDocument pdf = new PdfDocument(writer);
+                Document document = new Document(pdf);
 
-            // Suljetaan dokumentti
-            document.Close();
+                // Lisää sisältöä PDF-dokumenttiin
+                document.Add(new Paragraph($"Lasku #{laskuId}"));
+                document.Add(new Paragraph($"Asiakkaan nimi: {asiakas.etunimi} {asiakas.sukunimi}"));
+                document.Add(new Paragraph($"Mökin nimi: {mokki.mokkinimi}"));
+                document.Add(new Paragraph($"Varausaika: {varaus.varattu_alkupvm} - {varaus.varattu_loppupvm}"));
+                document.Add(new Paragraph($"Kokonaishinta: {lasku.Summa}€"));
+                document.Add(new Paragraph($"ALV: {lasku.Alv}€"));
 
-            // Tässä kohtaa voit esimerkiksi palauttaa polun luotuun PDF-tiedostoon tai tallentaa sen
-            // tietokantaan, jos se on tarpeen.
+                foreach (Palvelu palvelu in palvelut)
+                {
+                    document.Add(new Paragraph($"{palvelu.nimi}: {palvelu.hinta}€ (ALV sisältyy hintaan)"));
+                }
+                // Suljetaan dokumentti
+                document.Close();
+            }
         }
 
-        private double LaskeKokonaishinta(Varaus varaus, List<Palvelu> palvelut)
+
+
+        private double LaskeKokonaishinta(Varaus varaus, Mokki mokki, List<Palvelu> palvelut)
         {
-            // Tähän tulee logiikka laskun kokonaishinnan laskemiseksi
-            // Huomioi, että tämä metodi on pseudokoodia ja sinun tulee korvata se
-            // sovelluksesi todellisen hinnanlaskentalogiikan mukaan.
-            return 0.0;
+            DateTime alkupvm = DateTime.Parse(varaus.varattu_alkupvm.ToString());
+            DateTime loppupvm = DateTime.Parse(varaus.varattu_loppupvm.ToString());
+            TimeSpan varauksenKesto = loppupvm - alkupvm;
+            int varauksenPaivat = varauksenKesto.Days;
+
+            // Jos varaus kestää vähemmän kuin yhden vuorokauden, käsittele se yhden vuorokauden mittaisena.
+            if (varauksenPaivat == 0)
+            {
+                varauksenPaivat = 1;
+            }
+
+            double mokinHinta = varauksenPaivat * mokki.hinta;
+            double palveluidenHinta = palvelut.Sum(p => p.hinta);
+
+            return mokinHinta + palveluidenHinta;
         }
     }
 }
