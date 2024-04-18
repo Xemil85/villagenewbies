@@ -69,8 +69,31 @@ public class LaskuAccess
             }
         }
     }
+    public async Task MarkAsPaid(int laskuId)
+    {
+        using (var connection = new MySqlConnection(ConnectionString))
+        {
+            await connection.OpenAsync();
+
+            string query = @"
+        UPDATE lasku 
+        SET maksettu = 1 
+        WHERE lasku_id = @LaskuId;";
+
+            using (var command = new MySqlCommand(query, connection))
+            {
+                command.Parameters.AddWithValue("@LaskuId", laskuId);
+
+                await command.ExecuteNonQueryAsync();
+            }
+        }
+    }
 }
 
-   
+
+
+
+
+
 
   

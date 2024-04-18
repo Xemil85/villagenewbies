@@ -15,7 +15,7 @@ public partial class BookingPage : ContentPage
 
     private async Task LoadVaraukset()
     {
-        //TODO Toteuta oikea tietokantahaku
+       
         var mokkiAccess = new MokkiAccess();
         var varausList = await mokkiAccess.FetchAllVarausAsync();
         MainThread.InvokeOnMainThreadAsync(() =>

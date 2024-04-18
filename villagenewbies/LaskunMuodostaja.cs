@@ -53,17 +53,20 @@ namespace VillageNewbies
                 Document document = new Document(pdf);
 
                 // Lisää sisältöä PDF-dokumenttiin
-                document.Add(new Paragraph($"Lasku #{laskuId}"));
+                document.Add(new Paragraph($"Village Newbies lasku #{laskuId}"));
                 document.Add(new Paragraph($"Asiakkaan nimi: {asiakas.etunimi} {asiakas.sukunimi}"));
                 document.Add(new Paragraph($"Mökin nimi: {mokki.mokkinimi}"));
                 document.Add(new Paragraph($"Varausaika: {varaus.varattu_alkupvm} - {varaus.varattu_loppupvm}"));
-                document.Add(new Paragraph($"Kokonaishinta: {lasku.Summa}€"));
                 document.Add(new Paragraph($"ALV: {lasku.Alv}€"));
-
                 foreach (Palvelu palvelu in palvelut)
                 {
                     document.Add(new Paragraph($"{palvelu.nimi}: {palvelu.hinta}€ (ALV sisältyy hintaan)"));
                 }
+                document.Add(new Paragraph("\nMaksettava summa: " + String.Format("{0:0.00} €", lasku.Summa + lasku.Alv)));
+                document.Add(new Paragraph("Eräpäivä: " + DateTime.Now.AddDays(14).ToString("dd.MM.yyyy")));
+                document.Add(new Paragraph("Tilinumero: FI12 3456 7890 1234 56"));
+                document.Add(new Paragraph("Viitenumero: 1234567"));
+                
                 // Suljetaan dokumentti
                 document.Close();
             }
