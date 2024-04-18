@@ -52,7 +52,7 @@ namespace VillageNewbies
     {
         public int varaus_id { get; set; }
         public int asiakas_id { get; set; }
-        public string asiakaannimi { get; set; }
+        public string asiakkaannimi { get; set; }
         public int mokki_id { get; set; }
         public string mokkinimi { get; set; }
         public int maara { get; set; }

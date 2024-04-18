@@ -44,7 +44,7 @@ public partial class BookingForm : ContentPage
             asiakas_id = selectedAsiakasId.Value,
             mokki_id = _mokki.mokki_id,
             varattu_pvm = DateTime.Now,
-            vahvistus_pvm = DateTime.Now,
+            //vahvistus_pvm = DateTime.Now,
             varattu_alkupvm = varattuAlkupvm,
             varattu_loppupvm = varattuLoppupvm
         };
