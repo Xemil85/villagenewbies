@@ -11,12 +11,12 @@ public partial class SelectServices : ContentPage
     private string _lopetusPaiva;
     public SelectServices(Mokki mokki, string aloitusPaiva, string lopetusPaiva)
 	{
-		//InitializeComponent();
+		InitializeComponent();
 		_mokki = mokki;
         _aloitusPaiva = aloitusPaiva;
         _lopetusPaiva = lopetusPaiva;
         Palvelut = new ObservableCollection<Palvelu>();
-        //ServicesCollectionView.ItemsSource = Palvelut;
+        ServicesCollectionView.ItemsSource = Palvelut;
         LoadPalvelut();
 	}
 
@@ -31,7 +31,7 @@ public partial class SelectServices : ContentPage
             {
                 Palvelut.Add(palvelu);
             }
-            //ServicesCollectionView.ItemsSource = Palvelut;
+            ServicesCollectionView.ItemsSource = Palvelut;
         });
     }
 

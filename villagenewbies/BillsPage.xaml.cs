@@ -17,7 +17,7 @@ namespace VillageNewbies
             PayBillCommand = new Command<int>(async (laskuId) => await MarkBillAsPaid(laskuId));
             this.BindingContext = this;
             LoadBills();
-            BillsCollectionView.ItemsSource = Laskut; // Aseta kokoelma BillsCollectionView:lle
+            BillsCollectionView.ItemsSource = Laskut; 
         }
 
         private async Task LoadBills()

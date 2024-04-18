@@ -38,6 +38,9 @@ namespace VillageNewbies
                 Maksettu = false
             };
 
+            // Formatoidaan ALV kahdella desimaalilla
+            string formattedAlv = lasku.Alv.ToString("F2");
+
             // Tallenna lasku tietokantaan ja hanki laskuId
             int laskuId = await _laskuAccess.TallennaLaskuIlmanPdf(lasku);
 
@@ -57,7 +60,7 @@ namespace VillageNewbies
                 document.Add(new Paragraph($"Asiakkaan nimi: {asiakas.etunimi} {asiakas.sukunimi}"));
                 document.Add(new Paragraph($"Mökin nimi: {mokki.mokkinimi}"));
                 document.Add(new Paragraph($"Varausaika: {varaus.varattu_alkupvm} - {varaus.varattu_loppupvm}"));
-                document.Add(new Paragraph($"ALV: {lasku.Alv}€"));
+                document.Add(new Paragraph($"ALV: {formattedAlv}€"));
                 foreach (Palvelu palvelu in palvelut)
                 {
                     document.Add(new Paragraph($"{palvelu.nimi}: {palvelu.hinta}€ (ALV sisältyy hintaan)"));
