@@ -1,4 +1,5 @@
-﻿using System;
+﻿
+using System;
 using MySql.Data.MySqlClient;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,6 +8,7 @@ using System.Threading.Tasks;
 using System.Data;
 using Microsoft.Maui.Controls;
 using System.Diagnostics;
+using Google.Protobuf.WellKnownTypes;
 
 namespace VillageNewbies
 {
@@ -24,11 +26,11 @@ namespace VillageNewbies
 
             var mokit = new List<Mokki>();
 
-            using(var connection = new MySqlConnection(ConnectionString))
+            using (var connection = new MySqlConnection(ConnectionString))
             {
                 await connection.OpenAsync();
 
-                using (var command = new MySqlCommand("SELECT * FROM mokki;", connection))
+                using (var command = new MySqlCommand("select mokki_id, mokki.alue_id, mokkinimi, alue.nimi as sijainti, katuosoite, postinro, henkilomaara, hinta, kuvaus, varustelu from mokki inner join alue on mokki.alue_id = alue.alue_id", connection))
 
                 using (var reader = await command.ExecuteReaderAsync())
                 {
@@ -38,6 +40,7 @@ namespace VillageNewbies
                         {
                             mokki_id = reader.GetInt32("mokki_id"),
                             alue_id = reader.GetInt32("alue_id"),
+                            sijainti = reader.GetString("sijainti"),
                             mokkinimi = reader.GetString("mokkinimi"),
                             katuosoite = reader.GetString("katuosoite"),
                             postinro = reader.GetInt32("postinro"),
@@ -55,6 +58,7 @@ namespace VillageNewbies
             }
         }
 
+
         public async Task<Mokki> FetchMokkiByIdAsync(int mokkiId)
         {
             var kaikkiMokit = await FetchAllMokitAsync();
@@ -69,6 +73,9 @@ namespace VillageNewbies
                 throw new Exception("Mökkiä ei löytynyt annetulla ID:llä.");
             }
         }
+
+
+
 
 
         public async Task<List<Palvelu>> FetchAllPalveluAsync()
@@ -277,7 +284,7 @@ namespace VillageNewbies
                         var alue = new Alue
                         {
                             alue_id = reader.GetInt32("alue_id"),
-                            nimi = reader.GetString("nimi"),    
+                            nimi = reader.GetString("nimi"),
                         };
 
                         alueet.Add(alue);
@@ -319,8 +326,9 @@ namespace VillageNewbies
                                     varaus.peruutettu
                                 FROM varaus
                                 LEFT JOIN varauksen_palvelut ON varaus.varaus_id = varauksen_palvelut.varaus_id
-                                LEFT JOIN asiakas ON varaus.asiakas_id = asiakas.asiakas_id -- Liitämme asiakas-taulun
-                                LEFT JOIN mokki ON varaus.mokki_mokki_id = mokki.mokki_id -- Liitämme mokki-taulun
+                                LEFT JOIN asiakas ON varaus.asiakas_id = asiakas.asiakas_id
+                                LEFT JOIN mokki ON varaus.mokki_mokki_id = mokki.mokki_id
+                                WHERE peruutettu = 0
                                 GROUP BY
                                     varaus.varaus_id,
                                     nimi,
@@ -342,7 +350,7 @@ namespace VillageNewbies
                         {
                             varaus_id = reader.GetInt32("varaus_id"),
                             //asiakas_id = reader.GetInt32("asiakas_id"),
-                            asiakaannimi = reader.GetString("nimi"),
+                            asiakkaannimi = reader.GetString("nimi"),
                             //mokki_id = reader.GetInt32("mokki_mokki_id"),
                             mokkinimi = reader.GetString("mokkinimi"),
                             maara = reader.GetInt32("maara"),
@@ -404,3 +412,4 @@ namespace VillageNewbies
         }
     }
 }
+

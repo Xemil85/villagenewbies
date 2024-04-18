@@ -17,7 +17,8 @@
                     <ColumnDefinition Width="*" />
                     <ColumnDefinition Width="*" />
                     <ColumnDefinition Width="*" />
-                </Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />  
+            </Grid.ColumnDefinitions>
                 <Label Text="VarausID" FontSize="15" Grid.Column="0" TextDecorations="Underline" />
                 <Label Text="Asiakas" FontSize="15" Grid.Column="1" TextDecorations="Underline" />
                 <Label Text="Mokki" FontSize="15" Grid.Column="2" TextDecorations="Underline" />
@@ -25,28 +26,27 @@
                 <Label Text="Varattu pvm" FontSize="15" Grid.Column="4" TextDecorations="Underline" />
                 <Label Text="Vahvistus pvm" FontSize="15" Grid.Column="5" TextDecorations="Underline" />
                 <Label Text="Varattu alkupvm" FontSize="15" Grid.Column="6" TextDecorations="Underline" />
-                <Label Text="Varattu loppupvm" FontSize="15" Grid.Column="7" TextDecorations="Underline" />
-                <Label Text="Peruutettu" FontSize="15" Grid.Column="8" TextDecorations="Underline" />
+            <Label Text="Varattu loppupvm" FontSize="15" Grid.Column="7" TextDecorations="Underline" />
         </Grid>
 
             <CollectionView x:Name="BookingsCollectionView">
                 <CollectionView.ItemTemplate>
                     <DataTemplate>
-                        <Grid Padding="10" ColumnDefinitions="*,*,*,*,*,*,*,*,*">
+                        <Grid Padding="10" ColumnDefinitions="*,*,*,*,*,*,*,*,*,*">
                             <Label Grid.Column="0" Text="{Binding varaus_id}" FontAttributes="Bold"/>
-                            <Label Grid.Column="1" Text="{Binding nimi}" />
+                            <Label Grid.Column="1" Text="{Binding asiakkaannimi}" />
                             <Label Grid.Column="2" Text="{Binding mokkinimi}" />
                             <Label Grid.Column="3" Text="{Binding maara}"/> 
                             <Label Grid.Column="4" Text="{Binding varattu_pvm}"/>
                             <Label Grid.Column="5" Text="{Binding vahvistus_pvm}"/>
                             <Label Grid.Column="6" Text="{Binding varattu_alkupvm}"/>
                             <Label Grid.Column="7" Text="{Binding varattu_loppupvm}"/>
-                            <Label Grid.Column="8" Text="{Binding peruutettu}"/>
+                        <Button Grid.Column="8" Text="Peruuta" WidthRequest="100" Clicked="PeruutaVaraus" CommandParameter="{Binding .}" />
                         <Button Grid.Column="9" Text="Muodosta lasku" Clicked="OnMuodostaLaskuClicked" CommandParameter="{Binding varaus_id}"/>
                     </Grid> 
                     </DataTemplate>
                 </CollectionView.ItemTemplate>
             </CollectionView>
-
+            
     </VerticalStackLayout>
 </ContentPage>
