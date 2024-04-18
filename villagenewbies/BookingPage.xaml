@@ -1,12 +1,12 @@
-<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="VillageNewbies.BookingPage"
              Title="Varaukset">
 
-    <VerticalStackLayout Spacing="20" Padding="20">
-        <Label Text="Asiakkaiden varaukset" FontSize="20" HorizontalTextAlignment="Center" />
-        <Grid RowSpacing="10" Padding="20">
+    <ScrollView>
+        <VerticalStackLayout Spacing="20" Padding="20">
+            <Label Text="Asiakkaiden varaukset" FontSize="20" HorizontalTextAlignment="Center" />
+            <Grid RowSpacing="10" Padding="20">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*" />
                     <ColumnDefinition Width="*" />
@@ -17,8 +17,8 @@
                     <ColumnDefinition Width="*" />
                     <ColumnDefinition Width="*" />
                     <ColumnDefinition Width="*" />
-                <ColumnDefinition Width="*" />  
-            </Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
                 <Label Text="VarausID" FontSize="15" Grid.Column="0" TextDecorations="Underline" />
                 <Label Text="Asiakas" FontSize="15" Grid.Column="1" TextDecorations="Underline" />
                 <Label Text="Mokki" FontSize="15" Grid.Column="2" TextDecorations="Underline" />
@@ -26,8 +26,8 @@
                 <Label Text="Varattu pvm" FontSize="15" Grid.Column="4" TextDecorations="Underline" />
                 <Label Text="Vahvistus pvm" FontSize="15" Grid.Column="5" TextDecorations="Underline" />
                 <Label Text="Varattu alkupvm" FontSize="15" Grid.Column="6" TextDecorations="Underline" />
-            <Label Text="Varattu loppupvm" FontSize="15" Grid.Column="7" TextDecorations="Underline" />
-        </Grid>
+                <Label Text="Varattu loppupvm" FontSize="15" Grid.Column="7" TextDecorations="Underline" />
+            </Grid>
 
             <CollectionView x:Name="BookingsCollectionView">
                 <CollectionView.ItemTemplate>
@@ -36,17 +36,17 @@
                             <Label Grid.Column="0" Text="{Binding varaus_id}" FontAttributes="Bold"/>
                             <Label Grid.Column="1" Text="{Binding asiakkaannimi}" />
                             <Label Grid.Column="2" Text="{Binding mokkinimi}" />
-                            <Label Grid.Column="3" Text="{Binding maara}"/> 
+                            <Label Grid.Column="3" Text="{Binding maara}"/>
                             <Label Grid.Column="4" Text="{Binding varattu_pvm}"/>
                             <Label Grid.Column="5" Text="{Binding vahvistus_pvm}"/>
                             <Label Grid.Column="6" Text="{Binding varattu_alkupvm}"/>
                             <Label Grid.Column="7" Text="{Binding varattu_loppupvm}"/>
-                        <Button Grid.Column="8" Text="Peruuta" WidthRequest="100" Clicked="PeruutaVaraus" CommandParameter="{Binding .}" />
-                        <Button Grid.Column="9" Text="Muodosta lasku" Clicked="OnMuodostaLaskuClicked" CommandParameter="{Binding varaus_id}"/>
-                    </Grid> 
+                            <Button Grid.Column="8" Text="Peruuta" WidthRequest="100" Clicked="PeruutaVaraus" CommandParameter="{Binding .}" />
+                            <Button Grid.Column="9" Text="Muodosta lasku" Clicked="OnMuodostaLaskuClicked" CommandParameter="{Binding varaus_id}"/>
+                        </Grid>
                     </DataTemplate>
                 </CollectionView.ItemTemplate>
             </CollectionView>
-            
-    </VerticalStackLayout>
+        </VerticalStackLayout>
+    </ScrollView>
 </ContentPage>
