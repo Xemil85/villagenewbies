@@ -98,6 +98,7 @@ public partial class CustomerPage : ContentPage
         {
             var asiakkaat = new List<Asiakas>();
 
+
             string query = "SELECT * FROM asiakas WHERE sukunimi LIKE @Sukunimi";
             using (var connection = new MySqlConnection(connectionString))
             {

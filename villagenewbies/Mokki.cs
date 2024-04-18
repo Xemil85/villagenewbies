@@ -76,4 +76,11 @@ namespace VillageNewbies
         public double Alv { get; set; }
         public bool Maksettu { get; set; }
     }
+
+    public class VarausViewModel
+    {
+        public Varaus Varaus { get; set; }
+        public string Mokkinimi { get; set; }
+    }
+
 }

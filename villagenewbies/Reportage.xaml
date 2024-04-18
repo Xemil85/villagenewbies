@@ -9,21 +9,48 @@
             VerticalOptions="Center" 
             HorizontalOptions="Center" />
 
-        <Label Text="Valitse alue:"/>
-        <Picker x:Name="AreaPicker" Title="Valitse alue"/>
+        <HorizontalStackLayout Spacing="30">
 
-        <Label Text="Alkupäivämäärä:"/>
-        <DatePicker x:Name="StartDatePicker" Format="D"/>
+            <Picker x:Name="AreaPicker" Title="Valitse alue" 
+                    WidthRequest="100"/>
 
-        <Label Text="Loppupäivämäärä:"/>
-        <DatePicker x:Name="EndDatePicker" Format="D"/>
+            <Label Text="Alkupäivämäärä:"/>
+            <DatePicker x:Name="StartDatePicker" Format="D"/>
+
+            <Label Text="Loppupäivämäärä:"/>
+            <DatePicker x:Name="EndDatePicker" Format="D"/>
+
+            <Button x:Name="Varaustenhaku" Text="Hae varaukset" Clicked="Varaustenhaku_Clicked" />
+            <Button x:Name="Palveluhaku" Text="Hae palvelut" Clicked="Palveluhaku_Clicked"/>
 
 
-        <CollectionView x:Name="AreasCollectionView2" HeightRequest="500">
+        </HorizontalStackLayout>
+
+        
+
+        <Grid RowSpacing="10" Padding="20">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />                
+            </Grid.ColumnDefinitions>
+            <Label Text="Varaus id" FontSize="20" Grid.Column="0" TextDecorations="Underline" />
+            <Label Text="Mökin nimi" FontSize="20" Grid.Column="1" TextDecorations="Underline" />
+            <Label Text="Alkupäivä" FontSize="20" Grid.Column="2" TextDecorations="Underline" />
+            <Label Text="Loppupäivä" FontSize="20" Grid.Column="3" TextDecorations="Underline" />
+            
+        </Grid>
+
+        <CollectionView x:Name="BookinReportage" HeightRequest="200" ItemsSource="{Binding Varaukset}">
             <CollectionView.ItemTemplate>
                 <DataTemplate>
-                    <Grid Padding="10" ColumnDefinitions="*,*,*,*,*,*,*">
-                    <Label Grid.Column="0" Text="{Binding nimi}"/>
+                    <Grid Padding="10" ColumnDefinitions="*,*,*,*">
+                        <Label Grid.Column="0" Text="{Binding Varaus.varaus_id}"/>
+                        <Label Grid.Column="1" Text="{Binding Mokkinimi}"/>
+                        <Label Grid.Column="2" Text="{Binding Varaus.varattu_alkupvm}"/>
+                        <Label Grid.Column="3" Text="{Binding Varaus.varattu_loppupvm}"/>                        
+             
                     </Grid>
                 </DataTemplate>
             </CollectionView.ItemTemplate>
