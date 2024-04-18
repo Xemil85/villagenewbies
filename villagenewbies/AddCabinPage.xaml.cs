@@ -13,9 +13,8 @@ public partial class AddCabinPage : ContentPage
 
     public AddCabinPage()
     {
-        InitializeComponent();
-       
-        Mokit = new ObservableCollection<Mokki>();       
+       InitializeComponent();
+       Mokit = new ObservableCollection<Mokki>();       
     }
 
     public AddCabinPage(Mokki mokki) : this()
@@ -29,10 +28,10 @@ public partial class AddCabinPage : ContentPage
             alue_id.Text = _mokki.alue_id.ToString();
             mokkinimi.Text = _mokki.mokkinimi;
             katuosoite.Text = _mokki.katuosoite;
-            postinro.Text = _mokki.postinro.ToString(); // Olettaen että postinro on tietotyyppiä, joka vaatii muunnoksen stringiksi
+            postinro.Text = _mokki.postinro.ToString(); 
             hinta.Text = _mokki.hinta.ToString();
-            henkilomaara.Text = _mokki.henkilomaara.ToString();
             kuvaus.Text = _mokki.kuvaus;
+            henkilomaara.Text = _mokki.henkilomaara.ToString();
             varustelu.Text = _mokki.varustelu.ToString();
         }
     }
@@ -68,36 +67,31 @@ public partial class AddCabinPage : ContentPage
             katuosoite = katuosoite.Text,
             postinro = int.Parse(postinro.Text),
             hinta = double.Parse(hinta.Text),
-            henkilomaara = int.Parse(henkilomaara.Text),
             kuvaus = kuvaus.Text,
+            henkilomaara = int.Parse(henkilomaara.Text),
             varustelu = varustelu.Text
         };
 
         var databaseAccess = new DatabaseAccess();
-        await databaseAccess.LisaaMokkiTietokantaan(uusiMokki);
-
-
+                  
         mokki_id.Text = "";
         alue_id.Text = "";
         mokkinimi.Text = "";
         katuosoite.Text = "";
         postinro.Text = "";
         hinta.Text = "";
-        henkilomaara.Text = "";
         kuvaus.Text = "";
+        henkilomaara.Text = "";
         varustelu.Text = "";
-
+      
+        await databaseAccess.LisaaMokkiTietokantaan(uusiMokki);
         await Navigation.PopAsync();
-        
-
     }
 
     private async void TallennaMokki_Clicked(object sender, EventArgs e)
     {
-        
         var muokattavaMokki = new Mokki();
-       
-
+      
         if (!string.IsNullOrWhiteSpace(mokki_id.Text) && int.TryParse(mokki_id.Text, out int parsedMokkiId))
         {
             muokattavaMokki.mokki_id = parsedMokkiId;
@@ -168,9 +162,7 @@ public partial class AddCabinPage : ContentPage
         {
             await DisplayAlert("Virhe", "Mökin tietojen tallentaminen epäonnistui.", "OK");
         }
-        await Navigation.PopAsync();
-
-      
+        await Navigation.PopAsync(); 
     }
 
     private async void PoistaMokki_Clicked(object sender, EventArgs e)
@@ -181,7 +173,6 @@ public partial class AddCabinPage : ContentPage
             var databaseAccess = new DatabaseAccess();
             await databaseAccess.PoistaMokkiTietokannasta(_mokki.mokki_id);
             await DisplayAlert("Poistettu", "Mökki on poistettu onnistuneesti.", "OK");
-            // Palaa tarvittaessa edelliselle sivulle
             await Navigation.PopAsync();
         }
     }
@@ -203,7 +194,7 @@ public partial class AddCabinPage : ContentPage
                 {
                     await connection.OpenAsync();
 
-                    var query = "INSERT INTO mokki (mokki_id, alue_id, mokkinimi, katuosoite, postinro, henkilomaara, hinta, kuvaus, varustelu)  VALUES (@Mokki_id, @Alue_id, @Mokkinimi, @Katuosoite, @Postinro, @Hinta, @Henkilomaara, @Kuvaus, @Varustelu)";
+                    var query = "INSERT INTO mokki (mokki_id, alue_id, mokkinimi, katuosoite, postinro, hinta, kuvaus,henkilomaara, varustelu)  VALUES (@Mokki_id, @Alue_id, @Mokkinimi, @Katuosoite, @Postinro, @Hinta, @Kuvaus, @Henkilomaara, @Varustelu)";
 
                     using (var command = new MySqlCommand(query, connection))
                     {
@@ -282,9 +273,9 @@ public partial class AddCabinPage : ContentPage
                     katuosoite = @Katuosoite,
                     postinro = @Postinro,
                     hinta = @Hinta,
-                    henkilomaara = @Henkilomaara,
                     kuvaus = @Kuvaus,
-                    varustelu = @Varustelu
+                    henkilomaara = @Henkilomaara,
+                   varustelu = @Varustelu
                 WHERE mokki_id = @MokkiId";
 
                 using (var command = new MySqlCommand(query, connection))
@@ -296,8 +287,8 @@ public partial class AddCabinPage : ContentPage
                     command.Parameters.AddWithValue("@Katuosoite", muokattuMokki.katuosoite);
                     command.Parameters.AddWithValue("@Postinro", muokattuMokki.postinro);
                     command.Parameters.AddWithValue("@Hinta", muokattuMokki.hinta);
-                    command.Parameters.AddWithValue("@Henkilomaara", muokattuMokki.henkilomaara);
                     command.Parameters.AddWithValue("@Kuvaus", muokattuMokki.kuvaus);
+                    command.Parameters.AddWithValue("@Henkilomaara", muokattuMokki.henkilomaara);
                     command.Parameters.AddWithValue("@Varustelu", muokattuMokki.varustelu);
                     
 

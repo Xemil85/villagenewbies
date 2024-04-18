@@ -10,6 +10,7 @@ namespace VillageNewbies
     {
         public int mokki_id { get; set; }
         public int alue_id { get; set; }
+        public string sijainti { get; set; }
         public int postinro { get; set; }
         public string mokkinimi { get; set; }
         public string katuosoite { get; set; }
@@ -52,7 +53,9 @@ namespace VillageNewbies
     {
         public int varaus_id { get; set; }
         public int asiakas_id { get; set; }
+        public string asiakkaannimi { get; set; }
         public int mokki_id { get; set; }
+        public string mokkinimi { get; set; }
         public int maara { get; set; }
         public DateTime varattu_pvm { get; set; }
         public DateTime vahvistus_pvm { get; set; }

@@ -60,7 +60,7 @@ public partial class AddServicesPage : ContentPage
         palveluhinta.Text = "";
     }
 
-    private void OnAreaSelected(object sender, EventArgs e)
+    private void OnAreaSelected(object sender, EventArgs e) // Lis‰‰ cabinsivulle
     {
         if (AreaPicker.SelectedIndex == -1)
         {

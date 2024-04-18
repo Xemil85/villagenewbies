@@ -69,29 +69,31 @@ public class LaskuAccess
             }
         }
     }
-
-    public async Task PaivitaLaskuunPdf(int laskuId, byte[] pdfContent)
+    public async Task MarkAsPaid(int laskuId)
     {
         using (var connection = new MySqlConnection(ConnectionString))
         {
             await connection.OpenAsync();
 
             string query = @"
-            UPDATE lasku 
-            SET pdf_content = @PdfContent 
-            WHERE lasku_id = @LaskuId;";
+        UPDATE lasku 
+        SET maksettu = 1 
+        WHERE lasku_id = @LaskuId;";
 
             using (var command = new MySqlCommand(query, connection))
             {
-                command.Parameters.AddWithValue("@PdfContent", pdfContent);
                 command.Parameters.AddWithValue("@LaskuId", laskuId);
 
-                // Suorita komento
                 await command.ExecuteNonQueryAsync();
             }
         }
     }
 }
+
+
+
+
+
 
 
   

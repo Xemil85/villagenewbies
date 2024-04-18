@@ -34,44 +34,49 @@ namespace VillageNewbies
             {
                 VarausId = varaus.varaus_id,
                 Summa = kokonaishinta,
-                Alv = 0.24 * kokonaishinta, 
+                Alv = 0.24 * kokonaishinta,
                 Maksettu = false
             };
+
+            // Formatoidaan ALV kahdella desimaalilla
+            string formattedAlv = lasku.Alv.ToString("F2");
 
             // Tallenna lasku tietokantaan ja hanki laskuId
             int laskuId = await _laskuAccess.TallennaLaskuIlmanPdf(lasku);
 
-            // Luo PDF lasku iText7-kirjastolla muistivirrassa
-            using (MemoryStream memoryStream = new MemoryStream())
+            // Luo PDF-tiedoston nimi, joka sisältää laskun ID:n
+            string desktopPath = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
+            string pdfFileName = Path.Combine(desktopPath, $"Lasku_{laskuId}.pdf");
+
+            // Luo PDF lasku iText7-kirjastolla ja tallenna se paikallisesti
+            using (FileStream fileStream = new FileStream(pdfFileName, FileMode.Create, FileAccess.Write))
             {
-                PdfWriter writer = new PdfWriter(memoryStream);
+                PdfWriter writer = new PdfWriter(fileStream);
                 PdfDocument pdf = new PdfDocument(writer);
-                Document document = new Document(pdf);                         
-              
+                Document document = new Document(pdf);
+
                 // Lisää sisältöä PDF-dokumenttiin
-                document.Add(new Paragraph($"Lasku #{laskuId}"));
+                document.Add(new Paragraph($"Village Newbies lasku #{laskuId}"));
                 document.Add(new Paragraph($"Asiakkaan nimi: {asiakas.etunimi} {asiakas.sukunimi}"));
                 document.Add(new Paragraph($"Mökin nimi: {mokki.mokkinimi}"));
                 document.Add(new Paragraph($"Varausaika: {varaus.varattu_alkupvm} - {varaus.varattu_loppupvm}"));
-                document.Add(new Paragraph($"Kokonaishinta: {lasku.Summa}€"));
-                document.Add(new Paragraph($"ALV: {lasku.Alv}€"));
-
+                document.Add(new Paragraph($"ALV: {formattedAlv}€"));
                 foreach (Palvelu palvelu in palvelut)
                 {
                     document.Add(new Paragraph($"{palvelu.nimi}: {palvelu.hinta}€ (ALV sisältyy hintaan)"));
                 }
+                document.Add(new Paragraph("\nMaksettava summa: " + String.Format("{0:0.00} €", lasku.Summa + lasku.Alv)));
+                document.Add(new Paragraph("Eräpäivä: " + DateTime.Now.AddDays(14).ToString("dd.MM.yyyy")));
+                document.Add(new Paragraph("Tilinumero: FI12 3456 7890 1234 56"));
+                document.Add(new Paragraph("Viitenumero: 1234567"));
+                
                 // Suljetaan dokumentti
                 document.Close();
-
-                // Tallennetaan laskun PDF-tiedoston sisältö tietokantaan
-                byte[] pdfContent = memoryStream.ToArray();
-
-                // Päivitä laskun tietue tietokantaan lisäämällä PDF-tiedoston sisältö
-                await _laskuAccess.PaivitaLaskuunPdf(laskuId, pdfContent);
-
             }
         }
-   
+
+
+
         private double LaskeKokonaishinta(Varaus varaus, Mokki mokki, List<Palvelu> palvelut)
         {
             DateTime alkupvm = DateTime.Parse(varaus.varattu_alkupvm.ToString());
@@ -79,13 +84,15 @@ namespace VillageNewbies
             TimeSpan varauksenKesto = loppupvm - alkupvm;
             int varauksenPaivat = varauksenKesto.Days;
 
-            // Mökin hinta per päivä kerrottuna varauksen päivien määrällä
-            double mokinHinta = varauksenPaivat * mokki.hinta;
+            // Jos varaus kestää vähemmän kuin yhden vuorokauden, käsittele se yhden vuorokauden mittaisena.
+            if (varauksenPaivat == 0)
+            {
+                varauksenPaivat = 1;
+            }
 
-            // Palveluiden hinnat (oletetaan, että hinta on kokonaishinta koko varauksen ajalle ja sisältää ALV:n)
+            double mokinHinta = varauksenPaivat * mokki.hinta;
             double palveluidenHinta = palvelut.Sum(p => p.hinta);
 
-            // Kokonaishinta on mökin hinta plus palveluiden hinnat
             return mokinHinta + palveluidenHinta;
         }
     }

@@ -3,13 +3,43 @@
              x:Class="VillageNewbies.Views.CabinsPage"
              Title="Mökit">
 
-    <VerticalStackLayout>
+
+                    <VerticalStackLayout>
         <HorizontalStackLayout>
-            <Button Text="Lisää Mökki" Margin="30,10,0,0" BackgroundColor="DarkViolet" Clicked="LisaaMokki_Clicked" />
-            <Button Text="Lisää Alue" Margin="30,10,0,0" BackgroundColor="DarkBlue" Clicked="LisaaAlue_Clicked"/>
-            <Button Text="Poista Alue" Margin="30,10,0,0" BackgroundColor="DarkGreen" Clicked="PoistaAlue_Clicked" />
+            <Button Text="Lisää Mökki" Margin="30,10,10,10" BackgroundColor="DarkViolet" Clicked="LisaaMokki_Clicked" />
+            <Button Text="Lisää Alue" Margin="30,10,10,10" BackgroundColor="DarkBlue" Clicked="LisaaAlue_Clicked"/>
+            <Button Text="Poista Alue" Margin="30,10,10,10" BackgroundColor="DarkGreen" Clicked="PoistaAlue_Clicked" />
             <DatePicker x:Name="Aloituspaiva" Format="yyyy-MM-dd" Margin="30,10,0,0" />
             <DatePicker x:Name="Lopetuspaiva" Format="yyyy-MM-dd" Margin="30,10,0,0" />
+            <Grid Padding="10">
+
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="*" />
+                </Grid.RowDefinitions>
+
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+
+                <Picker x:Name="AreaPicker"
+                Title="Valitse alue"
+                SelectedIndexChanged="OnAreaSelected"
+                WidthRequest="200"
+                Grid.Row="0"
+                Grid.Column="0" />
+
+                <Picker x:Name="HintaPicker"
+                Title="Valitse hintaluokka"
+                SelectedIndexChanged="onPriceSelected"
+                WidthRequest="200"
+                Grid.Row="1"
+                Grid.Column="0" />
+            </Grid>
+            <Button Text="Tyhjennä haku" Margin="30,10,10,10" BackgroundColor="HotPink" Clicked="ResetFiltersButton_Clicked"/>
+
         </HorizontalStackLayout>
 
         <Grid RowSpacing="10" Padding="20">
@@ -27,16 +57,18 @@
                 <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
             <Label Text="Mökki_id" FontSize="20" Grid.Column="0" TextDecorations="Underline" />
-            <Label Text="Alue_id" FontSize="20" Grid.Column="1" TextDecorations="Underline" />
+            <Label Text="Sijainti" FontSize="20" Grid.Column="1" TextDecorations="Underline" />
             <Label Text="Mökkinimi" FontSize="20" Grid.Column="2" TextDecorations="Underline" />
             <Label Text="Katuosoite" FontSize="20" Grid.Column="3" TextDecorations="Underline" />
             <Label Text="Postinro" FontSize="20" Grid.Column="4" TextDecorations="Underline" />
             <Label Text="Hinta" FontSize="20" Grid.Column="5" TextDecorations="Underline" />
-            <Label Text="Henkilömäärä" FontSize="20" Grid.Column="6" TextDecorations="Underline" />
-            <Label Text="Kuvaus" FontSize="20" Grid.Column="7" TextDecorations="Underline" />
+            <Label Text="Kuvaus" FontSize="20" Grid.Column="6" TextDecorations="Underline" />
+            <Label Text="Henkilömäärä" FontSize="20" Grid.Column="7" TextDecorations="Underline" />
             <Label Text="Varustelu" FontSize="20" Grid.Column="8" TextDecorations="Underline" />
             <Label Text="Muokkaa" FontSize="20" Grid.Column="9" TextDecorations="Underline" />
         </Grid>
+        
+
 
 
         <CollectionView x:Name="CabinsCollectionView" HeightRequest="500">
@@ -44,13 +76,13 @@
                 <DataTemplate>
                     <Grid Padding="10" ColumnDefinitions="*,*,*,*,*,*,*,*,*,*,*">
                         <Label Grid.Column="0" Text="{Binding mokki_id}"/>
-                        <Label Grid.Column="1" Text="{Binding alue_id}"/>
+                        <Label Grid.Column="1" Text="{Binding sijainti}" />
                         <Label Grid.Column="2" Text="{Binding mokkinimi}"/>
                         <Label Grid.Column="3" Text="{Binding katuosoite}"/>
                         <Label Grid.Column="4" Text="{Binding postinro}"/>
                         <Label Grid.Column="5" Text="{Binding hinta}"/>
-                        <Label Grid.Column="6" Text="{Binding henkilomaara}"/>
-                        <Label Grid.Column="7" Text="{Binding kuvaus}"/>
+                        <Label Grid.Column="6" Text="{Binding kuvaus}"/>
+                        <Label Grid.Column="7" Text="{Binding henkilomaara}"/>
                         <Label Grid.Column="8" Text="{Binding varustelu}"/>
                         <Button Grid.Column="9" WidthRequest="100" HorizontalOptions="Start" Text="Muokkaa Mökkiä" FontSize="10" CommandParameter="{Binding .}"
                      Clicked="MuokkaaMokkia_Clicked" />
@@ -59,6 +91,9 @@
                 </DataTemplate>
             </CollectionView.ItemTemplate>
         </CollectionView>
+       
+
+
     </VerticalStackLayout>
 
 </ContentPage>
