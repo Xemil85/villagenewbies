@@ -54,6 +54,7 @@ namespace VillageNewbies
                 document.Add(new Paragraph($"Village Newbies lasku #{laskuId}"));
                 document.Add(new Paragraph($"Asiakkaan nimi: {asiakas.etunimi} {asiakas.sukunimi}"));
                 document.Add(new Paragraph($"Mökin nimi: {mokki.mokkinimi}"));
+                document.Add(new Paragraph($"Mökin hinta per vuorokausi: {mokki.hinta}€"));
                 document.Add(new Paragraph($"Varausaika: {varaus.varattu_alkupvm} - {varaus.varattu_loppupvm}"));
                 document.Add(new Paragraph($"ALV: {lasku.Alv.ToString("F2")}€"));
                 foreach (Palvelu palvelu in palvelut)

@@ -36,20 +36,37 @@ public partial class BookingPage : ContentPage
         {
             var mokkiAccess = new MokkiAccess();
             var varaus = await mokkiAccess.FetchVarausByIdAsync(varausId);
-            var palvelut = await mokkiAccess.FetchPalvelutByVarausIdAsync(varausId);
 
-            if (varaus != null && palvelut != null)
+            if (varaus != null)
             {
-                LaskunMuodostaja laskunMuodostaja = new LaskunMuodostaja();
-                await laskunMuodostaja.LuoJaTallennaLaskuPdf(varaus, palvelut);
-                await DisplayAlert("Valmis", "Lasku varaukselle " + varausId + " on muodostettu.", "OK");
+                // Tarkista, onko vahvistusp‰iv‰m‰‰r‰ saavutettu
+                if (DateTime.Today >= varaus.vahvistus_pvm)
+                {
+                    var palvelut = await mokkiAccess.FetchPalvelutByVarausIdAsync(varausId);
+                    if (palvelut != null)
+                    {
+                        LaskunMuodostaja laskunMuodostaja = new LaskunMuodostaja();
+                        await laskunMuodostaja.LuoJaTallennaLaskuPdf(varaus, palvelut);
+                        await DisplayAlert("Valmis", "Lasku varaukselle " + varausId + " on muodostettu.", "OK");
+                    }
+                    else
+                    {
+                        await DisplayAlert("Virhe", "Palveluiden tietoja ei voitu hakea.", "OK");
+                    }
+                }
+                else
+                {
+                    // Ilmoita k‰ytt‰j‰lle, ett‰ vahvistusp‰iv‰m‰‰r‰‰ ei ole viel‰ saavutettu
+                    await DisplayAlert("Laskun muodostus estetty", "Laskua ei voida muodostaa ennen vahvistusp‰iv‰m‰‰r‰‰.", "OK");
+                }
             }
             else
             {
-                await DisplayAlert("Virhe", "Varauksen tai palveluiden tietoja ei voitu hakea.", "OK");
+                await DisplayAlert("Virhe", "Varauksen tietoja ei voitu hakea.", "OK");
             }
         }
     }
+
 
     private async void PeruutaVaraus(object? sender, EventArgs e)
     {
