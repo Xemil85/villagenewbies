@@ -37,6 +37,12 @@ namespace VillageNewbies
         public double alv { get; set; }
     }
 
+    public class PalveluTyyppi
+    {
+        public int tyyppi { get; set; }
+        public string nimi { get; set; }
+    }
+
     public class Asiakas
     {
         public int asiakas_id { get; set; }

@@ -452,6 +452,42 @@ namespace VillageNewbies
 
             return varaus;
         }
+
+        public async Task<List<PalveluTyyppi>> FetchAllPalveluTyypitAsync()
+        {
+            string projectDirectory = System.AppDomain.CurrentDomain.BaseDirectory;
+            var projectRoot = Path.GetFullPath(Path.Combine(projectDirectory, @"..\..\..\..\..\"));
+
+            DotNetEnv.Env.Load(projectRoot);
+            var env = Environment.GetEnvironmentVariables();
+
+            string ConnectionString = $"server={env["SERVER"]};port={env["SERVER_PORT"]};database={env["SERVER_DATABASE"]};user={env["SERVER_USER"]};password={env["SERVER_PASSWORD"]}";
+
+            var palvelutyypit = new List<PalveluTyyppi>();
+
+            using (var connection = new MySqlConnection(ConnectionString))
+            {
+                await connection.OpenAsync();
+
+                using (var command = new MySqlCommand("SELECT * FROM palvelun_tyypit;", connection))
+
+                using (var reader = await command.ExecuteReaderAsync())
+                {
+                    while (await reader.ReadAsync())
+                    {
+                        var palvelutyyppi = new PalveluTyyppi
+                        {
+                            tyyppi = reader.GetInt32("tyyppi"),
+                            nimi = reader.GetString("nimi"),
+                        };
+
+                        palvelutyypit.Add(palvelutyyppi);
+                    }
+                }
+
+                return palvelutyypit;
+            }
+        }
     }
 }
    
