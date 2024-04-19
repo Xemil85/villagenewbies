@@ -22,7 +22,7 @@ public partial class Reportage : ContentPage
         BookinReportage.ItemsSource = Varaukset;
         alueidenDictionary = new Dictionary<int, string>(); 
         InitializePicker();
-
+        this.BindingContext = this;
     }
 
     private async void InitializePicker()
@@ -36,26 +36,32 @@ public partial class Reportage : ContentPage
 
     public async Task LataaAlueet()
     {
-        var alueidenDictionary = await databaseAccess.HaeAlueet();
+        alueidenDictionary = await databaseAccess.HaeAlueet();
         AreaPicker.ItemsSource = alueidenDictionary.Values.ToList();
-        //if (alueidenDictionary.Count > 0)
-        //   AreaPicker.SelectedIndex = 0;
+        if (alueidenDictionary.Count > 0)
+          AreaPicker.SelectedIndex = 0;
     }
 
     private async void Varaustenhaku_Clicked(object sender, EventArgs e)
     {
         
-        if (AreaPicker.SelectedIndex != -1)
+        if (AreaPicker.SelectedIndex != -1 && AreaPicker.SelectedItem != null)
         {
+            
             var selectedAreaName = (string)AreaPicker.SelectedItem;
-            var selectedAreaId = alueidenDictionary.FirstOrDefault(x => x.Value == selectedAreaName).Key;
-            var alkuPvm = StartDatePicker.Date;
-            var loppuPvm = EndDatePicker.Date;
-            var varauksetLista = await databaseAccess.HaeVaraukset(selectedAreaId, alkuPvm, loppuPvm);
-            Varaukset.Clear();
-            foreach (var varausViewModel in varauksetLista)
+
+            if (alueidenDictionary.ContainsValue(selectedAreaName))
             {
-                Varaukset.Add(varausViewModel);
+                var selectedAreaId = alueidenDictionary.FirstOrDefault(x => x.Value == selectedAreaName).Key;
+                var alkuPvm = StartDatePicker.Date;
+                var loppuPvm = EndDatePicker.Date;
+                var varauksetLista = await databaseAccess.HaeVaraukset(selectedAreaId, alkuPvm, loppuPvm);
+                Varaukset.Clear();
+
+                foreach (var varausViewModel in varauksetLista)
+                {
+                    Varaukset.Add(varausViewModel);
+                }
             }
         }
        
