@@ -3,58 +3,54 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="VillageNewbies.Reportage"
              Title="Raportointi">
-    <VerticalStackLayout Spacing="20" Padding="30">
-        <Label 
-            Text="Varaustilanne"
-            VerticalOptions="Center" 
-            HorizontalOptions="Center" />
 
-        <HorizontalStackLayout Spacing="30">
+    <!-- ScrollView-asettelija lisätty -->
+    <ScrollView>
+        <VerticalStackLayout Padding="20" Spacing="20">
+            <!-- Otsikko keskitettynä ja suuremmalla fontilla -->
+            <Label 
+                Text="Varaustilanne"
+                FontSize="Large"
+                FontAttributes="Bold"
+                VerticalOptions="Center" 
+                HorizontalOptions="Center" />
 
-            <Picker x:Name="AreaPicker" Title="Valitse alue" 
-                    WidthRequest="100"/>
+            <!-- Asettelualueet ja painikkeet horisontaalisessa asettelussa -->
+            <HorizontalStackLayout Spacing="15">
+                <Picker x:Name="AreaPicker" WidthRequest="150"/>
+                <DatePicker x:Name="StartDatePicker" Format="dd-MM-yyyy" />
+                <DatePicker x:Name="EndDatePicker" Format="dd-MM-yyyy" />
+                <Button x:Name="Varaustenhaku" Text="Hae varaukset" Clicked="Varaustenhaku_Clicked" />
+                <Button x:Name="Palveluhaku" Text="Hae palvelut" Clicked="Palveluhaku_Clicked"/>
+            </HorizontalStackLayout>
 
-            <Label Text="Alkupäivämäärä:"/>
-            <DatePicker x:Name="StartDatePicker" Format="D"/>
+            <!-- Grid-asettelu sarakkeiden leveydellä "*" ja pienellä rivivälillä -->
+            <Grid RowSpacing="5">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <Label Text="Varaus id" FontSize="20" Grid.Column="0" TextDecorations="Underline" />
+                <Label Text="Mökin nimi" FontSize="20" Grid.Column="1" TextDecorations="Underline" />
+                <Label Text="Alkupäivä" FontSize="20" Grid.Column="2" TextDecorations="Underline" />
+                <Label Text="Loppupäivä" FontSize="20" Grid.Column="3" TextDecorations="Underline" />
+            </Grid>
 
-            <Label Text="Loppupäivämäärä:"/>
-            <DatePicker x:Name="EndDatePicker" Format="D"/>
-
-            <Button x:Name="Varaustenhaku" Text="Hae varaukset" Clicked="Varaustenhaku_Clicked" />
-            <Button x:Name="Palveluhaku" Text="Hae palvelut" Clicked="Palveluhaku_Clicked"/>
-
-
-        </HorizontalStackLayout>
-
-        
-
-        <Grid RowSpacing="10" Padding="20">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*" />
-                <ColumnDefinition Width="*" />
-                <ColumnDefinition Width="*" />
-                <ColumnDefinition Width="*" />                
-            </Grid.ColumnDefinitions>
-            <Label Text="Varaus id" FontSize="20" Grid.Column="0" TextDecorations="Underline" />
-            <Label Text="Mökin nimi" FontSize="20" Grid.Column="1" TextDecorations="Underline" />
-            <Label Text="Alkupäivä" FontSize="20" Grid.Column="2" TextDecorations="Underline" />
-            <Label Text="Loppupäivä" FontSize="20" Grid.Column="3" TextDecorations="Underline" />
-            
-        </Grid>
-
-        <CollectionView x:Name="BookinReportage" HeightRequest="200" ItemsSource="{Binding Varaukset}">
-            <CollectionView.ItemTemplate>
-                <DataTemplate>
-                    <Grid Padding="10" ColumnDefinitions="*,*,*,*">
-                        <Label Grid.Column="0" Text="{Binding Varaus.varaus_id}"/>
-                        <Label Grid.Column="1" Text="{Binding Mokkinimi}"/>
-                        <Label Grid.Column="2" Text="{Binding Varaus.varattu_alkupvm}"/>
-                        <Label Grid.Column="3" Text="{Binding Varaus.varattu_loppupvm}"/>                        
-             
-                    </Grid>
-                </DataTemplate>
-            </CollectionView.ItemTemplate>
-        </CollectionView>
-
-    </VerticalStackLayout>
+            <!-- CollectionView tietojen esittämiseen. Käytetään samaa Grid-asettelua kuin yläpuolella. -->
+            <CollectionView x:Name="BookinReportage" HeightRequest="500">
+                <CollectionView.ItemTemplate>
+                    <DataTemplate>
+                        <Grid Padding="10" ColumnSpacing="15" ColumnDefinitions="*,*,*,*">
+                            <Label Grid.Column="0" Text="{Binding Varaus.varaus_id}" FontSize="Small"/>
+                            <Label Grid.Column="1" Text="{Binding Mokkinimi}" FontSize="Small"/>
+                            <Label Grid.Column="2" Text="{Binding Varaus.varattu_alkupvm}" FontSize="Small"/>
+                            <Label Grid.Column="3" Text="{Binding Varaus.varattu_loppupvm}" FontSize="Small"/>
+                        </Grid>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+        </VerticalStackLayout>
+    </ScrollView>
 </ContentPage>
