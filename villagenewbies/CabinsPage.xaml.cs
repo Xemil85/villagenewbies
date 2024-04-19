@@ -71,7 +71,7 @@ namespace VillageNewbies.Views
             }
 
             // Siirryt‰‰n muokkaussivulle ja v‰litet‰‰n asiakas-olio konstruktorin kautta
-            await Navigation.PushAsync(new AddCabinPage(mokki));
+            await Navigation.PushAsync(new EditCabinPage(mokki));
         }
 
         private async void LisaaAlue_Clicked(object? sender, EventArgs e)
