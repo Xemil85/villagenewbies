@@ -10,11 +10,15 @@ public partial class AddCabinPage : ContentPage
     private DatabaseAccess databaseAccess = new DatabaseAccess();
     public ObservableCollection<Mokki> Mokit { get; private set; }
     private Mokki _mokki;
+    private Dictionary<int, string> _alueNimet = new Dictionary<int, string>();
+    private int? selectedAreaId;
 
     public AddCabinPage()
     {
         InitializeComponent();
         Mokit = new ObservableCollection<Mokki>();
+        Task.Run(LataaAlueet);
+        LataaAlueet();
     }
 
     public AddCabinPage(Mokki mokki) : this()
@@ -24,7 +28,7 @@ public partial class AddCabinPage : ContentPage
 
         if (_mokki != null)
         {
-            alue_id.Text = _mokki.alue_id.ToString();
+            AreaPicker.SelectedIndex = _mokki.alue_id;
             mokkinimi.Text = _mokki.mokkinimi;
             katuosoite.Text = _mokki.katuosoite;
             postinro.Text = _mokki.postinro.ToString();
@@ -40,8 +44,7 @@ public partial class AddCabinPage : ContentPage
         // jos kentät tyhjät ja yritetään tallentaa
         if 
             (
-            string.IsNullOrWhiteSpace(alue_id.Text) ||
-            !int.TryParse(alue_id.Text, out int parsedAlue_id) ||
+            AreaPicker.SelectedIndex == -1 ||
             string.IsNullOrWhiteSpace(mokkinimi.Text) ||
             string.IsNullOrWhiteSpace(katuosoite.Text) ||
             string.IsNullOrWhiteSpace(postinro.Text) ||
@@ -61,7 +64,7 @@ public partial class AddCabinPage : ContentPage
         var uusiMokki = new Mokki
         {
 
-            alue_id = int.Parse(alue_id.Text),
+            alue_id = selectedAreaId.Value,
             mokkinimi = mokkinimi.Text,
             katuosoite = katuosoite.Text,
             postinro = int.Parse(postinro.Text),
@@ -72,8 +75,9 @@ public partial class AddCabinPage : ContentPage
         };
 
         var databaseAccess = new DatabaseAccess();
+        await databaseAccess.LisaaMokkiTietokantaan(uusiMokki);
 
-        alue_id.Text = "";
+        AreaPicker.SelectedIndex = -1;
         mokkinimi.Text = "";
         katuosoite.Text = "";
         postinro.Text = "";
@@ -82,8 +86,30 @@ public partial class AddCabinPage : ContentPage
         henkilomaara.Text = "";
         varustelu.Text = "";
 
-        await databaseAccess.LisaaMokkiTietokantaan(uusiMokki);
         await Navigation.PopAsync();
+    }
+
+    private async void LataaAlueet()
+    {
+        var alueetAccess = new MokkiAccess(); // Oletetaan, että tämä luokka hakee tietokannasta
+        var alueet = await alueetAccess.FetchAllAlueAsync();
+
+        // Muunna haetut alueet sanakirjaksi
+        _alueNimet = alueet.ToDictionary(a => a.alue_id, a => a.nimi);
+        AreaPicker.ItemsSource = _alueNimet.Values.ToList();
+
+    }
+
+    private void OnAreaSelected(object sender, EventArgs e) // Lisää cabinsivulle
+    {
+        if (AreaPicker.SelectedIndex == -1)
+        {
+            selectedAreaId = null;
+            return;
+        }
+
+        var selectedAreaName = AreaPicker.SelectedItem.ToString();
+        selectedAreaId = _alueNimet.FirstOrDefault(x => x.Value == selectedAreaName).Key;
     }
 
     private async void TallennaMokki_Clicked(object sender, EventArgs e)
@@ -91,9 +117,9 @@ public partial class AddCabinPage : ContentPage
         var muokattavaMokki = new Mokki();
 
         // Tarkista alue_id ja päivitä, jos se on annettu ja se on kokonaisluku
-        if (!string.IsNullOrWhiteSpace(alue_id.Text) && int.TryParse(alue_id.Text, out int parsedAlueId))
+        if (AreaPicker.SelectedIndex == -1)
         {
-            muokattavaMokki.alue_id = parsedAlueId;
+            muokattavaMokki.alue_id = selectedAreaId.Value;
         }
 
         // Päivitä mokkinimi, jos se on annettu

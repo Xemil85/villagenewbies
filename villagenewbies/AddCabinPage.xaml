@@ -4,21 +4,20 @@
              x:Class="VillageNewbies.AddCabinPage"
              Title="Mökki">
 
-    <VerticalStackLayout>
+    <VerticalStackLayout VerticalOptions="Center">
         <Label 
             Text="Anna Mökin tiedot"
             VerticalOptions="Center" 
             HorizontalOptions="Center" />
 
-        <!-- Ohjeet alueiden ID:lle -->
-        <Label Text="1: Ylläs, 2: Ruka, 3: Pyhä, 4: Levi, 5: Syöte, 6: Vuokatti, 7: Tahko, 8: Himos"
-               VerticalOptions="Center"
-               HorizontalOptions="Center"
-               Margin="10"/>
-
         <HorizontalStackLayout>
-            <Entry x:Name="alue_id" Placeholder="AlueID" MinimumWidthRequest="300"
-                   HorizontalOptions="Center" Margin="30,10,0,0"/>
+            <Picker 
+                x:Name="AreaPicker"
+                Title="Valitse alue"
+                WidthRequest="200"
+                SelectedIndexChanged="OnAreaSelected"
+                Margin="30,10,0,0"
+            />
         </HorizontalStackLayout>
 
         <HorizontalStackLayout>
