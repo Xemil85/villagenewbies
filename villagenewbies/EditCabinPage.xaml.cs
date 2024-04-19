@@ -109,10 +109,11 @@ namespace VillageNewbies
                 {
                     command.Parameters.AddWithValue("@MokkiId", mokki_id);
                     var result = await command.ExecuteNonQueryAsync();
-                    return result > 0; 
+                    return result > 0; // palauttaa true jos yksi tai usempi rivi poistettiin
                 }
             }
         }
+
 
         private async Task<bool> PaivitaMokinTiedot(Mokki muokattuMokki)
         {

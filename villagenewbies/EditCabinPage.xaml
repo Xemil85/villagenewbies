@@ -5,11 +5,11 @@
 	<StackLayout Padding="20">
 		<Entry x:Name="mokkinimi" Placeholder="Mökin nimi" />
 		<Entry x:Name="katuosoite" Placeholder="Katuosoite" />
-		<Entry x:Name="postinro" Placeholder="Postinumero" Keyboard="Numeric" />
 		<Entry x:Name="hinta" Placeholder="Hinta" Keyboard="Numeric" />
 		<Editor x:Name="kuvaus" Placeholder="Kuvaus" />
 		<Entry x:Name="henkilomaara" Placeholder="Henkilömäärä" Keyboard="Numeric" />
 		<Editor x:Name="varustelu" Placeholder="Varustelu" />
+		<Entry x:Name="postinro" Placeholder="Postinumero" Keyboard="Numeric" IsEnabled="False" />
 
 		<Grid>
 			<Grid.ColumnDefinitions>
