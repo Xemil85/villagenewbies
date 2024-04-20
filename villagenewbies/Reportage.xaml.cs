@@ -14,13 +14,14 @@ public partial class Reportage : ContentPage
 
     private DatabaseAccess databaseAccess;
     public ObservableCollection<VarausViewModel> Varaukset { get; } = new ObservableCollection<VarausViewModel>();
-    private Dictionary<int, string> alueidenDictionary;
+    public ObservableCollection<PalveluViewModel> Palvelut { get; } = new ObservableCollection<PalveluViewModel>(); private Dictionary<int, string> alueidenDictionary;
     public Reportage()
     {
         InitializeComponent();
         databaseAccess = new DatabaseAccess();
         BookinReportage.ItemsSource = Varaukset;
-        alueidenDictionary = new Dictionary<int, string>(); 
+        ServiseReportage.ItemsSource = Palvelut;
+        alueidenDictionary = new Dictionary<int, string>();
         InitializePicker();
         this.BindingContext = this;
     }
@@ -39,15 +40,15 @@ public partial class Reportage : ContentPage
         alueidenDictionary = await databaseAccess.HaeAlueet();
         AreaPicker.ItemsSource = alueidenDictionary.Values.ToList();
         if (alueidenDictionary.Count > 0)
-          AreaPicker.SelectedIndex = 0;
+            AreaPicker.SelectedIndex = 0;
     }
 
     private async void Varaustenhaku_Clicked(object sender, EventArgs e)
     {
-        
+
         if (AreaPicker.SelectedIndex != -1 && AreaPicker.SelectedItem != null)
         {
-            
+
             var selectedAreaName = (string)AreaPicker.SelectedItem;
 
             if (alueidenDictionary.ContainsValue(selectedAreaName))
@@ -64,14 +65,37 @@ public partial class Reportage : ContentPage
                 }
             }
         }
-       
         else
         {
             await DisplayAlert("Virhe", "Valitse ensin alue.", "OK");
+        }    }
+
+    private async void Palveluhaku_Clicked(object sender, EventArgs e)
+    {
+        if (AreaPicker.SelectedIndex != -1 && AreaPicker.SelectedItem != null)
+        {
+
+            var selectedAreaName = (string)AreaPicker.SelectedItem;
+
+            if (alueidenDictionary.ContainsValue(selectedAreaName))
+            {
+                var selectedAreaId = alueidenDictionary.FirstOrDefault(x => x.Value == selectedAreaName).Key;
+                var alkuPvm = StartDatePicker.Date;
+                var loppuPvm = EndDatePicker.Date;
+                var palvelutLista = await databaseAccess.HaePalvelutVarauksille(selectedAreaId, alkuPvm, loppuPvm);
+                Palvelut.Clear();
+
+                foreach (var palvelu in palvelutLista)
+                {
+                    Palvelut.Add(palvelu);
+                }
+            }
+            else
+            {
+                DisplayAlert("Virhe", "Palveluiden haku ei ole vielä toteutettu.", "OK");
+            }
         }
     }
-
-
     public class DatabaseAccess
     {
         private readonly string connectionString;
@@ -151,13 +175,47 @@ public partial class Reportage : ContentPage
             return varaukset;
         }
 
-
-        
-    }   
-        private void Palveluhaku_Clicked(object sender, EventArgs e)
+        public async Task<List<PalveluViewModel>> HaePalvelutVarauksille(int alueId, DateTime startDate, DateTime endDate)
         {
-             DisplayAlert("Virhe", "Palveluiden haku ei ole vielä toteutettu.", "OK");
-        } 
-    
+            List<PalveluViewModel> palvelut = new List<PalveluViewModel>();
+            using (var connection = new MySqlConnection(connectionString))
+            {
+                await connection.OpenAsync();
+                var query = @"
+                SELECT vp.varaus_id, p.nimi, vp.lkm
+                FROM varauksen_palvelut vp
+                JOIN varaus v ON vp.varaus_id = v.varaus_id
+                JOIN mokki m ON v.mokki_mokki_id = m.mokki_id
+                JOIN palvelu p ON vp.palvelu_id = p.palvelu_id
+                WHERE m.alue_id = @AlueId
+                AND v.varattu_loppupvm >= @StartDate
+                AND v.varattu_alkupvm <= @EndDate";
+
+                using (var command = new MySqlCommand(query, connection))
+                {
+                    command.Parameters.AddWithValue("@AlueId", alueId);
+                    command.Parameters.AddWithValue("@StartDate", startDate);
+                    command.Parameters.AddWithValue("@EndDate", endDate);
+
+                    using (var reader = await command.ExecuteReaderAsync())
+                    {
+                        while (await reader.ReadAsync())
+                        {
+                            palvelut.Add(new PalveluViewModel
+                            {
+                                VarausId = reader.GetInt32("varaus_id"),
+                                PalvelunNimi = reader.GetString("nimi"),
+                                Lkm = reader.GetInt32("lkm")
+                            });
+                        }
+                    }
+                }
+                return palvelut;
+            }
+        }
+    }
 }
+
+
+
 

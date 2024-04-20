@@ -56,5 +56,35 @@
             </CollectionView.ItemTemplate>
         </CollectionView>
 
-    </VerticalStackLayout>
+           
+
+            
+            <Grid RowSpacing="10" Padding="20">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" />
+                    
+                </Grid.ColumnDefinitions>
+                <Label Text="Varaus id" FontSize="20" Grid.Column="0" TextDecorations="Underline" />
+                <Label Text="Lisäpalvelu" FontSize="20" Grid.Column="1" TextDecorations="Underline" />
+                <Label Text="lkm" FontSize="20" Grid.Column="2" TextDecorations="Underline" />
+               
+
+            </Grid>
+
+            <CollectionView x:Name="ServiseReportage" HeightRequest="200" ItemsSource="{Binding Palvelut}">
+                <CollectionView.ItemTemplate>
+                    <DataTemplate>
+                        <Grid Padding="10" ColumnDefinitions="*,*,*,*">
+                            <Label Grid.Column="0" Text="{Binding Varausid}"/>
+                            <Label Grid.Column="1" Text="{Binding PalveluNimi}"/>
+                            <Label Grid.Column="2" Text="{Binding Lkm}"/>
+                            
+
+                        </Grid>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+     </VerticalStackLayout>
 </ContentPage>

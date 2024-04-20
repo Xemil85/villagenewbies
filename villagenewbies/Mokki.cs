@@ -92,4 +92,11 @@ namespace VillageNewbies
         public string Mokkinimi { get; set; }
     }
 
+    public class PalveluViewModel
+    {
+        public int VarausId { get; set; }
+        public string PalvelunNimi { get; set; }
+        public int Lkm { get; set; }
+    }
+
 }
