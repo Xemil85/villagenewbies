@@ -1,4 +1,5 @@
 using MySql.Data.MySqlClient;
+using System.Data;
 using System.Diagnostics;
 using System.Text.RegularExpressions;
 
@@ -314,6 +315,42 @@ public partial class AddCustomerPage : ContentPage
 
         }
 
+
+        public async Task<string> HaeToimipaikkaPostinronPerusteella(string postinro)
+        {
+            string toimipaikka = "";
+            string projectDirectory = System.AppDomain.CurrentDomain.BaseDirectory;
+            var projectRoot = Path.GetFullPath(Path.Combine(projectDirectory, @"..\..\..\..\..\"));
+
+            DotNetEnv.Env.Load(projectRoot);
+            var env = Environment.GetEnvironmentVariables();
+            string connectionString = $"server={env["SERVER"]};port={env["SERVER_PORT"]};database={env["SERVER_DATABASE"]};user={env["SERVER_USER"]};password={env["SERVER_PASSWORD"]}";
+            using (var connection = new MySqlConnection(connectionString))
+            {
+                try
+                {
+                    await connection.OpenAsync();
+                    var query = "SELECT toimipaikka FROM posti WHERE postinro = @postinro;";
+                    using (var command = new MySqlCommand(query, connection))
+                    {
+                        command.Parameters.AddWithValue("@postinro", postinro);
+                        using (var reader = await command.ExecuteReaderAsync())
+                        {
+                            if (await reader.ReadAsync())
+                            {
+                                toimipaikka = reader.GetString("toimipaikka");
+                            }
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    // Käsittely mahdollisille poikkeuksille
+                    Console.WriteLine(ex.Message);
+                }
+            }
+            return toimipaikka;
+        }
 
         //asiakkaan poisto tietokannasta
         public async Task PoistaAsiakasTietokannasta(int asiakasId)
