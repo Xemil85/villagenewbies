@@ -18,9 +18,10 @@ public partial class CustomerPage : ContentPage
         LisaaAsiakas.Clicked += LisaaAsiakas_Clicked;
     }
 
-    private async void LisaaAsiakas_Clicked(object? sender, EventArgs e)
+    protected override void OnAppearing()
     {
-        await Navigation.PushAsync(new AddCustomerPage());
+        base.OnAppearing();
+        LoadAsiakaatAsync(); // P‰ivit‰ asiakaslista aina sivulle palattaessa
     }
 
     private async Task LoadAsiakaatAsync()
@@ -29,6 +30,7 @@ public partial class CustomerPage : ContentPage
         var asiakkaatList = await asiakkaatAccess.FetchAllAsiakasAsync();
         MainThread.InvokeOnMainThreadAsync(() =>
         {
+            Asiakkaat.Clear();
             foreach (var asiakas in asiakkaatList)
             {
                 Asiakkaat.Add(asiakas);
@@ -37,8 +39,10 @@ public partial class CustomerPage : ContentPage
         });
     }
 
-    // lis‰tty t‰h‰n asiakkaan tietojen muokkaus
-
+    private async void LisaaAsiakas_Clicked(object? sender, EventArgs e)
+    {
+        await Navigation.PushAsync(new AddCustomerPage());
+    }
     private async void MuokkaaAsiakasta_Clicked(object sender, EventArgs e)
     {
         if (!(sender is Button button)) return;
@@ -51,7 +55,7 @@ public partial class CustomerPage : ContentPage
         }
 
         // Siirryt‰‰n muokkaussivulle ja v‰litet‰‰n asiakas-olio konstruktorin kautta
-        await Navigation.PushAsync(new AddCustomerPage(asiakas));
+        await Navigation.PushAsync(new EditCustomerPage(asiakas));
     }
         
 

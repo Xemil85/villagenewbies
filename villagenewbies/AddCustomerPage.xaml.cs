@@ -7,18 +7,17 @@ namespace VillageNewbies;
 
 public partial class AddCustomerPage : ContentPage
 {
-    private Asiakas _asiakas; // Jäsenmuuttuja lisätään tässä, tämä lisätty koodi
+    private Asiakas _asiakas; 
 
     public AddCustomerPage()
     {
         InitializeComponent();
     }
-        //lisätty koodi
+    
 
     public AddCustomerPage(Asiakas asiakas) : this()
     {
             _asiakas = asiakas;
-        // Täytä kentät asiakkaan tiedoilla
 
         if (_asiakas != null)
         {
@@ -40,14 +39,52 @@ public partial class AddCustomerPage : ContentPage
     private async void LisaaAsiakas_Clicked(object sender, EventArgs e)
     {
         var puhelinnumero = puhelinnro.Text;
+        string toimipaikkaValue = toimipaikka.Text;
+
+        // Tarkistetaan, onko puhelinnumero tyhjä
+        if (string.IsNullOrWhiteSpace(puhelinnumero))
+        {
+            await DisplayAlert("Virheellinen puhelinnumero", "Syötä kelvollinen puhelinnumero.", "OK");
+            return;
+        }
+
+        // Tarkistetaan, sisältääkö puhelinnumero kirjaimia
+        if (!puhelinnumero.All(char.IsDigit))
+        {
+            await DisplayAlert("Virheellinen puhelinnumero", "Syötä kelvollinen puhelinnumero.", "OK");
+            return;
+        }
+
+        // Tarkistetaan puhelinnumeron muoto
         var puhelinnumeroRegex = new Regex(@"^(\+358\d{9}|0\d{9})$");
         var puhelinnumeroOK = puhelinnumeroRegex.IsMatch(puhelinnumero);
-
-        string toimipaikkaValue = toimipaikka.Text;
 
         if (!puhelinnumeroOK)
         {
             await DisplayAlert("Virheellinen puhelinnumero", "Syötä puhelinnumero muodossa +358451234567 tai 0451234567.", "OK");
+            return;
+        }
+
+        var postinumero = postinro.Text;
+
+        // Tarkistetaan, onko postinumero tyhjä
+        if (string.IsNullOrWhiteSpace(postinumero))
+        {
+            await DisplayAlert("Virheellinen postinumero", "Syötä kelvollinen postinumero.", "OK");
+            return;
+        }
+
+        // Tarkistetaan, sisältääkö postinumero kirjaimia
+        if (!postinumero.All(char.IsDigit))
+        {
+            await DisplayAlert("Virheellinen postinumero", "Postinumeron tulee olla numeerinen.", "OK");
+            return;
+        }
+
+        // Tarkistetaan postinumeron pituus
+        if (postinumero.Length != 5)
+        {
+            await DisplayAlert("Virheellinen postinumero", "Postinumeron tulee olla 5 numeron pituinen.", "OK");
             return;
         }
 
@@ -69,7 +106,6 @@ public partial class AddCustomerPage : ContentPage
             sukunimi = sukunimi.Text,
             lahiosoite = lähiosoite.Text,
             postinro = postinro.Text,
-            toimipaikka = toimipaikka.Text,
             email = sähköposti.Text,
             puhelinnro = puhelinnro.Text
         };
@@ -95,88 +131,11 @@ public partial class AddCustomerPage : ContentPage
         toimipaikka.Text = "";
         sähköposti.Text = "";
         puhelinnro.Text = "";
+
+        await Navigation.PopAsync();
     }
     
-    private async void TallennaAsiakkaanTietoja_Clicked(object sender, EventArgs e)
-    {
-        // Tarkistetaan, onko syötetty puhelinnumero oikeassa muodossa
-        var puhelinnumero = puhelinnro.Text;
-        var puhelinnumeroRegex = new Regex(@"^(\+358\d{9}|0\d{9})$");
-        var puhelinnumeroOK = puhelinnumeroRegex.IsMatch(puhelinnumero);
-        if (!puhelinnumeroOK)
-        {
-            await DisplayAlert("Virheellinen puhelinnumero", "Syötä puhelinnumero muodossa +358451234567 tai 0451234567.", "OK");
-            return;
-        }
-        
-        // Tarkistetaan, ettei mikään kenttä ole tyhjä
-        if (string.IsNullOrWhiteSpace(etunimi.Text) ||
-            string.IsNullOrWhiteSpace(sukunimi.Text) ||
-            string.IsNullOrWhiteSpace(lähiosoite.Text) ||
-            string.IsNullOrWhiteSpace(postinro.Text) ||
-            string.IsNullOrWhiteSpace (toimipaikka.Text) ||
-            string.IsNullOrWhiteSpace(sähköposti.Text) ||
-            string.IsNullOrWhiteSpace(puhelinnro.Text))
-        {
-            await DisplayAlert("Täyttämättömät tiedot", "Täytä kaikki asiakastiedot ennen lähettämistä.", "OK");
-            return;
-        }
-        
-        // Päivitetään _asiakas-olion tiedot
-        if (_asiakas == null)
-        {
-            _asiakas = new Asiakas();
-        }
-
-        _asiakas.etunimi = etunimi.Text;
-        _asiakas.sukunimi = sukunimi.Text;
-        _asiakas.lahiosoite = lähiosoite.Text;
-        _asiakas.postinro = postinro.Text;
-        _asiakas.toimipaikka = toimipaikka.Text;
-        _asiakas.email = sähköposti.Text;
-        _asiakas.puhelinnro = puhelinnro.Text;
-
-        var databaseAccess = new DatabaseAccess();
-        
-        // Tarkistetaan, onko asiakas jo olemassa tietokannassa
-        bool asiakasOlemassa = await databaseAccess.OnkoAsiakasOlemassa(_asiakas.puhelinnro);
-        if (!asiakasOlemassa || _asiakas.asiakas_id == 0)
-        {
-            await databaseAccess.LisaaAsiakasTietokantaan(_asiakas, toimipaikka.Text);
-            await DisplayAlert("Asiakas lisätty", "Uusi asiakas on onnistuneesti lisätty.", "OK");
-        }
-        else
-        {
-            await databaseAccess.TallennaAsiakasTietokantaan(_asiakas);
-            await DisplayAlert("Tiedot päivitetty", "Asiakkaan tiedot on päivitetty onnistuneesti.", "OK");
-        }
-        
-        // Tyhjennetään kentät
-        etunimi.Text = "";
-        sukunimi.Text = "";
-        lähiosoite.Text = "";
-        postinro.Text = "";
-        toimipaikka.Text = "";
-        sähköposti.Text = "";
-        puhelinnro.Text = "";
-
-        await Navigation.PopAsync(); // paluu edelliselle sivulle tallennuksen jälkeen
-    }
-   
-
-    // Asiakkaan poistaminen tietokannasta
-    private async void PoistaAsiakasTietokannasta_Clicked(object sender, EventArgs e)
-    {
-        var vastaus = await DisplayAlert("Vahvista poisto", "Haluatko varmasti poistaa tämän asiakkaan?", "Kyllä", "Ei");
-        if (vastaus)
-        {
-            var databaseAccess = new DatabaseAccess();
-            await databaseAccess.PoistaAsiakasTietokannasta(_asiakas.asiakas_id);
-            await DisplayAlert("Poistettu", "Asiakas on poistettu onnistuneesti.", "OK");
-            // Palaa tarvittaessa edelliselle sivulle
-            await Navigation.PopAsync();
-        }
-    }
+     
 
     public class DatabaseAccess
     {
@@ -242,8 +201,7 @@ public partial class AddCustomerPage : ContentPage
             }
         }
 
-
-        // Asiakkaan tietojen muokkaus
+  
 
         public async Task<bool> OnkoAsiakasOlemassa(string puhelinnro) // tarkistetaan, onk asiakas jo tietokannassa
         {
@@ -352,37 +310,6 @@ public partial class AddCustomerPage : ContentPage
             return toimipaikka;
         }
 
-        //asiakkaan poisto tietokannasta
-        public async Task PoistaAsiakasTietokannasta(int asiakasId)
-        {
-            string projectDirectory = System.AppDomain.CurrentDomain.BaseDirectory;
-            var projectRoot = Path.GetFullPath(Path.Combine(projectDirectory, @"..\..\..\..\..\"));
-
-            DotNetEnv.Env.Load(projectRoot);
-            var env = Environment.GetEnvironmentVariables();
-
-            string connectionString = $"server={env["SERVER"]};port={env["SERVER_PORT"]};database={env["SERVER_DATABASE"]};user={env["SERVER_USER"]};password={env["SERVER_PASSWORD"]}";
-            using (var connection = new MySqlConnection(connectionString))
-            {
-                try
-                {
-                    await connection.OpenAsync();
-
-                    var query = "DELETE FROM asiakas WHERE asiakas_id = @AsiakasId";
-
-                    using (var command = new MySqlCommand(query, connection))
-                    {
-                        command.Parameters.AddWithValue("@AsiakasId", asiakasId);
-                        await command.ExecuteNonQueryAsync();
-                    }
-                }
-                catch (Exception ex)
-                {
-                    // Käsittely mahdollisille poikkeuksille
-                    Console.WriteLine(ex.Message);
-                }
-            }
-        }
 
         public async Task<bool> OnkoPostinumeroOlemassa(string postinro)
         {
@@ -428,10 +355,7 @@ public partial class AddCustomerPage : ContentPage
                 }
             }
         }
-
-    }
-
-    
+    }   
 }
 
 

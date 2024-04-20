@@ -35,10 +35,6 @@
 
         <HorizontalStackLayout>
             <Button Text="Lisää Asiakas" Margin="30,10,0,0" Clicked="LisaaAsiakas_Clicked"/> 
-            <Button Text="Tallenna" Margin="30,10,0,0" Clicked="TallennaAsiakkaanTietoja_Clicked" />
-            <Button Text="Poista" Margin="30,10,0,0" Clicked="PoistaAsiakasTietokannasta_Clicked"/>
-
-
         </HorizontalStackLayout>
         
         
