@@ -8,16 +8,16 @@ public partial class BookingPage : ContentPage
     private DatabaseAccess databaseAccess = new DatabaseAccess();
     public ObservableCollection<Varaus> Varaukset { get; private set; }
     public BookingPage()
-	{
-		InitializeComponent();
+    {
+        InitializeComponent();
         Varaukset = new ObservableCollection<Varaus>();
         BookingsCollectionView.ItemsSource = Varaukset;
         LoadVaraukset();
-	}
+    }
 
     private async Task LoadVaraukset()
     {
-       
+
         var mokkiAccess = new MokkiAccess();
         var varausList = await mokkiAccess.FetchAllVarausAsync();
         MainThread.InvokeOnMainThreadAsync(() =>
@@ -39,6 +39,16 @@ public partial class BookingPage : ContentPage
 
             if (varaus != null)
             {
+
+                // Tarkista, onko lasku jo luotu tälle varaukselle
+                bool onkoLaskuLuotu = await databaseAccess.OnkoLaskuLuotu(varausId);
+                if (onkoLaskuLuotu)
+                {
+                    await DisplayAlert("Lasku on jo olemassa", "Tälle varaukselle on jo muodostettu lasku.", "OK");
+                    return; // Keskeytä, jos lasku on jo olemassa
+
+                }
+
                 // Tarkista, onko vahvistuspäivämäärä saavutettu
                 if (DateTime.Today >= varaus.vahvistus_pvm)
                 {
@@ -100,34 +110,52 @@ public partial class BookingPage : ContentPage
 
     public partial class DatabaseAccess
     {
-        public async Task<bool> PeruutaVarausTietokannasta(int varaus_id)
+        private readonly string connectionString;
+
+        public DatabaseAccess()
         {
             string projectDirectory = System.AppDomain.CurrentDomain.BaseDirectory;
             var projectRoot = Path.GetFullPath(Path.Combine(projectDirectory, @"..\..\..\..\..\"));
-
             DotNetEnv.Env.Load(projectRoot);
             var env = Environment.GetEnvironmentVariables();
 
-            string connectionString = $"server={env["SERVER"]};port={env["SERVER_PORT"]};database={env["SERVER_DATABASE"]};user={env["SERVER_USER"]};password={env["SERVER_PASSWORD"]}";
+            connectionString = $"server={env["SERVER"]};port={env["SERVER_PORT"]};database={env["SERVER_DATABASE"]};user={env["SERVER_USER"]};password={env["SERVER_PASSWORD"]}";
+        }
+
+        public async Task<bool> OnkoLaskuLuotu(int varaus_id)
+        {
+            using (var connection = new MySqlConnection(connectionString))
+            {
+                await connection.OpenAsync();
+                var query = "SELECT COUNT(1) FROM lasku WHERE varaus_id = @Varaus_id";
+
+                using (var command = new MySqlCommand(query, connection))
+                {
+                    command.Parameters.AddWithValue("@Varaus_id", varaus_id);
+                    var result = (long)await command.ExecuteScalarAsync();
+                    return result > 0;
+                }
+            }
+        }
+
+        public async Task<bool> PeruutaVarausTietokannasta(int varaus_id)
+        {
             using (var connection = new MySqlConnection(connectionString))
             {
                 try
                 {
                     await connection.OpenAsync();
-
                     var query = "update varaus set peruutettu = 1 where varaus_id = @Varaus_id";
 
                     using (var command = new MySqlCommand(query, connection))
                     {
                         command.Parameters.AddWithValue("@Varaus_id", varaus_id);
                         var result = await command.ExecuteNonQueryAsync();
-                        return result > 0; // palauttaa true jos yksi tai usempi rivi poistettiin
-
+                        return result > 0;
                     }
                 }
                 catch (Exception ex)
                 {
-                    // Käsittely mahdollisille poikkeuksille
                     Console.WriteLine(ex.Message);
                     return false;
                 }

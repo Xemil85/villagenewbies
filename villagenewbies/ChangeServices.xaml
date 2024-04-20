@@ -12,9 +12,9 @@
             HorizontalOptions="Center" FontSize="20" />
 
         <Entry x:Name="palvelunimi" TextColor="Black" Placeholder="Palvelun nimi" />
-        <Entry x:Name="Palvelutyyppi" TextColor="Black" Placeholder="Palvelun tyyppi" />
+        <Entry x:Name="Palvelutyyppi" Keyboard="Numeric" Placeholder="Palvelun tyyppi"/>
         <Entry x:Name="palvelukuvaus" TextColor="Black" Placeholder="Palvelun kuvaus" />
-        <Entry x:Name="palveluhinta" TextColor="Black" Placeholder="Palvelun hinta" />
+        <Entry x:Name="palveluhinta" Keyboard="Numeric" Placeholder="Palvelun hinta"/>
         <Button x:Name="TallennaPalvelu" Text="Tallenna" />
     </VerticalStackLayout>
 </toolkit:Popup>

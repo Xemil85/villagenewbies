@@ -38,19 +38,37 @@
                 <Label Text="Loppupäivä" FontSize="20" Grid.Column="3" TextDecorations="Underline" />
             </Grid>
 
-            <!-- CollectionView tietojen esittämiseen. Käytetään samaa Grid-asettelua kuin yläpuolella. -->
-            <CollectionView x:Name="BookinReportage" HeightRequest="500">
+        <CollectionView x:Name="BookinReportage" HeightRequest="200" ItemsSource="{Binding Varaukset}">
+            <CollectionView.ItemTemplate>
+                <DataTemplate>
+                    <Grid Padding="10" ColumnDefinitions="*,*,*,*">
+                        <Label Grid.Column="0" Text="{Binding Varaus.varaus_id}"/>
+                        <Label Grid.Column="1" Text="{Binding Mokkinimi}"/>
+                        <Label Grid.Column="2" Text="{Binding Varaus.varattu_alkupvm}"/>
+                        <Label Grid.Column="3" Text="{Binding Varaus.varattu_loppupvm}"/>                        
+             
+                    </Grid>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+
+            <Label Text="Palvelutiedot" FontSize="20" HorizontalOptions="Center" />
+
+         <CollectionView x:Name="ServicesReportage" HeightRequest="200" ItemsSource="{Binding Palvelut}">
                 <CollectionView.ItemTemplate>
                     <DataTemplate>
-                        <Grid Padding="10" ColumnSpacing="15" ColumnDefinitions="*,*,*,*">
-                            <Label Grid.Column="0" Text="{Binding Varaus.varaus_id}" FontSize="Small"/>
-                            <Label Grid.Column="1" Text="{Binding Mokkinimi}" FontSize="Small"/>
-                            <Label Grid.Column="2" Text="{Binding Varaus.varattu_alkupvm}" FontSize="Small"/>
-                            <Label Grid.Column="3" Text="{Binding Varaus.varattu_loppupvm}" FontSize="Small"/>
+                        <Grid Padding="10" ColumnDefinitions="*,*,*">
+                            <Label Grid.Column="0" Text="{Binding VarausId}"/>
+                            <Label Grid.Column="1" Text="{Binding PalvelunNimi}"/>
+                            <Label Grid.Column="2" Text="{Binding Lkm}"/>
                         </Grid>
                     </DataTemplate>
                 </CollectionView.ItemTemplate>
             </CollectionView>
+
+
+
         </VerticalStackLayout>
+
     </ScrollView>
 </ContentPage>
