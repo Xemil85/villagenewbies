@@ -6,14 +6,16 @@ namespace VillageNewbies;
 public partial class AddServicesPage : ContentPage
 {
     private Dictionary<int, string> _alueNimet = new Dictionary<int, string>();
+    private Dictionary<int, string> _tyyppiNimet = new Dictionary<int, string>();
     private int? selectedAreaId;
+    private int? selectedTypeId;
     public AddServicesPage()
 	{
 		InitializeComponent();
         //AreaPicker.ItemsSource = ladatutAlueet.Select(a => a.nimi).ToList();
-        Task.Run(LataaAlueet);
         Lisaapalvelu.Clicked += Lisaapalvelu_Clicked;
         LataaAlueet();
+        lataaTyypit();
     }
 
     private async void LataaAlueet()
@@ -25,6 +27,15 @@ public partial class AddServicesPage : ContentPage
         _alueNimet = alueet.ToDictionary(a => a.alue_id, a => a.nimi);
         AreaPicker.ItemsSource = _alueNimet.Values.ToList();
         
+    }
+
+    private async void lataaTyypit()
+    {
+        var tyyppiAccess = new MokkiAccess(); // Oletetaan, että tämä luokka hakee tietokannasta
+        var tyypit = await tyyppiAccess.FetchAllPalveluTyypitAsync();
+
+        _tyyppiNimet = tyypit.ToDictionary(a => a.tyyppi, a => a.nimi);
+        TypePicker.ItemsSource = _tyyppiNimet.Values.ToList();
     }
 
     private async void Lisaapalvelu_Clicked(object? sender, EventArgs e)
@@ -43,21 +54,31 @@ public partial class AddServicesPage : ContentPage
         {
             alue_id = selectedAreaId.Value,
             nimi = palvelunimi.Text,
-            tyyppi = int.Parse(Palvelutyyppi.Text),
+            tyyppi = selectedTypeId.Value,
             kuvaus = palvelukuvaus.Text,
             hinta = double.Parse(palveluhinta.Text),
             alv = 24.00
         };
 
         var databaseAccess = new DatabaseAccess();
-        await databaseAccess.LisaaPalveluTietokantaan(uusiPalvelu);
-        await DisplayAlert("Palvelu lisätty", "Uusi palvelu on onnistuneesti lisätty.", "OK");
+        bool success = await databaseAccess.LisaaPalveluTietokantaan(uusiPalvelu);
+
+        if (success)
+        {
+            await DisplayAlert("Palvelu lisätty", "Uusi palvelu on onnistuneesti lisätty.", "OK");
+        } else
+        {
+            await DisplayAlert("Virhe", "Palvelun lisääminen epäonnistui.", "OK");
+        }
+        
 
         AreaPicker.SelectedIndex = -1;
         palvelunimi.Text = "";
-        Palvelutyyppi.Text = "";
+        TypePicker.SelectedIndex = -1;
         palvelukuvaus.Text = "";
         palveluhinta.Text = "";
+
+        await Navigation.PopAsync();
     }
 
     private void OnAreaSelected(object sender, EventArgs e) // Lisää cabinsivulle
@@ -72,9 +93,21 @@ public partial class AddServicesPage : ContentPage
         selectedAreaId = _alueNimet.FirstOrDefault(x => x.Value == selectedAreaName).Key;
     }
 
+    private void OnTypeSelected(object sender, EventArgs e)
+    {
+        if (TypePicker.SelectedIndex == -1)
+        {
+            selectedTypeId = null;
+            return;
+        }
+
+        var selectedTypeName = TypePicker.SelectedItem.ToString();
+        selectedTypeId = _tyyppiNimet.FirstOrDefault(x => x.Value == selectedTypeName).Key;
+    }
+
     public class DatabaseAccess
     {
-        public async Task LisaaPalveluTietokantaan(Palvelu uusiPalvelu)
+        public async Task<bool> LisaaPalveluTietokantaan(Palvelu uusiPalvelu)
         {
             string projectDirectory = System.AppDomain.CurrentDomain.BaseDirectory;
             var projectRoot = Path.GetFullPath(Path.Combine(projectDirectory, @"..\..\..\..\..\"));
@@ -101,12 +134,14 @@ public partial class AddServicesPage : ContentPage
                         command.Parameters.AddWithValue("@Alv", uusiPalvelu.alv);
 
                         await command.ExecuteNonQueryAsync();
+                        return true;
                     }
                 }
                 catch (Exception ex)
                 {
                     // Käsittely mahdollisille poikkeuksille
                     Debug.WriteLine(ex.Message);
+                    return false;
                 }
             }
         }
