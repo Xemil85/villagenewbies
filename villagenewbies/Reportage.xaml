@@ -52,5 +52,23 @@
             </CollectionView.ItemTemplate>
         </CollectionView>
 
-    </VerticalStackLayout>
+            <Label Text="Palvelutiedot" FontSize="20" HorizontalOptions="Center" />
+
+         <CollectionView x:Name="ServicesReportage" HeightRequest="200" ItemsSource="{Binding Palvelut}">
+                <CollectionView.ItemTemplate>
+                    <DataTemplate>
+                        <Grid Padding="10" ColumnDefinitions="*,*,*">
+                            <Label Grid.Column="0" Text="{Binding VarausId}"/>
+                            <Label Grid.Column="1" Text="{Binding PalvelunNimi}"/>
+                            <Label Grid.Column="2" Text="{Binding Lkm}"/>
+                        </Grid>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+
+
+
+        </VerticalStackLayout>
+
+    </ScrollView>
 </ContentPage>
