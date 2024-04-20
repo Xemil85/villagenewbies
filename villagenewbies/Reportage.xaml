@@ -7,13 +7,6 @@
     <!-- ScrollView-asettelija lisätty -->
     <ScrollView>
         <VerticalStackLayout Padding="20" Spacing="20">
-            <!-- Otsikko keskitettynä ja suuremmalla fontilla -->
-            <Label 
-                Text="Varaustilanne"
-                FontSize="Large"
-                FontAttributes="Bold"
-                VerticalOptions="Center" 
-                HorizontalOptions="Center" />
 
             <!-- Asettelualueet ja painikkeet horisontaalisessa asettelussa -->
             <HorizontalStackLayout Spacing="15">
@@ -38,23 +31,34 @@
                 <Label Text="Loppupäivä" FontSize="20" Grid.Column="3" TextDecorations="Underline" />
             </Grid>
 
-        <CollectionView x:Name="BookinReportage" HeightRequest="200" ItemsSource="{Binding Varaukset}">
-            <CollectionView.ItemTemplate>
-                <DataTemplate>
-                    <Grid Padding="10" ColumnDefinitions="*,*,*,*">
-                        <Label Grid.Column="0" Text="{Binding Varaus.varaus_id}"/>
-                        <Label Grid.Column="1" Text="{Binding Mokkinimi}"/>
-                        <Label Grid.Column="2" Text="{Binding Varaus.varattu_alkupvm}"/>
-                        <Label Grid.Column="3" Text="{Binding Varaus.varattu_loppupvm}"/>                        
-             
-                    </Grid>
-                </DataTemplate>
-            </CollectionView.ItemTemplate>
-        </CollectionView>
+            <!-- Varaukset CollectionView -->
+            <CollectionView x:Name="BookinReportage" HeightRequest="200" ItemsSource="{Binding Varaukset}">
+                <CollectionView.ItemTemplate>
+                    <DataTemplate>
+                        <Grid Padding="10" ColumnDefinitions="*,*,*,*">
+                            <Label Grid.Column="0" Text="{Binding Varaus.varaus_id}"/>
+                            <Label Grid.Column="1" Text="{Binding Mokkinimi}"/>
+                            <Label Grid.Column="2" Text="{Binding Varaus.varattu_alkupvm}"/>
+                            <Label Grid.Column="3" Text="{Binding Varaus.varattu_loppupvm}"/>
+                        </Grid>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
 
-            <Label Text="Palvelutiedot" FontSize="20" HorizontalOptions="Center" />
+            <!-- Otsikot Palvelutiedot-alueelle -->
+            <Grid RowSpacing="5">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <Label Text="Varaus id" FontSize="Small" Grid.Column="0" />
+                <Label Text="Palvelun nimi" FontSize="Small" Grid.Column="1" />
+                <Label Text="Lkm" FontSize="Small" Grid.Column="2" />
+            </Grid>
 
-         <CollectionView x:Name="ServicesReportage" HeightRequest="200" ItemsSource="{Binding Palvelut}">
+            <!-- Palvelut CollectionView sisältäen ScrollViewer -->
+            <CollectionView x:Name="ServicesReportage" ItemsSource="{Binding Palvelut}">
                 <CollectionView.ItemTemplate>
                     <DataTemplate>
                         <Grid Padding="10" ColumnDefinitions="*,*,*">
@@ -66,9 +70,6 @@
                 </CollectionView.ItemTemplate>
             </CollectionView>
 
-
-
         </VerticalStackLayout>
-
     </ScrollView>
 </ContentPage>

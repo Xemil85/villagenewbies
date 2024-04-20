@@ -34,7 +34,7 @@ namespace VillageNewbies
             _asiakas.sukunimi = sukunimiEntry.Text;
             _asiakas.lahiosoite = lahiosoiteEntry.Text;
             _asiakas.postinro = postinumeroEntry.Text;
-            _asiakas.toimipaikka = toimipaikkaEntry.Text; // Tarvittaessa päivitä toimipaikka
+            _asiakas.toimipaikka = toimipaikkaEntry.Text; 
             _asiakas.puhelinnro = puhelinnumeroEntry.Text;
             _asiakas.email = sahkopostiEntry.Text;
 
