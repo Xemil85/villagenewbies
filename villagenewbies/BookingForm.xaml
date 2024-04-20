@@ -18,6 +18,8 @@
         <Entry x:Name="Etunimi" WidthRequest="300" Placeholder="Etunimi" />
         <Entry x:Name="Sukunimi" WidthRequest="300" Placeholder="Sukunimi" />
         <Entry x:Name="Lahiosoite" WidthRequest="300" Placeholder="Lähiosoite" />
+        <Entry x:Name="Postinro" WidthRequest="300" Placeholder="Postinumero" />
+        <Entry x:Name="Toimipaikka" WidthRequest="300" Placeholder="Toimipaikka" />
         <Entry x:Name="Puhelin" WidthRequest="300" Placeholder="Puhelinnumero" />
         <Button x:Name="TeeVaraus" Text="Tee varaus" WidthRequest="300" />
 
