@@ -1,318 +1,217 @@
 using Microsoft.Maui.Controls;
 using MySql.Data.MySqlClient;
+using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
+using System.IO;
+using System.Linq;
+using System.Threading.Tasks;
 
-namespace VillageNewbies;
-
-public partial class AddCabinPage : ContentPage
+namespace VillageNewbies
 {
-    private DatabaseAccess databaseAccess = new DatabaseAccess();
-    public ObservableCollection<Mokki> Mokit { get; private set; }
-    private Mokki _mokki;
-    private Dictionary<int, string> _alueNimet = new Dictionary<int, string>();
-    private int? selectedAreaId;
-
-    public AddCabinPage()
+    public partial class AddCabinPage : ContentPage
     {
-        InitializeComponent();
-        Mokit = new ObservableCollection<Mokki>();
-        Task.Run(LataaAlueet);
-        LataaAlueet();
-    }
-
-    public AddCabinPage(Mokki mokki) : this()
-    {
-        _mokki = mokki;
-        // T‰yt‰ kent‰t mˆkin tiedoilla
-
-        if (_mokki != null)
+        private DatabaseAccess databaseAccess = new DatabaseAccess();
+        public ObservableCollection<Mokki> Mokit { get; private set; }
+        private Mokki _mokki;
+        private Dictionary<int, string> _alueNimet = new Dictionary<int, string>();
+        private Dictionary<string, string> _aluePostinumerot = new Dictionary<string, string>()
         {
-            AreaPicker.SelectedIndex = _mokki.alue_id;
-            mokkinimi.Text = _mokki.mokkinimi;
-            katuosoite.Text = _mokki.katuosoite;
-            postinro.Text = _mokki.postinro.ToString();
-            hinta.Text = _mokki.hinta.ToString();
-            kuvaus.Text = _mokki.kuvaus;
-            henkilomaara.Text = _mokki.henkilomaara.ToString();
-            varustelu.Text = _mokki.varustelu.ToString();
-        }
-    }
-
-    private async void LisaaMokki_Clicked(object sender, EventArgs e)
-    {
-        // jos kent‰t tyhj‰t ja yritet‰‰n tallentaa
-        if 
-            (
-            AreaPicker.SelectedIndex == -1 ||
-            string.IsNullOrWhiteSpace(mokkinimi.Text) ||
-            string.IsNullOrWhiteSpace(katuosoite.Text) ||
-            string.IsNullOrWhiteSpace(postinro.Text) ||
-            !int.TryParse(postinro.Text, out int parsedPostinro) ||
-            string.IsNullOrWhiteSpace(hinta.Text) ||
-            !double.TryParse(hinta.Text, System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture, out double parsedHinta) ||
-            string.IsNullOrWhiteSpace(henkilomaara.Text) ||
-            !int.TryParse(henkilomaara.Text, out int parsedHenkilomaara) ||
-            string.IsNullOrWhiteSpace(kuvaus.Text) ||
-            string.IsNullOrWhiteSpace(varustelu.Text))
-
-        {// N‰yt‰ virheviesti tai k‰sittele virhetilanne t‰ss‰
-            await DisplayAlert("T‰ytt‰m‰ttˆm‰t tiedot", "T‰yt‰ kaikki tiedot ennen l‰hett‰mist‰.", "Ok");
-            return; // Lopeta metodin suoritus t‰h‰n
-        }
-
-        var uusiMokki = new Mokki
-        {
-
-            alue_id = selectedAreaId.Value,
-            mokkinimi = mokkinimi.Text,
-            katuosoite = katuosoite.Text,
-            postinro = int.Parse(postinro.Text),
-            hinta = double.Parse(hinta.Text),
-            kuvaus = kuvaus.Text,
-            henkilomaara = int.Parse(henkilomaara.Text),
-            varustelu = varustelu.Text
+            {"Yll‰s", "95980"},
+            {"Ruka", "93830"},
+            {"Pyh‰", "98530"},
+            {"Levi", "99130"},
+            {"Syˆte", "93280"},
+            {"Vuokatti", "88610"},
+            {"Tahko", "73310"},
+            {"Himos", "42100"}
         };
+        private int? selectedAreaId;
+        private bool postinroUpdatedAutomatically = false;
 
-        var databaseAccess = new DatabaseAccess();
-        await databaseAccess.LisaaMokkiTietokantaan(uusiMokki);
-
-        AreaPicker.SelectedIndex = -1;
-        mokkinimi.Text = "";
-        katuosoite.Text = "";
-        postinro.Text = "";
-        hinta.Text = "";
-        kuvaus.Text = "";
-        henkilomaara.Text = "";
-        varustelu.Text = "";
-
-        await Navigation.PopAsync();
-    }
-
-    private async void LataaAlueet()
-    {
-        var alueetAccess = new MokkiAccess(); // Oletetaan, ett‰ t‰m‰ luokka hakee tietokannasta
-        var alueet = await alueetAccess.FetchAllAlueAsync();
-
-        // Muunna haetut alueet sanakirjaksi
-        _alueNimet = alueet.ToDictionary(a => a.alue_id, a => a.nimi);
-        AreaPicker.ItemsSource = _alueNimet.Values.ToList();
-
-    }
-
-    private void OnAreaSelected(object sender, EventArgs e) // Lis‰‰ cabinsivulle
-    {
-        if (AreaPicker.SelectedIndex == -1)
+        public AddCabinPage()
         {
-            selectedAreaId = null;
-            return;
+            InitializeComponent();
+            Mokit = new ObservableCollection<Mokki>();
+            Task.Run(LataaAlueet);
+            LataaAlueet();
+
+            // Lis‰t‰‰n k‰sittelij‰ postinumero-kent‰lle
+            postinro.TextChanged += Postinro_TextChanged;
         }
 
-        var selectedAreaName = AreaPicker.SelectedItem.ToString();
-        selectedAreaId = _alueNimet.FirstOrDefault(x => x.Value == selectedAreaName).Key;
-    }
-
-    private async void TallennaMokki_Clicked(object sender, EventArgs e)
-    {
-        var muokattavaMokki = new Mokki();
-
-        // Tarkista alue_id ja p‰ivit‰, jos se on annettu ja se on kokonaisluku
-        if (AreaPicker.SelectedIndex == -1)
+        public AddCabinPage(Mokki mokki) : this()
         {
-            muokattavaMokki.alue_id = selectedAreaId.Value;
+            _mokki = mokki;
+
+
+            if (_mokki != null)
+            {
+                AreaPicker.SelectedIndex = _mokki.alue_id;
+                mokkinimi.Text = _mokki.mokkinimi;
+                katuosoite.Text = _mokki.katuosoite;
+                postinro.Text = _mokki.postinro.ToString();
+                hinta.Text = _mokki.hinta.ToString();
+                kuvaus.Text = _mokki.kuvaus;
+                henkilomaara.Text = _mokki.henkilomaara.ToString();
+                varustelu.Text = _mokki.varustelu.ToString();
+            }
         }
 
-        // P‰ivit‰ mokkinimi, jos se on annettu
-        if (!string.IsNullOrWhiteSpace(mokkinimi.Text))
+        private async void LisaaMokki_Clicked(object sender, EventArgs e)
         {
-            muokattavaMokki.mokkinimi = mokkinimi.Text;
-        }
+            // jos kent‰t tyhj‰t ja yritet‰‰n tallentaa
+            if
+                (
+                AreaPicker.SelectedIndex == -1 ||
+                string.IsNullOrWhiteSpace(mokkinimi.Text) ||
+                string.IsNullOrWhiteSpace(katuosoite.Text) ||
+                string.IsNullOrWhiteSpace(postinro.Text) ||
+                !int.TryParse(postinro.Text, out int parsedPostinro) ||
+                string.IsNullOrWhiteSpace(hinta.Text) ||
+                !double.TryParse(hinta.Text, System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture, out double parsedHinta) ||
+                string.IsNullOrWhiteSpace(henkilomaara.Text) ||
+                !int.TryParse(henkilomaara.Text, out int parsedHenkilomaara) ||
+                string.IsNullOrWhiteSpace(kuvaus.Text) ||
+                string.IsNullOrWhiteSpace(varustelu.Text))
 
-        // P‰ivit‰ katuosoite, jos se on annettu
-        if (!string.IsNullOrWhiteSpace(katuosoite.Text))
-        {
-            muokattavaMokki.katuosoite = katuosoite.Text;
-        }
+            {// N‰yt‰ virheviesti tai k‰sittele virhetilanne t‰ss‰
+                await DisplayAlert("T‰ytt‰m‰ttˆm‰t tiedot", "T‰yt‰ kaikki tiedot ennen l‰hett‰mist‰.", "Ok");
+                return; // Lopeta metodin suoritus t‰h‰n
+            }
 
-        // Varmista, ett‰ postinro on kokonaisluku ja p‰ivit‰
-        if (!string.IsNullOrWhiteSpace(postinro.Text) && int.TryParse(postinro.Text, out int parsedPostinro))
-        {
-            muokattavaMokki.postinro = parsedPostinro;
-        }
+            var uusiMokki = new Mokki
+            {
 
-        // Varmista, ett‰ hinta on desimaaliluku ja p‰ivit‰
-        if (!string.IsNullOrWhiteSpace(hinta.Text) && double.TryParse(hinta.Text, out double parsedHinta))
-        {
-            muokattavaMokki.hinta = parsedHinta;
-        }
+                alue_id = selectedAreaId.Value,
+                mokkinimi = mokkinimi.Text,
+                katuosoite = katuosoite.Text,
+                postinro = int.Parse(postinro.Text),
+                hinta = double.Parse(hinta.Text),
+                kuvaus = kuvaus.Text,
+                henkilomaara = int.Parse(henkilomaara.Text),
+                varustelu = varustelu.Text
+            };
 
-        // Varmista, ett‰ henkilomaara on kokonaisluku ja p‰ivit‰
-        if (!string.IsNullOrWhiteSpace(henkilomaara.Text) && int.TryParse(henkilomaara.Text, out int parsedHenkilomaara))
-        {
-            muokattavaMokki.henkilomaara = parsedHenkilomaara;
-        }
-
-        // P‰ivit‰ kuvaus, jos se on annettu
-        if (!string.IsNullOrWhiteSpace(kuvaus.Text))
-        {
-            muokattavaMokki.kuvaus = kuvaus.Text;
-        }
-
-        // P‰ivit‰ varustelu, jos se on annettu
-        if (!string.IsNullOrWhiteSpace(varustelu.Text))
-        {
-            muokattavaMokki.varustelu = varustelu.Text;
-        }
-
-        // P‰ivitet‰‰n _mokki-olion tiedot
-        if (muokattavaMokki == null)
-        {
-            muokattavaMokki = new Mokki();
-        }
-
-        // Kutsutaan DatabaseAccess-luokan p‰ivitysmetodia
-        var success = await databaseAccess.PaivitaMokinTiedot(muokattavaMokki);
-        if (success)
-        {
-            await DisplayAlert("Onnistui", "Mˆkin tiedot tallennettu onnistuneesti.", "OK");
-            // T‰ss‰ kohtaa voit p‰ivitt‰‰ k‰yttˆliittym‰n tai navigoida takaisin p‰‰sivulle
-        }
-        else
-        {
-            await DisplayAlert("Virhe", "Mˆkin tietojen tallentaminen ep‰onnistui.", "OK");
-        }
-        await Navigation.PopAsync();
-    }
-
-    private async void PoistaMokki_Clicked(object sender, EventArgs e)
-    {
-        var vastaus = await DisplayAlert("Vahvista poisto", "Haluatko varmasti poistaa t‰m‰n Mˆkin?", "Kyll‰", "Ei");
-        if (vastaus)
-        {
             var databaseAccess = new DatabaseAccess();
-            await databaseAccess.PoistaMokkiTietokannasta(_mokki.mokki_id);
-            await DisplayAlert("Poistettu", "Mˆkki on poistettu onnistuneesti.", "OK");
+            bool success = await databaseAccess.LisaaMokkiTietokantaan(uusiMokki);
+
+            if (success)
+            {
+                await DisplayAlert("Onnistui", "Mˆkin lis‰‰minen onnistui!", "Ok");
+            }
+            else
+            {
+                await DisplayAlert("Virhe", "Mˆkin lis‰‰minen ep‰onnistui. Yrit‰ uudelleen.", "Ok");
+            }
+
+            AreaPicker.SelectedIndex = -1;
+            mokkinimi.Text = "";
+            katuosoite.Text = "";
+            postinro.Text = "";
+            hinta.Text = "";
+            kuvaus.Text = "";
+            henkilomaara.Text = "";
+            varustelu.Text = "";
+
             await Navigation.PopAsync();
         }
-    }
 
-    public partial class DatabaseAccess
-    {
-        public async Task LisaaMokkiTietokantaan(Mokki uusiMokki)
+        private async void LataaAlueet()
         {
-            string projectDirectory = System.AppDomain.CurrentDomain.BaseDirectory;
-            var projectRoot = Path.GetFullPath(Path.Combine(projectDirectory, @"..\..\..\..\..\"));
+            var alueetAccess = new MokkiAccess();
+            var alueet = await alueetAccess.FetchAllAlueAsync();
 
-            DotNetEnv.Env.Load(projectRoot);
-            var env = Environment.GetEnvironmentVariables();
+            // Muunna haetut alueet sanakirjaksi
+            _alueNimet = alueet.ToDictionary(a => a.alue_id, a => a.nimi);
+            AreaPicker.ItemsSource = _alueNimet.Values.ToList();
 
-            string connectionString = $"server={env["SERVER"]};port={env["SERVER_PORT"]};database={env["SERVER_DATABASE"]};user={env["SERVER_USER"]};password={env["SERVER_PASSWORD"]}";
-            using (var connection = new MySqlConnection(connectionString))
+        }
+
+        private void Postinro_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            // Jos postinumero on p‰ivitetty automaattisesti alueen valinnan perusteella,
+            // estet‰‰n k‰ytt‰j‰‰ muokkaamasta sit‰ manuaalisesti.
+            if (postinroUpdatedAutomatically)
             {
-                try
-                {
-                    await connection.OpenAsync();
+                postinroUpdatedAutomatically = false;
+                return;
+            }
 
-                    var query = "INSERT INTO mokki (mokki_id, alue_id, mokkinimi, katuosoite, postinro, hinta, kuvaus,henkilomaara, varustelu)  VALUES (@Mokki_id, @Alue_id, @Mokkinimi, @Katuosoite, @Postinro, @Hinta, @Kuvaus, @Henkilomaara, @Varustelu)";
-
-                    using (var command = new MySqlCommand(query, connection))
-                    {
-                        Debug.WriteLine(uusiMokki.postinro);
-                        command.Parameters.AddWithValue("@Mokki_id", uusiMokki.mokki_id);
-                        command.Parameters.AddWithValue("@Alue_id", uusiMokki.alue_id);
-                        command.Parameters.AddWithValue("@Mokkinimi", uusiMokki.mokkinimi);
-                        command.Parameters.AddWithValue("@Katuosoite", uusiMokki.katuosoite);
-                        command.Parameters.AddWithValue("@Postinro", uusiMokki.postinro);
-                        command.Parameters.AddWithValue("@Hinta", uusiMokki.hinta);
-                        command.Parameters.AddWithValue("@Henkilomaara", uusiMokki.henkilomaara);
-                        command.Parameters.AddWithValue("@Kuvaus", uusiMokki.kuvaus);
-                        command.Parameters.AddWithValue("@Varustelu", uusiMokki.varustelu);
-                        await command.ExecuteNonQueryAsync();
-                    }
-                }
-                catch (Exception ex)
+            // Jos postinumeroa ei p‰ivitetty automaattisesti, estet‰‰n sen muokkaaminen.
+            // Asetetaan postinumero takaisin valitun alueen postinumeroksi.
+            if (AreaPicker.SelectedIndex != -1)
+            {
+                var selectedAreaName = AreaPicker.SelectedItem.ToString();
+                if (_aluePostinumerot.ContainsKey(selectedAreaName))
                 {
-                    // K‰sittely mahdollisille poikkeuksille
-                    Debug.WriteLine(ex.Message);
+                    postinroUpdatedAutomatically = true;
+                    postinro.Text = _aluePostinumerot[selectedAreaName];
                 }
             }
         }
 
-        public async Task<bool> PoistaMokkiTietokannasta(int mokki_id)
+        private void OnAreaSelected(object sender, EventArgs e)
         {
-            string projectDirectory = System.AppDomain.CurrentDomain.BaseDirectory;
-            var projectRoot = Path.GetFullPath(Path.Combine(projectDirectory, @"..\..\..\..\..\"));
-
-            DotNetEnv.Env.Load(projectRoot);
-            var env = Environment.GetEnvironmentVariables();
-
-            string connectionString = $"server={env["SERVER"]};port={env["SERVER_PORT"]};database={env["SERVER_DATABASE"]};user={env["SERVER_USER"]};password={env["SERVER_PASSWORD"]}";
-            using (var connection = new MySqlConnection(connectionString))
+            if (AreaPicker.SelectedIndex == -1)
             {
-                try
-                {
-                    await connection.OpenAsync();
+                selectedAreaId = null;
+                return;
+            }
 
-                    var query = "DELETE FROM mokki WHERE mokki_id = @Mokki_id";
+            var selectedAreaName = AreaPicker.SelectedItem.ToString();
+            selectedAreaId = _alueNimet.FirstOrDefault(x => x.Value == selectedAreaName).Key;
 
-                    using (var command = new MySqlCommand(query, connection))
-                    {
-                        command.Parameters.AddWithValue("@Mokki_id", mokki_id);
-                        var result = await command.ExecuteNonQueryAsync();
-                        return result > 0; // palauttaa true jos yksi tai usempi rivi poistettiin
-                    }
-                }
-                catch (Exception ex)
-                {
-                    // K‰sittely mahdollisille poikkeuksille
-                    Console.WriteLine(ex.Message);
-                    return false;
-                }
+            // Aseta automaattisesti valitun alueen postinumero postinumero-kentt‰‰n
+            if (_aluePostinumerot.ContainsKey(selectedAreaName))
+            {
+                postinroUpdatedAutomatically = true;
+                postinro.Text = _aluePostinumerot[selectedAreaName];
             }
         }
 
-        public async Task<bool> PaivitaMokinTiedot(Mokki muokattuMokki)
+        public partial class DatabaseAccess
         {
-            string projectDirectory = System.AppDomain.CurrentDomain.BaseDirectory;
-            var projectRoot = Path.GetFullPath(Path.Combine(projectDirectory, @"..\..\..\..\..\"));
-
-            DotNetEnv.Env.Load(projectRoot);
-            var env = Environment.GetEnvironmentVariables();
-
-            string connectionString = $"server={env["SERVER"]};port={env["SERVER_PORT"]};database={env["SERVER_DATABASE"]};user={env["SERVER_USER"]};password={env["SERVER_PASSWORD"]}";
-            using (var connection = new MySqlConnection(connectionString))
-
+            public async Task<bool> LisaaMokkiTietokantaan(Mokki uusiMokki)
             {
-                await connection.OpenAsync();
+                string projectDirectory = System.AppDomain.CurrentDomain.BaseDirectory;
+                var projectRoot = Path.GetFullPath(Path.Combine(projectDirectory, @"..\..\..\..\..\"));
 
-                var query =
-                    @"UPDATE mokki 
-                SET alue_id = @AlueId,
-                    mokkinimi = @Mokkinimi,
-                    katuosoite = @Katuosoite,
-                    postinro = @Postinro,
-                    hinta = @Hinta,
-                    kuvaus = @Kuvaus,
-                    henkilomaara = @Henkilomaara,
-                   varustelu = @Varustelu
-                WHERE mokki_id = @MokkiId";
+                DotNetEnv.Env.Load(projectRoot);
+                var env = Environment.GetEnvironmentVariables();
 
-                using (var command = new MySqlCommand(query, connection))
+                string connectionString = $"server={env["SERVER"]};port={env["SERVER_PORT"]};database={env["SERVER_DATABASE"]};user={env["SERVER_USER"]};password={env["SERVER_PASSWORD"]}";
+                using (var connection = new MySqlConnection(connectionString))
                 {
-                    // Parametrien asettaminen
-                    command.Parameters.AddWithValue("@MokkiId", muokattuMokki.mokki_id);
-                    command.Parameters.AddWithValue("@AlueId", muokattuMokki.alue_id);
-                    command.Parameters.AddWithValue("@Mokkinimi", muokattuMokki.mokkinimi);
-                    command.Parameters.AddWithValue("@Katuosoite", muokattuMokki.katuosoite);
-                    command.Parameters.AddWithValue("@Postinro", muokattuMokki.postinro);
-                    command.Parameters.AddWithValue("@Hinta", muokattuMokki.hinta);
-                    command.Parameters.AddWithValue("@Kuvaus", muokattuMokki.kuvaus);
-                    command.Parameters.AddWithValue("@Henkilomaara", muokattuMokki.henkilomaara);
-                    command.Parameters.AddWithValue("@Varustelu", muokattuMokki.varustelu);
+                    try
+                    {
+                        await connection.OpenAsync();
 
+                        var query = "INSERT INTO mokki (mokki_id, alue_id, mokkinimi, katuosoite, postinro, hinta, kuvaus,henkilomaara, varustelu)  VALUES (@Mokki_id, @Alue_id, @Mokkinimi, @Katuosoite, @Postinro, @Hinta, @Kuvaus, @Henkilomaara, @Varustelu)";
 
-                    var result = await command.ExecuteNonQueryAsync();
-                    return result > 0; // Onnistuiko p‰ivitys
+                        using (var command = new MySqlCommand(query, connection))
+                        {
+                            Debug.WriteLine(uusiMokki.postinro);
+                            command.Parameters.AddWithValue("@Mokki_id", uusiMokki.mokki_id);
+                            command.Parameters.AddWithValue("@Alue_id", uusiMokki.alue_id);
+                            command.Parameters.AddWithValue("@Mokkinimi", uusiMokki.mokkinimi);
+                            command.Parameters.AddWithValue("@Katuosoite", uusiMokki.katuosoite);
+                            command.Parameters.AddWithValue("@Postinro", uusiMokki.postinro);
+                            command.Parameters.AddWithValue("@Hinta", uusiMokki.hinta);
+                            command.Parameters.AddWithValue("@Henkilomaara", uusiMokki.henkilomaara);
+                            command.Parameters.AddWithValue("@Kuvaus", uusiMokki.kuvaus);
+                            command.Parameters.AddWithValue("@Varustelu", uusiMokki.varustelu);
+                            await command.ExecuteNonQueryAsync();
+                            return true;
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        // K‰sittely mahdollisille poikkeuksille
+                        Debug.WriteLine(ex.Message);
+                        return false;
+                    }
                 }
             }
         }

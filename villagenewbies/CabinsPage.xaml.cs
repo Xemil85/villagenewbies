@@ -11,18 +11,18 @@ namespace VillageNewbies.Views
 {
     public partial class CabinsPage : ContentPage
     {
-        private readonly Dictionary<int, string> _alueNimet = new Dictionary<int, string>
-            {
-              { 0, "Valitse"},
-              { 1, "Ylläs" },
-              { 2, "Ruka" },
-              { 3, "Pyhä" },
-              { 4, "Levi" },
-              { 5, "Syöte" },
-              { 6, "Vuokatti" },
-              { 7, "Tahko" },
-              { 8, "Himos" },
-            };
+        private Dictionary<int, string> _alueNimet = new Dictionary<int, string>();
+            //{
+            //  { 0, "Valitse"},
+            //  { 1, "Ylläs" },
+            //  { 2, "Ruka" },
+            //  { 3, "Pyhä" },
+            //  { 4, "Levi" },
+            //  { 5, "Syöte" },
+            //  { 6, "Vuokatti" },
+            //  { 7, "Tahko" },
+            //  { 8, "Himos" },
+            //};
 
         private readonly Dictionary<int, string> _hintaLuokat = new Dictionary<int, string>
             {
@@ -43,8 +43,10 @@ namespace VillageNewbies.Views
             AreaPicker.ItemsSource = _alueNimet.Values.ToList();
             HintaPicker.ItemsSource = _hintaLuokat.Values.ToList();
             LoadMokitAsync();
+            LataaAlueet();
             SetDefaultDates();
             Debug.WriteLine(Aloituspaiva.Date.ToString("yyyy-MM-dd HH:mm:ss"));
+          
         }
 
         // Aseta oletuspäivämäärät aloitus- ja lopetuspäiville
@@ -71,7 +73,7 @@ namespace VillageNewbies.Views
             }
 
             // Siirrytään muokkaussivulle ja välitetään asiakas-olio konstruktorin kautta
-            await Navigation.PushAsync(new AddCabinPage(mokki));
+            await Navigation.PushAsync(new EditCabinPage(mokki));
         }
 
         private async void LisaaAlue_Clicked(object? sender, EventArgs e)
@@ -114,13 +116,14 @@ namespace VillageNewbies.Views
                     Mokit.Add(mokki);
                 }
                 CabinsCollectionView.ItemsSource = Mokit; 
-                //SuodataMokit();
+                
             });
         }
         protected override void OnAppearing()
         {
             base.OnAppearing();
              LoadMokitAsync();// Päivitä lista  
+            LataaAlueet();
         }
 
 
@@ -157,14 +160,23 @@ namespace VillageNewbies.Views
             await Navigation.PushAsync(new SelectServices(mokki, aloitusPaiva.ToString("yyyy-MM-dd"), lopetusPaiva.ToString("yyyy-MM-dd")));
         }
 
+        private async void LataaAlueet()
+        {
+            var alueetAccess = new MokkiAccess(); // Oletetaan, että tämä luokka hakee tietokannasta
+            var alueet = await alueetAccess.FetchAllAlueAsync();
 
+            // Muunna haetut alueet sanakirjaksi
+            _alueNimet = alueet.ToDictionary(a => a.alue_id, a => a.nimi);
+            AreaPicker.ItemsSource = _alueNimet.Values.ToList();
+           
+        }
 
 
 
         // Kutsutaan, kun alue valitaan Pickeristä
         private void OnAreaSelected(object sender, EventArgs e)
         {
-            if (AreaPicker.SelectedIndex != -1)
+            /*if (AreaPicker.SelectedIndex != -1)
             {
                 var selectedAreaName = AreaPicker.SelectedItem.ToString();
                 valittuAlueId = _alueNimet.FirstOrDefault(x => x.Value == selectedAreaName).Key;
@@ -172,7 +184,16 @@ namespace VillageNewbies.Views
             else
             {
                 valittuAlueId = null;
+            }*/
+            if (AreaPicker.SelectedIndex == -1)
+            {
+                valittuAlueId = null;
+                return;
             }
+
+            var selectedAreaName = AreaPicker.SelectedItem.ToString();
+            valittuAlueId = _alueNimet.FirstOrDefault(x => x.Value == selectedAreaName).Key;
+
 
             SuodataMokit();
         }

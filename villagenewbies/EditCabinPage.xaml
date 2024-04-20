@@ -1,0 +1,24 @@
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="VillageNewbies.EditCabinPage">
+
+	<StackLayout Padding="20">
+		<Entry x:Name="mokkinimi" Placeholder="Mökin nimi" />
+		<Entry x:Name="katuosoite" Placeholder="Katuosoite" />
+		<Entry x:Name="hinta" Placeholder="Hinta" Keyboard="Numeric" />
+		<Editor x:Name="kuvaus" Placeholder="Kuvaus" />
+		<Entry x:Name="henkilomaara" Placeholder="Henkilömäärä" Keyboard="Numeric" />
+		<Editor x:Name="varustelu" Placeholder="Varustelu" />
+		<Entry x:Name="postinro" Placeholder="Postinumero" Keyboard="Numeric" IsEnabled="False" />
+
+		<Grid>
+			<Grid.ColumnDefinitions>
+				<ColumnDefinition Width="*"/>
+				<ColumnDefinition Width="*"/>
+			</Grid.ColumnDefinitions>
+
+			<Button Text="Tallenna" Clicked="TallennaMokki_Clicked" Grid.Column="0" Margin="0,0,10,0" />
+			<Button Text="Poista Mökki" Clicked="PoistaMokki_Clicked" Grid.Column="1" Margin="10,0,0,0" />
+		</Grid>
+	</StackLayout>
+</ContentPage>

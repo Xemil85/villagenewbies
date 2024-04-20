@@ -20,7 +20,7 @@ public partial class Reportage : ContentPage
         InitializeComponent();
         databaseAccess = new DatabaseAccess();
         BookinReportage.ItemsSource = Varaukset;
-        ServiseReportage.ItemsSource = Palvelut;
+        ServicesReportage.ItemsSource = Palvelut;
         alueidenDictionary = new Dictionary<int, string>();
         InitializePicker();
         this.BindingContext = this;
@@ -46,6 +46,7 @@ public partial class Reportage : ContentPage
     private async void Varaustenhaku_Clicked(object sender, EventArgs e)
     {
 
+                
         if (AreaPicker.SelectedIndex != -1 && AreaPicker.SelectedItem != null)
         {
 
@@ -56,19 +57,42 @@ public partial class Reportage : ContentPage
                 var selectedAreaId = alueidenDictionary.FirstOrDefault(x => x.Value == selectedAreaName).Key;
                 var alkuPvm = StartDatePicker.Date;
                 var loppuPvm = EndDatePicker.Date;
+
+                // Tarkistetaan, ett‰ loppup‰iv‰m‰‰r‰ ei ole ennen alkup‰iv‰m‰‰r‰‰
+                if (loppuPvm < alkuPvm)
+                {
+                    await DisplayAlert("Virheelliset p‰iv‰m‰‰r‰t", "Tarkista syˆtˆt.", "OK");
+                    return;
+                }
+
                 var varauksetLista = await databaseAccess.HaeVaraukset(selectedAreaId, alkuPvm, loppuPvm);
                 Varaukset.Clear();
 
-                foreach (var varausViewModel in varauksetLista)
+                if (varauksetLista.Count > 0)
                 {
-                    Varaukset.Add(varausViewModel);
+                    foreach (var varausViewModel in varauksetLista)
+                    {
+                        Varaukset.Add(varausViewModel);
+                    }
                 }
+                else
+                {
+                    // Ei varauksia valitulla aikav‰lill‰, n‰ytet‰‰n ilmoitus.
+                    await DisplayAlert("Ei varauksia", "Valitulla ajalla ei lˆytynyt varauksia.", "OK");
+                }
+            }
+            else
+            {
+                // Jos alueen valinta ei t‰sm‰‰, n‰ytet‰‰n virheilmoitus.
+                await DisplayAlert("Virhe", "Valitse alue uudelleen.", "OK");
             }
         }
         else
         {
+            // Aluetta ei ole valittu, n‰ytet‰‰n virheilmoitus.
             await DisplayAlert("Virhe", "Valitse ensin alue.", "OK");
-        }    }
+        }    
+    }
 
     private async void Palveluhaku_Clicked(object sender, EventArgs e)
     {

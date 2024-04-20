@@ -84,6 +84,9 @@
 	  <Compile Update="AddCustomerPage.xaml.cs">
 	    <DependentUpon>AddCustomerPage.xaml</DependentUpon>
 	  </Compile>
+	  <Compile Update="EditCabinPage.xaml.cs">
+	    <DependentUpon>EditCabinPage.xaml</DependentUpon>
+	  </Compile>
 	  <Compile Update="ServicesPage.xaml.cs">
 	    <DependentUpon>ServicesPage.xaml</DependentUpon>
 	  </Compile>
@@ -121,6 +124,9 @@
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
 	  <MauiXaml Update="DeleteAreaPage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="EditCabinPage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
 	  <MauiXaml Update="Reportage.xaml">
