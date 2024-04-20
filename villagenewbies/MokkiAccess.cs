@@ -478,7 +478,7 @@ namespace VillageNewbies
                         var palvelutyyppi = new PalveluTyyppi
                         {
                             tyyppi = reader.GetInt32("tyyppi"),
-                            nimi = reader.GetString("nimi"),
+                            nimi = reader.GetString("tyyppinimi"),
                         };
 
                         palvelutyypit.Add(palvelutyyppi);

@@ -8,7 +8,8 @@
             Text="Anna uuden palvelun tiedot"
             VerticalOptions="Center" 
             HorizontalOptions="Center"
-            />
+            FontSize="20"
+        />
 
         <Picker 
             x:Name="AreaPicker"
@@ -16,9 +17,13 @@
             WidthRequest="200"
             SelectedIndexChanged="OnAreaSelected"
         />
-
+        <Picker 
+            x:Name="TypePicker"
+            Title="Valitse palvelun tyyppi"
+            WidthRequest="200"
+            SelectedIndexChanged="OnTypeSelected"   
+        />
         <Entry x:Name="palvelunimi" Placeholder="Palvelun nimi" WidthRequest="150" MinimumWidthRequest="300" Margin="30,10,0,0" />
-        <Entry x:Name="Palvelutyyppi" Placeholder="Palvelun tyyppi" WidthRequest="150" MinimumWidthRequest="300" Margin="30,10,0,0"/>
         <Entry x:Name="palvelukuvaus" Placeholder="Palvelun kuvaus" WidthRequest="150" MinimumWidthRequest="300" Margin="30,10,0,0" />
         <Entry x:Name="palveluhinta" Placeholder="Palvelun hinta" WidthRequest="150"  MinimumWidthRequest="300" Margin="30,10,0,0" />
         <Button x:Name="Lisaapalvelu" Text="Lisää palvelu" Margin="30,10,0,0" WidthRequest="150" />
