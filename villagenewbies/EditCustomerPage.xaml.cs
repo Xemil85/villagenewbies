@@ -29,10 +29,20 @@ namespace VillageNewbies
 
         private async void TallennaAsiakkaanTietoja_Clicked(object sender, EventArgs e)
         {
-            // Toteuta asiakkaan tietojen päivitys tietokantaan
+            // Päivitä asiakkaan tiedot uusilla tiedoilla
+            _asiakas.etunimi = etunimiEntry.Text;
+            _asiakas.sukunimi = sukunimiEntry.Text;
+            _asiakas.lahiosoite = lahiosoiteEntry.Text;
+            _asiakas.postinro = postinumeroEntry.Text;
+            _asiakas.toimipaikka = toimipaikkaEntry.Text; // Tarvittaessa päivitä toimipaikka
+            _asiakas.puhelinnro = puhelinnumeroEntry.Text;
+            _asiakas.email = sahkopostiEntry.Text;
+
             var databaseAccess = new DatabaseAccess();
             await databaseAccess.TallennaAsiakasTietokantaan(_asiakas);
             await DisplayAlert("Tiedot päivitetty", "Asiakkaan tiedot on päivitetty onnistuneesti.", "OK");
+
+            // Poistu muokkaussivulta
             await Navigation.PopAsync();
         }
 
