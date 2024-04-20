@@ -2,11 +2,13 @@ using CommunityToolkit.Maui.Views;
 using MySql.Data.MySqlClient;
 using System.Diagnostics;
 
+
 namespace VillageNewbies;
 
 public partial class ChangeServices : Popup
 {
     private Palvelu _palvelu;
+    private Page _parentPage;
 
     public ChangeServices()
     {
@@ -14,14 +16,42 @@ public partial class ChangeServices : Popup
         TallennaPalvelu.Clicked += TallennaPalvelu_Clicked;
     }
 
+    public ChangeServices(Palvelu palvelu) : this()
+    {
+        _palvelu = palvelu;
+
+        if (_palvelu != null)
+        {
+            palvelunimi.Text = _palvelu.nimi;
+            Palvelutyyppi.Text = _palvelu.tyyppi.ToString();
+            palvelukuvaus.Text = _palvelu.kuvaus;
+            palveluhinta.Text = _palvelu.hinta.ToString();
+        }
+    }
+
     private async void TallennaPalvelu_Clicked(object? sender, EventArgs e)
     {
+        // Oletus olettaen, että Application.Current.MainPage on käytettävissä
+        var currentPage = Application.Current.MainPage;
+
         if (string.IsNullOrWhiteSpace(palvelunimi.Text) ||
             string.IsNullOrWhiteSpace(Palvelutyyppi.Text) ||
             string.IsNullOrWhiteSpace(palvelukuvaus.Text) ||
             string.IsNullOrWhiteSpace(palveluhinta.Text))
         {
-            Debug.WriteLine("Täytä kaikki tiedot");
+            await currentPage.DisplayAlert("Virhe", "Täytä kaikki tiedot", "OK");
+            return;
+        }
+
+        if (!int.TryParse(Palvelutyyppi.Text, out int tyyppi))
+        {
+            await currentPage.DisplayAlert("Virhe", "Palvelun tyyppi tulee olla numero", "OK");
+            return;
+        }
+
+        if (!double.TryParse(palveluhinta.Text, out double hinta))
+        {
+            await currentPage.DisplayAlert("Virhe", "Palvelun hinta tulee olla numero", "OK");
             return;
         }
 
@@ -31,9 +61,9 @@ public partial class ChangeServices : Popup
         }
 
         _palvelu.nimi = palvelunimi.Text;
-        _palvelu.tyyppi = int.Parse(Palvelutyyppi.Text);
+        _palvelu.tyyppi = tyyppi;
         _palvelu.kuvaus = palvelukuvaus.Text;
-        _palvelu.hinta = double.Parse(palveluhinta.Text);
+        _palvelu.hinta = hinta;
 
         var databaseAccess = new DatabaseAccess();
         await databaseAccess.TallennaPalveluTietokantaan(_palvelu);
@@ -46,18 +76,6 @@ public partial class ChangeServices : Popup
         await CloseAsync();
     }
 
-    public ChangeServices(Palvelu palvelu) : this()
-	{
-        _palvelu = palvelu;
-
-        if (_palvelu != null)
-        {
-            palvelunimi.Text = _palvelu.nimi;
-            Palvelutyyppi.Text = _palvelu.tyyppi.ToString();
-            palvelukuvaus.Text = _palvelu.kuvaus;
-            palveluhinta.Text = _palvelu.hinta.ToString();
-        }
-    }
 
     public class DatabaseAccess
     {
