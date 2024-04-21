@@ -4,41 +4,45 @@
              Title="Mökit">
 
 
-                    <VerticalStackLayout>
-        <HorizontalStackLayout>
-            <Button Text="Lisää Mökki" Margin="30,10,10,10" Clicked="LisaaMokki_Clicked" />
-            <Button Text="Lisää Alue" Margin="30,10,10,10" Clicked="LisaaAlue_Clicked"/>
-            <Button Text="Poista Alue" Margin="30,10,10,10" Clicked="PoistaAlue_Clicked" />
-            <DatePicker x:Name="Aloituspaiva" Format="yyyy-MM-dd" Margin="30,10,0,0" />
-            <DatePicker x:Name="Lopetuspaiva" Format="yyyy-MM-dd" Margin="30,10,0,0" />
-            <Grid Padding="10">
-
+    <VerticalStackLayout>
+        <HorizontalStackLayout HorizontalOptions="CenterAndExpand">
+            <Grid Padding="10" ColumnSpacing="20">
                 <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto" />
                     <RowDefinition Height="Auto" />
                     <RowDefinition Height="*" />
                 </Grid.RowDefinitions>
 
                 <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="auto" />
+                    <ColumnDefinition Width="auto" />
+                    <ColumnDefinition Width="auto" />
+                    <ColumnDefinition Width="auto" />
+                    <ColumnDefinition Width="auto" />
+                    <ColumnDefinition Width="auto" />
+                    <ColumnDefinition Width="auto" />
                     <ColumnDefinition Width="*" />
-                    <ColumnDefinition Width="Auto" />
                 </Grid.ColumnDefinitions>
+                <Button Text="Lisää Mökki" Clicked="LisaaMokki_Clicked" Grid.Row="0" Grid.Column="0" />
+                <Button Text="Lisää Alue" Clicked="LisaaAlue_Clicked" Grid.Row="0" Grid.Column="1" />
+                <Button Text="Poista Alue" Clicked="PoistaAlue_Clicked" Grid.Row="0" Grid.Column="2" />
+                <DatePicker x:Name="Aloituspaiva" Format="yyyy-MM-dd" Grid.Row="0" Grid.Column="3" />
+                <DatePicker x:Name="Lopetuspaiva" Format="yyyy-MM-dd" Grid.Row="0" Grid.Column="4" />
 
                 <Picker x:Name="AreaPicker"
                 Title="Valitse alue"
                 SelectedIndexChanged="OnAreaSelected"
                 WidthRequest="200"
                 Grid.Row="0"
-                Grid.Column="0" />
+                Grid.Column="5" />
 
                 <Picker x:Name="HintaPicker"
                 Title="Valitse hintaluokka"
                 SelectedIndexChanged="onPriceSelected"
                 WidthRequest="200"
                 Grid.Row="1"
-                Grid.Column="0" />
+                Grid.Column="5" />
+            <Button Text="Tyhjennä haku" Clicked="ResetFiltersButton_Clicked" Grid.Row="0" Grid.Column="7"/>
             </Grid>
-            <Button Text="Tyhjennä haku" Margin="30,10,10,10" Clicked="ResetFiltersButton_Clicked"/>
 
         </HorizontalStackLayout>
 
@@ -67,7 +71,7 @@
             <Label Text="Varustelu" FontSize="20" Grid.Column="8" TextDecorations="Underline" />
             <Label Text="Muokkaa" FontSize="20" Grid.Column="9" TextDecorations="Underline" />
         </Grid>
-        
+
 
 
 
@@ -91,10 +95,9 @@
                 </DataTemplate>
             </CollectionView.ItemTemplate>
         </CollectionView>
-       
+
 
 
     </VerticalStackLayout>
 
 </ContentPage>
-
