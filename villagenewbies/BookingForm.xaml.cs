@@ -50,7 +50,43 @@ public partial class BookingForm : ContentPage
             vahvistusPvm = aloitusPaiva.AddDays(-14);  // Aseta vahvistuspäivämäärä 14 päivää ennen alkupäivämäärää.
         }
 
-        int asiakasId = 0;
+        int asiakasId;
+        if (string.IsNullOrWhiteSpace(Sahkoposti.Text) ||
+            string.IsNullOrWhiteSpace(Etunimi.Text) ||
+            string.IsNullOrWhiteSpace(Sukunimi.Text) ||
+            string.IsNullOrWhiteSpace(Lahiosoite.Text) ||
+            string.IsNullOrWhiteSpace(Puhelin.Text) ||
+            string.IsNullOrWhiteSpace(Postinro.Text))
+        {
+            await DisplayAlert("Täyttämättömät tiedot", "Täytä kaikki asiakastiedot ennen varauksen lähettämistä.", "OK");
+            return;
+        }
+
+        var puhelinnumero = Puhelin.Text;
+
+        if (!puhelinnumero.All(char.IsDigit))
+        {
+            await DisplayAlert("Virheellinen puhelinnumero", "Syötä kelvollinen puhelinnumero.", "OK");
+            return;
+        }
+
+        // Tarkistetaan puhelinnumeron muoto
+        var puhelinnumeroRegex = new Regex(@"^(\+358\d{9}|0\d{9})$");
+        var puhelinnumeroOK = puhelinnumeroRegex.IsMatch(puhelinnumero);
+
+        if (!puhelinnumeroOK)
+        {
+            await DisplayAlert("Virheellinen puhelinnumero", "Syötä puhelinnumero muodossa +358451234567 tai 0451234567.", "OK");
+            return;
+        }
+
+        var postinumero = Postinro.Text;
+        if (postinumero.Length != 5)
+        {
+            await DisplayAlert("Virheellinen postinumero", "Postinumeron tulee olla 5 numeron pituinen.", "OK");
+            return;
+        }
+
         if (Asiakaspicker.SelectedIndex == -1) // Oletetaan, että -1 tarkoittaa uutta asiakasta
         {
             Asiakas uusiAsiakas = new Asiakas
