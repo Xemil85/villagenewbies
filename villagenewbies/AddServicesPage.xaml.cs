@@ -40,15 +40,16 @@ public partial class AddServicesPage : ContentPage
 
     private async void Lisaapalvelu_Clicked(object? sender, EventArgs e)
     {
-        if (string.IsNullOrWhiteSpace(palvelunimi.Text) ||
-        string.IsNullOrWhiteSpace(palvelukuvaus.Text) ||
-        string.IsNullOrWhiteSpace(palveluhinta.Text))
+        if (AreaPicker.SelectedIndex == -1 ||
+            string.IsNullOrWhiteSpace(palvelunimi.Text) ||
+            TypePicker.SelectedIndex == -1 ||
+            string.IsNullOrWhiteSpace(palvelukuvaus.Text) ||
+            string.IsNullOrWhiteSpace(palveluhinta.Text))
         {
             // Näytä varoitusikkuna
             await DisplayAlert("Täyttämättömät tiedot", "Täytä kaikki palvelutiedot ennen lähettämistä.", "OK");
             return; // Lopeta metodin suoritus tähän
         }
-
 
         var uusiPalvelu = new Palvelu
         {
