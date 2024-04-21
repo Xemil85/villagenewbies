@@ -2,7 +2,8 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="VillageNewbies.Views.MainPage"
              BackgroundColor="#F5F5F5"
-             Title="Village Newbies Oy">
+             Title="Village Newbies Oy"
+             NavigationPage.HasBackButton="False">
 
     <ScrollView>
         <VerticalStackLayout Spacing="25" Padding="30" HorizontalOptions="FillAndExpand" VerticalOptions="Center">
@@ -14,7 +15,7 @@
                 VerticalOptions="Center"
                 TextColor="#2E4053" />
 
-            <Button Text="Mökit"
+            <Button Text="Mökit ja Alueet"
                     x:Name="AvaaMokit"
                     FontSize="Medium"
                     BackgroundColor="#3498DB"
