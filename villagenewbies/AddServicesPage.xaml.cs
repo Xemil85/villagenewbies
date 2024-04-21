@@ -51,13 +51,19 @@ public partial class AddServicesPage : ContentPage
             return; // Lopeta metodin suoritus tähän
         }
 
+        if (!double.TryParse(palveluhinta.Text, out double hinta))
+        {
+            await DisplayAlert("Virhe", "Hinta on virheellinen. Hinnassa ei saa olla kirjaimia", "OK");
+            return;
+        }
+
         var uusiPalvelu = new Palvelu
         {
             alue_id = selectedAreaId.Value,
             nimi = palvelunimi.Text,
             tyyppi = selectedTypeId.Value,
             kuvaus = palvelukuvaus.Text,
-            hinta = double.Parse(palveluhinta.Text),
+            hinta = hinta,
             alv = 24.00
         };
 
