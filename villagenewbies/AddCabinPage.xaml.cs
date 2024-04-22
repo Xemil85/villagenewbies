@@ -16,35 +16,18 @@ namespace VillageNewbies
         public ObservableCollection<Mokki> Mokit { get; private set; }
         private Mokki _mokki;
         private Dictionary<int, string> _alueNimet = new Dictionary<int, string>();
-        private Dictionary<string, string> _aluePostinumerot = new Dictionary<string, string>()
-        {
-            {"Yll‰s", "95980"},
-            {"Ruka", "93830"},
-            {"Pyh‰", "98530"},
-            {"Levi", "99130"},
-            {"Syˆte", "93280"},
-            {"Vuokatti", "88610"},
-            {"Tahko", "73310"},
-            {"Himos", "42100"}
-        };
         private int? selectedAreaId;
-        private bool postinroUpdatedAutomatically = false;
 
         public AddCabinPage()
         {
             InitializeComponent();
             Mokit = new ObservableCollection<Mokki>();
-            Task.Run(LataaAlueet);
             LataaAlueet();
-
-            // Lis‰t‰‰n k‰sittelij‰ postinumero-kent‰lle
-            postinro.TextChanged += Postinro_TextChanged;
         }
 
         public AddCabinPage(Mokki mokki) : this()
         {
             _mokki = mokki;
-
 
             if (_mokki != null)
             {
@@ -61,29 +44,56 @@ namespace VillageNewbies
 
         private async void LisaaMokki_Clicked(object sender, EventArgs e)
         {
-            // jos kent‰t tyhj‰t ja yritet‰‰n tallentaa
-            if
-                (
-                AreaPicker.SelectedIndex == -1 ||
-                string.IsNullOrWhiteSpace(mokkinimi.Text) ||
+            // Tarkistetaan, onko alue valittu
+            if (AreaPicker.SelectedIndex == -1)
+            {
+                await DisplayAlert("Virhe", "Alue on valittava ennen mˆkin lis‰‰mist‰.", "Ok");
+                return;
+            }
+
+            // Tarkista, ett‰ postinumero ei ole tyhj‰ ja on viisinumeroinen
+            if (string.IsNullOrWhiteSpace(postinro.Text) || postinro.Text.Length != 5 || !int.TryParse(postinro.Text, out _))
+            {
+                await DisplayAlert("Virhe", "Postinumeron on oltava viisinumeroinen ja koostuttava vain numeroista.", "Ok");
+                return;
+            }
+
+            // Tarkista, ett‰ hinta on oikein muotoiltu
+            if (string.IsNullOrWhiteSpace(hinta.Text) ||
+                !double.TryParse(hinta.Text, System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture, out double parsedHinta))
+            {
+                await DisplayAlert("Virhe", "Hinnan on oltava luku ja koostuttava vain numeroista ja pisteest‰.", "Ok");
+                return;
+            }
+
+
+            // Tarkista, ett‰ postinumero ei ole tyhj‰ ja on viisinumeroinen
+            if (string.IsNullOrWhiteSpace(postinro.Text) || postinro.Text.Length != 5 || !int.TryParse(postinro.Text, out _))
+            {
+                await DisplayAlert("Virhe", "Postinumeron on oltava viisinumeroinen ja koostuttava vain numeroista.", "Ok");
+                return;
+            }
+
+
+            // Tarkista, ett‰ postinumero ei ole tyhj‰ ja on viisinumeroinen
+            if (!int.TryParse(henkilomaara.Text, out _))
+            {
+                await DisplayAlert("Virhe", "Henkilˆm‰‰r‰n on oltava kokonaisluku.", "Ok");
+                return;
+            }
+
+            // Tarkistetaan, ett‰ kaikki muut kent‰t ovat t‰ytetty
+            if (string.IsNullOrWhiteSpace(mokkinimi.Text) ||
                 string.IsNullOrWhiteSpace(katuosoite.Text) ||
-                string.IsNullOrWhiteSpace(postinro.Text) ||
-                !int.TryParse(postinro.Text, out int parsedPostinro) ||
-                string.IsNullOrWhiteSpace(hinta.Text) ||
-                !double.TryParse(hinta.Text, System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture, out double parsedHinta) ||
-                string.IsNullOrWhiteSpace(henkilomaara.Text) ||
-                !int.TryParse(henkilomaara.Text, out int parsedHenkilomaara) ||
                 string.IsNullOrWhiteSpace(kuvaus.Text) ||
                 string.IsNullOrWhiteSpace(varustelu.Text))
-
-            {// N‰yt‰ virheviesti tai k‰sittele virhetilanne t‰ss‰
+            {
                 await DisplayAlert("T‰ytt‰m‰ttˆm‰t tiedot", "T‰yt‰ kaikki tiedot ennen l‰hett‰mist‰.", "Ok");
-                return; // Lopeta metodin suoritus t‰h‰n
+                return;
             }
 
             var uusiMokki = new Mokki
             {
-
                 alue_id = selectedAreaId.Value,
                 mokkinimi = mokkinimi.Text,
                 katuosoite = katuosoite.Text,
@@ -94,7 +104,14 @@ namespace VillageNewbies
                 varustelu = varustelu.Text
             };
 
-            var databaseAccess = new DatabaseAccess();
+            // Tarkistetaan, onko postinumero jo olemassa
+            bool postinumeroOlemassa = await databaseAccess.OnkoPostinumeroOlemassa(postinro.Text);
+            if (!postinumeroOlemassa)
+            {
+                await databaseAccess.LisaaPostinumero(postinro.Text);
+            }
+
+            // Yritet‰‰n lis‰t‰ mˆkki tietokantaan
             bool success = await databaseAccess.LisaaMokkiTietokantaan(uusiMokki);
 
             if (success)
@@ -106,17 +123,9 @@ namespace VillageNewbies
                 await DisplayAlert("Virhe", "Mˆkin lis‰‰minen ep‰onnistui. Yrit‰ uudelleen.", "Ok");
             }
 
-            AreaPicker.SelectedIndex = -1;
-            mokkinimi.Text = "";
-            katuosoite.Text = "";
-            postinro.Text = "";
-            hinta.Text = "";
-            kuvaus.Text = "";
-            henkilomaara.Text = "";
-            varustelu.Text = "";
-
             await Navigation.PopAsync();
         }
+
 
         private async void LataaAlueet()
         {
@@ -126,33 +135,10 @@ namespace VillageNewbies
             // Muunna haetut alueet sanakirjaksi
             _alueNimet = alueet.ToDictionary(a => a.alue_id, a => a.nimi);
             AreaPicker.ItemsSource = _alueNimet.Values.ToList();
-
         }
 
-        private void Postinro_TextChanged(object sender, TextChangedEventArgs e)
-        {
-            // Jos postinumero on p‰ivitetty automaattisesti alueen valinnan perusteella,
-            // estet‰‰n k‰ytt‰j‰‰ muokkaamasta sit‰ manuaalisesti.
-            if (postinroUpdatedAutomatically)
-            {
-                postinroUpdatedAutomatically = false;
-                return;
-            }
 
-            // Jos postinumeroa ei p‰ivitetty automaattisesti, estet‰‰n sen muokkaaminen.
-            // Asetetaan postinumero takaisin valitun alueen postinumeroksi.
-            if (AreaPicker.SelectedIndex != -1)
-            {
-                var selectedAreaName = AreaPicker.SelectedItem.ToString();
-                if (_aluePostinumerot.ContainsKey(selectedAreaName))
-                {
-                    postinroUpdatedAutomatically = true;
-                    postinro.Text = _aluePostinumerot[selectedAreaName];
-                }
-            }
-        }
-
-        private void OnAreaSelected(object sender, EventArgs e)
+        private async void OnAreaSelected(object sender, EventArgs e)
         {
             if (AreaPicker.SelectedIndex == -1)
             {
@@ -163,57 +149,109 @@ namespace VillageNewbies
             var selectedAreaName = AreaPicker.SelectedItem.ToString();
             selectedAreaId = _alueNimet.FirstOrDefault(x => x.Value == selectedAreaName).Key;
 
-            // Aseta automaattisesti valitun alueen postinumero postinumero-kentt‰‰n
-            if (_aluePostinumerot.ContainsKey(selectedAreaName))
+        }
+    }
+
+
+    public partial class DatabaseAccess
+    {
+        public async Task<bool> LisaaMokkiTietokantaan(Mokki uusiMokki)
+        {
+            string projectDirectory = System.AppDomain.CurrentDomain.BaseDirectory;
+            var projectRoot = Path.GetFullPath(Path.Combine(projectDirectory, @"..\..\..\..\..\"));
+
+            DotNetEnv.Env.Load(projectRoot);
+            var env = Environment.GetEnvironmentVariables();
+
+            string connectionString = $"server={env["SERVER"]};port={env["SERVER_PORT"]};database={env["SERVER_DATABASE"]};user={env["SERVER_USER"]};password={env["SERVER_PASSWORD"]}";
+            using (var connection = new MySqlConnection(connectionString))
             {
-                postinroUpdatedAutomatically = true;
-                postinro.Text = _aluePostinumerot[selectedAreaName];
+                try
+                {
+                    await connection.OpenAsync();
+
+                    var postinroString = uusiMokki.postinro.ToString();
+                    // Lis‰‰ postinumero tietokantaan
+                    await LisaaPostinumero(postinroString);
+
+                    var query = "INSERT INTO mokki (mokki_id, alue_id, mokkinimi, katuosoite, postinro, hinta, kuvaus,henkilomaara, varustelu)  VALUES (@Mokki_id, @Alue_id, @Mokkinimi, @Katuosoite, @Postinro, @Hinta, @Kuvaus, @Henkilomaara, @Varustelu)";
+
+                    using (var command = new MySqlCommand(query, connection))
+                    {
+                        Debug.WriteLine(uusiMokki.postinro);
+                        command.Parameters.AddWithValue("@Mokki_id", uusiMokki.mokki_id);
+                        command.Parameters.AddWithValue("@Alue_id", uusiMokki.alue_id);
+                        command.Parameters.AddWithValue("@Mokkinimi", uusiMokki.mokkinimi);
+                        command.Parameters.AddWithValue("@Katuosoite", uusiMokki.katuosoite);
+                        command.Parameters.AddWithValue("@Postinro", uusiMokki.postinro);
+                        command.Parameters.AddWithValue("@Hinta", uusiMokki.hinta);
+                        command.Parameters.AddWithValue("@Henkilomaara", uusiMokki.henkilomaara);
+                        command.Parameters.AddWithValue("@Kuvaus", uusiMokki.kuvaus);
+                        command.Parameters.AddWithValue("@Varustelu", uusiMokki.varustelu);
+                        await command.ExecuteNonQueryAsync();
+                        return true;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    // K‰sittely mahdollisille poikkeuksille
+                    Debug.WriteLine(ex.Message);
+                    return false;
+                }
             }
         }
 
-        public partial class DatabaseAccess
+
+        public async Task<bool> OnkoPostinumeroOlemassa(string postinro)
         {
-            public async Task<bool> LisaaMokkiTietokantaan(Mokki uusiMokki)
+            string projectDirectory = System.AppDomain.CurrentDomain.BaseDirectory;
+            var projectRoot = Path.GetFullPath(Path.Combine(projectDirectory, @"..\..\..\..\..\"));
+
+            DotNetEnv.Env.Load(projectRoot);
+            var env = Environment.GetEnvironmentVariables();
+
+            string connectionString = $"server={env["SERVER"]};port={env["SERVER_PORT"]};database={env["SERVER_DATABASE"]};user={env["SERVER_USER"]};password={env["SERVER_PASSWORD"]}";
+            using (var connection = new MySqlConnection(connectionString))
             {
-                string projectDirectory = System.AppDomain.CurrentDomain.BaseDirectory;
-                var projectRoot = Path.GetFullPath(Path.Combine(projectDirectory, @"..\..\..\..\..\"));
-
-                DotNetEnv.Env.Load(projectRoot);
-                var env = Environment.GetEnvironmentVariables();
-
-                string connectionString = $"server={env["SERVER"]};port={env["SERVER_PORT"]};database={env["SERVER_DATABASE"]};user={env["SERVER_USER"]};password={env["SERVER_PASSWORD"]}";
-                using (var connection = new MySqlConnection(connectionString))
+                await connection.OpenAsync();
+                var query = "SELECT COUNT(*) FROM posti WHERE postinro = @Postinro";
+                using (var command = new MySqlCommand(query, connection))
                 {
-                    try
-                    {
-                        await connection.OpenAsync();
+                    command.Parameters.AddWithValue("@Postinro", postinro);
 
-                        var query = "INSERT INTO mokki (mokki_id, alue_id, mokkinimi, katuosoite, postinro, hinta, kuvaus,henkilomaara, varustelu)  VALUES (@Mokki_id, @Alue_id, @Mokkinimi, @Katuosoite, @Postinro, @Hinta, @Kuvaus, @Henkilomaara, @Varustelu)";
+                    var tulos = Convert.ToInt32(await command.ExecuteScalarAsync());
+                    return tulos > 0;
+                }
+            }
+        }
 
-                        using (var command = new MySqlCommand(query, connection))
-                        {
-                            Debug.WriteLine(uusiMokki.postinro);
-                            command.Parameters.AddWithValue("@Mokki_id", uusiMokki.mokki_id);
-                            command.Parameters.AddWithValue("@Alue_id", uusiMokki.alue_id);
-                            command.Parameters.AddWithValue("@Mokkinimi", uusiMokki.mokkinimi);
-                            command.Parameters.AddWithValue("@Katuosoite", uusiMokki.katuosoite);
-                            command.Parameters.AddWithValue("@Postinro", uusiMokki.postinro);
-                            command.Parameters.AddWithValue("@Hinta", uusiMokki.hinta);
-                            command.Parameters.AddWithValue("@Henkilomaara", uusiMokki.henkilomaara);
-                            command.Parameters.AddWithValue("@Kuvaus", uusiMokki.kuvaus);
-                            command.Parameters.AddWithValue("@Varustelu", uusiMokki.varustelu);
-                            await command.ExecuteNonQueryAsync();
-                            return true;
-                        }
-                    }
-                    catch (Exception ex)
-                    {
-                        // K‰sittely mahdollisille poikkeuksille
-                        Debug.WriteLine(ex.Message);
-                        return false;
-                    }
+        public async Task LisaaPostinumero(string postinro)
+        {
+            if (await OnkoPostinumeroOlemassa(postinro))
+            {
+                return; // Jos postinumero on jo tietokannassa, ei tehd‰ mit‰‰n
+            }
+
+            string projectDirectory = System.AppDomain.CurrentDomain.BaseDirectory;
+            var projectRoot = Path.GetFullPath(Path.Combine(projectDirectory, @"..\..\..\..\..\"));
+
+            DotNetEnv.Env.Load(projectRoot);
+            var env = Environment.GetEnvironmentVariables();
+
+            string connectionString = $"server={env["SERVER"]};port={env["SERVER_PORT"]};database={env["SERVER_DATABASE"]};user={env["SERVER_USER"]};password={env["SERVER_PASSWORD"]}";
+
+            using (var connection = new MySqlConnection(connectionString))
+            {
+                await connection.OpenAsync();
+                var query = "INSERT INTO posti (postinro) VALUES (@Postinro)";
+                using (var command = new MySqlCommand(query, connection))
+                {
+                    command.Parameters.AddWithValue("@Postinro", postinro);
+                    await command.ExecuteNonQueryAsync();
                 }
             }
         }
     }
 }
+
+
