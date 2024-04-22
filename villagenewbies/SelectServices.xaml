@@ -35,6 +35,6 @@
                 </DataTemplate>
             </CollectionView.ItemTemplate>
         </CollectionView>
-        <Button Grid.Column="5" WidthRequest="200" Text="Valitse palvelu" Clicked="Valitsepalvelu" CommandParameter="{Binding .}" />
+        <Button Grid.Column="5" WidthRequest="200" Text="Siirry varaamaan" Clicked="Valitsepalvelu" CommandParameter="{Binding .}" />
     </VerticalStackLayout>
 </ContentPage>

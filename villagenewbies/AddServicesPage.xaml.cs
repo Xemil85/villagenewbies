@@ -43,47 +43,34 @@ namespace VillageNewbies
             TypePicker.ItemsSource = _tyyppiNimet.Values.ToList();
         }
 
-        private async void Lisaapalvelu_Clicked(object sender, EventArgs e)
+    private async void Lisaapalvelu_Clicked(object? sender, EventArgs e)
+    {
+        if (AreaPicker.SelectedIndex == -1 ||
+            string.IsNullOrWhiteSpace(palvelunimi.Text) ||
+            TypePicker.SelectedIndex == -1 ||
+            string.IsNullOrWhiteSpace(palvelukuvaus.Text) ||
+            string.IsNullOrWhiteSpace(palveluhinta.Text))
         {
-            // Tarkista, että alue on valittu
-            if (AreaPicker.SelectedIndex == -1)
-            {
-                await DisplayAlert("Virhe", "Alue on valittava ennen palvelun lisäämistä.", "Ok");
-                return;
-            }
+            // Näytä varoitusikkuna
+            await DisplayAlert("Täyttämättömät tiedot", "Täytä kaikki palvelutiedot ennen lähettämistä.", "OK");
+            return; // Lopeta metodin suoritus tähän
+        }
 
-            // Tarkista, että tyyppi on valittu
-            if (TypePicker.SelectedIndex == -1)
-            {
-                await DisplayAlert("Virhe", "Palvelun tyyppi on valittava ennen palvelun lisäämistä.", "Ok");
-                return;
-            }
+        if (!double.TryParse(palveluhinta.Text, out double hinta))
+        {
+            await DisplayAlert("Virhe", "Hinta on virheellinen. Hinnassa ei saa olla kirjaimia", "OK");
+            return;
+        }
 
-            // Tarkista, että kaikki kentät ovat täytettynä
-            if (string.IsNullOrWhiteSpace(palvelunimi.Text) ||
-                string.IsNullOrWhiteSpace(palvelukuvaus.Text) ||
-                string.IsNullOrWhiteSpace(palveluhinta.Text))
-            {
-                await DisplayAlert("Täyttämättömät tiedot", "Täytä kaikki palvelutiedot ennen lähettämistä.", "OK");
-                return;
-            }
-
-            // Tarkista, että hinta on oikein muotoiltu
-            if (!double.TryParse(palveluhinta.Text, System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture, out double parsedHinta))
-            {
-                await DisplayAlert("Virhe", "Hinnan on oltava luku ja koostuttava vain numeroista ja pisteestä.", "Ok");
-                return;
-            }
-
-            var uusiPalvelu = new Palvelu
-            {
-                alue_id = selectedAreaId.Value,
-                nimi = palvelunimi.Text,
-                tyyppi = selectedTypeId.Value,
-                kuvaus = palvelukuvaus.Text,
-                hinta = parsedHinta,
-                alv = 24.00
-            };
+        var uusiPalvelu = new Palvelu
+        {
+            alue_id = selectedAreaId.Value,
+            nimi = palvelunimi.Text,
+            tyyppi = selectedTypeId.Value,
+            kuvaus = palvelukuvaus.Text,
+            hinta = hinta,
+            alv = 24.00
+        };
 
             var databaseAccess = new DatabaseAccess();
             bool success = await databaseAccess.LisaaPalveluTietokantaan(uusiPalvelu);

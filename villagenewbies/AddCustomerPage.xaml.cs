@@ -86,7 +86,27 @@ public partial class AddCustomerPage : ContentPage
         {
             await DisplayAlert("Virheellinen postinumero", "Postinumeron tulee olla 5 numeron pituinen.", "OK");
             return;
+
         }
+
+        var email = sähköposti.Text;
+        var emailRegex = new Regex(@"^[^@\s]+@[^@\s]+\.[^@\s]+$");
+        var emailOK = emailRegex.IsMatch(email);
+
+        if (!emailOK)
+        {
+            await DisplayAlert("Virheellinen sähköpostiosoite", "Syötä kelvollinen sähköpostiosoite.", "OK");
+            return;
+        }
+
+        // Tarkistetaan, ettei sähköposti sisällä välilyöntejä
+        if (email.Contains(" "))
+        {
+            await DisplayAlert("Virheellinen sähköpostiosoite", "Sähköpostiosoite ei saa sisältää välilyöntejä.", "OK");
+            return;
+        }
+
+
 
         if (string.IsNullOrWhiteSpace(etunimi.Text) ||
             string.IsNullOrWhiteSpace(sukunimi.Text) ||
