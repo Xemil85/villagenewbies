@@ -88,7 +88,7 @@ public partial class AddCustomerPage : ContentPage
             return;
 
         }
-
+                
         var email = sähköposti.Text;
         var emailRegex = new Regex(@"^[^@\s]+@[^@\s]+\.[^@\s]+$");
         var emailOK = emailRegex.IsMatch(email);
@@ -105,6 +105,8 @@ public partial class AddCustomerPage : ContentPage
             await DisplayAlert("Virheellinen sähköpostiosoite", "Sähköpostiosoite ei saa sisältää välilyöntejä.", "OK");
             return;
         }
+
+        
 
 
 

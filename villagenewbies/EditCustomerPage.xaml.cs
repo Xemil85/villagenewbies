@@ -3,6 +3,7 @@ using System.Diagnostics;
 using System.Text.RegularExpressions;
 using Microsoft.Maui.Controls;
 using System.Threading.Tasks;
+using System.Data;
 
 namespace VillageNewbies
 {
@@ -27,6 +28,18 @@ namespace VillageNewbies
             }
         }
 
+        protected override async void OnAppearing()
+        {
+            base.OnAppearing();
+            if (_asiakas != null)
+            {
+                var databaseAccess = new DatabaseAccess();
+                var toimipaikka = await databaseAccess.HaeToimipaikkaPostinronPerusteella(_asiakas.postinro);
+                toimipaikkaEntry.Text = toimipaikka ?? "Ei saatavilla";
+            }
+        }
+
+
         private async void TallennaAsiakkaanTietoja_Clicked(object sender, EventArgs e)
         {
             // Päivitä asiakkaan tiedot uusilla tiedoilla
@@ -34,7 +47,7 @@ namespace VillageNewbies
             _asiakas.sukunimi = sukunimiEntry.Text;
             _asiakas.lahiosoite = lahiosoiteEntry.Text;
             _asiakas.postinro = postinumeroEntry.Text;
-            _asiakas.toimipaikka = toimipaikkaEntry.Text; 
+            _asiakas.toimipaikka = toimipaikkaEntry.Text;
             _asiakas.puhelinnro = puhelinnumeroEntry.Text;
             _asiakas.email = sahkopostiEntry.Text;
 
@@ -81,11 +94,41 @@ namespace VillageNewbies
 
             public async Task TallennaAsiakasTietokantaan(Asiakas asiakas)
             {
+                string projectDirectory = System.AppDomain.CurrentDomain.BaseDirectory;
+                var projectRoot = Path.GetFullPath(Path.Combine(projectDirectory, @"..\..\..\..\..\"));
+
+                DotNetEnv.Env.Load(projectRoot);
+                var env = Environment.GetEnvironmentVariables();
+
+                string connectionString = $"server={env["SERVER"]};port={env["SERVER_PORT"]};database={env["SERVER_DATABASE"]};user={env["SERVER_USER"]};password={env["SERVER_PASSWORD"]}";
                 using (var connection = new MySqlConnection(connectionString))
                 {
                     try
                     {
                         await connection.OpenAsync();
+
+                        string tietokannanToimipaikka = await HaeToimipaikkaPostinronPerusteella(asiakas.postinro);
+                        if (tietokannanToimipaikka == null)
+                        {
+                            // Jos postinumeroa ei löydy tietokannasta, lisätään se
+                            await LisaaPostinumero(asiakas.postinro, asiakas.toimipaikka);
+                        }
+                        else if (!asiakas.toimipaikka.Equals(tietokannanToimipaikka, StringComparison.OrdinalIgnoreCase))
+                        {
+                            // Jos toimipaikka ei vastaa tietokannan toimipaikkaa, annetaan virheilmoitus
+                            Debug.WriteLine("Annettu toimipaikka ei vastaa postinumeroa tietokannassa.");
+                            //return false; // Voit myös heittää poikkeuksen tai palauttaa virhekoodin
+                        }
+
+
+
+
+                        
+                        if (!await OnkoPostinumeroOlemassa(asiakas.postinro))
+                        {
+                            await LisaaPostinumero(asiakas.postinro, asiakas.toimipaikka);
+                        }
+                        
                         var query = @"UPDATE asiakas 
                                   SET etunimi = @etunimi, 
                                       sukunimi = @sukunimi, 
@@ -107,14 +150,62 @@ namespace VillageNewbies
 
                             await command.ExecuteNonQueryAsync();
                         }
+                        
                     }
                     catch (Exception ex)
                     {
                         Debug.WriteLine($"Virhe tietokantaan tallennettaessa: {ex.Message}");
+                        
                     }
                 }
             }
 
+            public async Task<bool> OnkoPostinumeroOlemassa(string postinro)
+            {
+                string projectDirectory = System.AppDomain.CurrentDomain.BaseDirectory;
+                var projectRoot = Path.GetFullPath(Path.Combine(projectDirectory, @"..\..\..\..\..\"));
+
+                DotNetEnv.Env.Load(projectRoot);
+                var env = Environment.GetEnvironmentVariables();
+
+                string connectionString = $"server={env["SERVER"]};port={env["SERVER_PORT"]};database={env["SERVER_DATABASE"]};user={env["SERVER_USER"]};password={env["SERVER_PASSWORD"]}";
+                using (var connection = new MySqlConnection(connectionString))
+                {
+                    await connection.OpenAsync();
+                    var query = "SELECT COUNT(*) FROM posti WHERE postinro = @Postinro";
+                    using (var command = new MySqlCommand(query, connection))
+                    {
+                        command.Parameters.AddWithValue("@Postinro", postinro);
+
+                        var tulos = Convert.ToInt32(await command.ExecuteScalarAsync());
+                        return tulos > 0;
+                    }
+                }
+            }
+
+            public async Task LisaaPostinumero(string postinro, string toimipaikka)
+            {
+                string projectDirectory = System.AppDomain.CurrentDomain.BaseDirectory;
+                var projectRoot = Path.GetFullPath(Path.Combine(projectDirectory, @"..\..\..\..\..\"));
+
+                DotNetEnv.Env.Load(projectRoot);
+                var env = Environment.GetEnvironmentVariables();
+
+                string connectionString = $"server={env["SERVER"]};port={env["SERVER_PORT"]};database={env["SERVER_DATABASE"]};user={env["SERVER_USER"]};password={env["SERVER_PASSWORD"]}";
+                using (var connection = new MySqlConnection(connectionString))
+                {
+                    await connection.OpenAsync();
+                    var query = "INSERT INTO posti (postinro, toimipaikka) VALUES (@Postinro, @Toimipaikka)";
+                    using (var command = new MySqlCommand(query, connection))
+                    {
+                        command.Parameters.AddWithValue("@Postinro", postinro);
+                        command.Parameters.AddWithValue("@Toimipaikka", toimipaikka);
+                        await command.ExecuteNonQueryAsync();
+                    }
+                }
+            }
+
+            
             public async Task PoistaAsiakasTietokannasta(int asiakasId)
             {
                 using (var connection = new MySqlConnection(connectionString))
@@ -151,6 +242,44 @@ namespace VillageNewbies
                     }
                 }
             }
+
+
+            public async Task<string> HaeToimipaikkaPostinronPerusteella(string postinro)
+            {
+                string toimipaikka = "";
+                string projectDirectory = System.AppDomain.CurrentDomain.BaseDirectory;
+                var projectRoot = Path.GetFullPath(Path.Combine(projectDirectory, @"..\..\..\..\..\"));
+
+                DotNetEnv.Env.Load(projectRoot);
+                var env = Environment.GetEnvironmentVariables();
+                string connectionString = $"server={env["SERVER"]};port={env["SERVER_PORT"]};database={env["SERVER_DATABASE"]};user={env["SERVER_USER"]};password={env["SERVER_PASSWORD"]}";
+                using (var connection = new MySqlConnection(connectionString))
+                {
+                    try
+                    {
+                        await connection.OpenAsync();
+                        var query = "SELECT toimipaikka FROM posti WHERE postinro = @postinro;";
+                        using (var command = new MySqlCommand(query, connection))
+                        {
+                            command.Parameters.AddWithValue("@postinro", postinro);
+                            using (var reader = await command.ExecuteReaderAsync())
+                            {
+                                if (await reader.ReadAsync())
+                                {
+                                    toimipaikka = reader.GetString("toimipaikka");
+                                }
+                            }
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        // Käsittely mahdollisille poikkeuksille
+                        Console.WriteLine(ex.Message);
+                    }
+                }
+                return toimipaikka;
+            }
         }
     }
-}
+    }
+
