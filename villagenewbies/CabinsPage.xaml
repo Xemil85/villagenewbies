@@ -25,6 +25,8 @@
                 <Button Text="Lisää Mökki" Clicked="LisaaMokki_Clicked" Grid.Row="0" Grid.Column="0" />
                 <Button Text="Lisää Alue" Clicked="LisaaAlue_Clicked" Grid.Row="0" Grid.Column="1" />
                 <Button Text="Poista Alue" Clicked="PoistaAlue_Clicked" Grid.Row="0" Grid.Column="2" />
+                <Label FontSize="12" Text="Varaus aloituspäivä" Grid.Column="3" Grid.Row="1" />
+                <Label FontSize="12" Text="Varaus lopetuspäivä" Grid.Column="4" Grid.Row="1" />
                 <DatePicker x:Name="Aloituspaiva" Format="yyyy-MM-dd" Grid.Row="0" Grid.Column="3" />
                 <DatePicker x:Name="Lopetuspaiva" Format="yyyy-MM-dd" Grid.Row="0" Grid.Column="4" />
 
