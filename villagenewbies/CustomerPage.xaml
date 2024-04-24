@@ -28,13 +28,13 @@
                 <ColumnDefinition Width="*" />
                 <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
-            <Label Text="Etunimi" FontSize="20" Grid.Column="0" TextDecorations="Underline" />
-            <Label Text="Sukunimi" FontSize="20" Grid.Column="1" TextDecorations="Underline" />
-            <Label Text="Lähiosoite" FontSize="20" Grid.Column="2" TextDecorations="Underline" />
-            <Label Text="Postinumero" FontSize="20" Grid.Column="3" TextDecorations="Underline" />
-            <Label Text="Sähköposti" FontSize="20" Grid.Column="4" TextDecorations="Underline" />
-            <Label Text="Puhelin" FontSize="20" Grid.Column="5" TextDecorations="Underline" />
-            <Label Text="Muokkaa" FontSize="20" Grid.Column="6" TextDecorations="Underline" />
+            <Label Text="Etunimi" FontSize="20" Grid.Column="0" TextDecorations="Underline"  HorizontalTextAlignment="Center" />
+            <Label Text="Sukunimi" FontSize="20" Grid.Column="1" TextDecorations="Underline"  HorizontalTextAlignment="Center" />
+            <Label Text="Lähiosoite" FontSize="20" Grid.Column="2" TextDecorations="Underline"  HorizontalTextAlignment="Center" />
+            <Label Text="Postinumero" FontSize="20" Grid.Column="3" TextDecorations="Underline"  HorizontalTextAlignment="Center" />
+            <Label Text="Sähköposti" FontSize="20" Grid.Column="4" TextDecorations="Underline"  HorizontalTextAlignment="Center" />
+            <Label Text="Puhelin" FontSize="20" Grid.Column="5" TextDecorations="Underline"  HorizontalTextAlignment="Center" />
+            <Label Text="Muokkaa" FontSize="20" Grid.Column="6" TextDecorations="Underline"  HorizontalTextAlignment="Center" />
         </Grid>
 
 
@@ -42,13 +42,13 @@
         <CollectionView.ItemTemplate>
             <DataTemplate>
                 <Grid Padding="10" ColumnDefinitions="*,*,*,*,*,*,*">
-                    <Label Grid.Column="0" Text="{Binding etunimi}"/>
-                    <Label Grid.Column="1" Text="{Binding sukunimi}"/>
-                    <Label Grid.Column="2" Text="{Binding lahiosoite}"/>
-                    <Label Grid.Column="3" Text="{Binding postinro}"/>
-                    <Label Grid.Column="4" Text="{Binding email}"/>
-                    <Label Grid.Column="5" Text="{Binding puhelinnro}"/>
-                    <Button Grid.Column="6" Text="Muokkaa" FontSize="Small" CommandParameter="{Binding .}" Clicked="MuokkaaAsiakasta_Clicked" />
+                    <Label Grid.Column="0" Text="{Binding etunimi}" HorizontalTextAlignment="Center" />
+                        <Label Grid.Column="1" Text="{Binding sukunimi}"  HorizontalTextAlignment="Center"/>
+                        <Label Grid.Column="2" Text="{Binding lahiosoite}"  HorizontalTextAlignment="Center"/>
+                        <Label Grid.Column="3" Text="{Binding postinro}"  HorizontalTextAlignment="Center"/>
+                        <Label Grid.Column="4" Text="{Binding email}"  HorizontalTextAlignment="Center"/>
+                        <Label Grid.Column="5" Text="{Binding puhelinnro}"  HorizontalTextAlignment="Center"/>
+                    <Button Grid.Column="6" Text="Muokkaa" FontSize="Small" CommandParameter="{Binding .}" Clicked="MuokkaaAsiakasta_Clicked" WidthRequest="120" />
                     </Grid>
             </DataTemplate>
         </CollectionView.ItemTemplate>
