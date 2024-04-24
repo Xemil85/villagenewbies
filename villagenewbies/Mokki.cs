@@ -32,6 +32,7 @@ namespace VillageNewbies
         public string nimi { get; set; }
         public string sijainti { get; set; }
         public int tyyppi { get; set; } 
+        public string tyyppinimi { get; set; }
         public string kuvaus { get; set; }
         public double hinta { get; set; }
         public double alv { get; set; }
