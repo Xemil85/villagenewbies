@@ -15,7 +15,6 @@ public partial class BookingForm : ContentPage
     private List<Asiakas> _asiakkaat;
     private Dictionary<int, string> _asiakasNimet = new Dictionary<int, string>();
     private int? selectedAsiakasId;
-    private DatabaseAccess databaseAccess;
 
     public BookingForm(Mokki mokki, List<Palvelu> palvelu, string aloitusPaiva, string lopetusPaiva)
     {
@@ -24,7 +23,6 @@ public partial class BookingForm : ContentPage
         selectedServices = palvelu;
         _aloitusPaiva = aloitusPaiva;
         _lopetusPaiva = lopetusPaiva;
-        databaseAccess = new DatabaseAccess();
         LataaAsiakkaat();
         TeeVaraus.Clicked += TeeVaraus_Clicked;
     }
@@ -50,7 +48,7 @@ public partial class BookingForm : ContentPage
             vahvistusPvm = aloitusPaiva.AddDays(-14);  // Aseta vahvistuspäivämäärä 14 päivää ennen alkupäivämäärää.
         }
 
-        int asiakasId;
+        
         if (string.IsNullOrWhiteSpace(Sahkoposti.Text) ||
             string.IsNullOrWhiteSpace(Etunimi.Text) ||
             string.IsNullOrWhiteSpace(Sukunimi.Text) ||
@@ -87,6 +85,8 @@ public partial class BookingForm : ContentPage
             return;
         }
 
+        var asiakasId = 0;
+
         if (Asiakaspicker.SelectedIndex == -1) // Oletetaan, että -1 tarkoittaa uutta asiakasta
         {
             Asiakas uusiAsiakas = new Asiakas
@@ -98,8 +98,8 @@ public partial class BookingForm : ContentPage
                 puhelinnro = Puhelin.Text,
                 postinro = Postinro.Text,
             };
-
-            asiakasId = await databaseAccess.LisaaTaiPaivitaAsiakas(uusiAsiakas, Toimipaikka.Text);  // Päivitetty kutsu uudelle funktiolle
+            var databaseAsiakasAccess = new DatabaseAccess();
+            asiakasId = await databaseAsiakasAccess.LisaaTaiPaivitaAsiakas(uusiAsiakas, Toimipaikka.Text);  // Päivitetty kutsu uudelle funktiolle
         }
         else
         {
@@ -115,7 +115,7 @@ public partial class BookingForm : ContentPage
             varattu_loppupvm = varattuLoppupvm,
             vahvistus_pvm = vahvistusPvm
         };
-
+        var databaseAccess = new DatabaseAccess();
         var varausId = await databaseAccess.LisaaVarausTietokantaan(uusiVaraus);
 
         if (selectedServices.Count > 0)
@@ -305,7 +305,6 @@ public partial class BookingForm : ContentPage
                         command.Parameters.AddWithValue("@Email", uusiAsiakas.email);
                         command.Parameters.AddWithValue("@Puhelinnro", uusiAsiakas.puhelinnro);
 
-                        await command.ExecuteNonQueryAsync();
                         int asiakasId = Convert.ToInt32(await command.ExecuteScalarAsync());
                         return asiakasId;
                     }
