@@ -162,7 +162,7 @@ namespace VillageNewbies.Views
 
         private async void LataaAlueet()
         {
-            var alueetAccess = new MokkiAccess(); // Oletetaan, että tämä luokka hakee tietokannasta
+            var alueetAccess = new MokkiAccess(); 
             var alueet = await alueetAccess.FetchAllAlueAsync();
 
             // Muunna haetut alueet sanakirjaksi

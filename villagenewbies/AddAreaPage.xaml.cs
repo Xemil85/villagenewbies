@@ -106,7 +106,6 @@ public partial class AddAreaPage : ContentPage
         if (success)
         {
             await DisplayAlert("Onnistui", "Alueen tiedot tallennettu onnistuneesti.", "OK");
-            // Tässä kohtaa voit päivittää käyttöliittymän tai navigoida takaisin pääsivulle
         }
         else
         {

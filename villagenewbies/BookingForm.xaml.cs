@@ -87,7 +87,7 @@ public partial class BookingForm : ContentPage
 
         var asiakasId = 0;
 
-        if (Asiakaspicker.SelectedIndex == -1) // Oletetaan, ett‰ -1 tarkoittaa uutta asiakasta
+        if (Asiakaspicker.SelectedIndex == -1) 
         {
             Asiakas uusiAsiakas = new Asiakas
             {
@@ -99,7 +99,7 @@ public partial class BookingForm : ContentPage
                 postinro = Postinro.Text,
             };
             var databaseAsiakasAccess = new DatabaseAccess();
-            asiakasId = await databaseAsiakasAccess.LisaaTaiPaivitaAsiakas(uusiAsiakas, Toimipaikka.Text);  // P‰ivitetty kutsu uudelle funktiolle
+            asiakasId = await databaseAsiakasAccess.LisaaTaiPaivitaAsiakas(uusiAsiakas, Toimipaikka.Text);  
         }
         else
         {
@@ -148,7 +148,7 @@ public partial class BookingForm : ContentPage
 
     private async void LataaAsiakkaat()
     {
-        var asiakkaatAccess = new MokkiAccess(); // Oletetaan, ett‰ t‰m‰ luokka hakee tietokannasta
+        var asiakkaatAccess = new MokkiAccess(); 
         _asiakkaat = await asiakkaatAccess.FetchAllAsiakasAsync();
 
         // Muunna haetut alueet sanakirjaksi
@@ -175,7 +175,7 @@ public partial class BookingForm : ContentPage
         selectedAsiakasId = _asiakasNimet.FirstOrDefault(x => x.Value == selectedAsiakasName).Key;
         var selectedAsiakas = _asiakkaat[Asiakaspicker.SelectedIndex];
 
-        Sahkoposti.Text = selectedAsiakas.email; // Oletetaan, ett‰ asiakas-objektilla on n‰m‰ kent‰t
+        Sahkoposti.Text = selectedAsiakas.email; 
         Etunimi.Text = selectedAsiakas.etunimi;
         Sukunimi.Text = selectedAsiakas.sukunimi;
         Lahiosoite.Text = selectedAsiakas.lahiosoite;
@@ -290,7 +290,7 @@ public partial class BookingForm : ContentPage
 
                     if (!await OnkoPostinumeroOlemassa(uusiAsiakas.postinro))
                     {
-                        await LisaaPostinumero(uusiAsiakas.postinro, toimipaikka); // Olettaen, ett‰ uusiAsiakas sis‰lt‰‰ paikkakunnan
+                        await LisaaPostinumero(uusiAsiakas.postinro, toimipaikka); 
                     }
 
                     var query = "INSERT INTO asiakas (postinro, etunimi, sukunimi, lahiosoite, email, puhelinnro) VALUES (@Postinro, @Etunimi, @Sukunimi, @Lahiosoite, @Email, @Puhelinnro); SELECT LAST_INSERT_ID();";

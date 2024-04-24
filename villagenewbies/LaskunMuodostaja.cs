@@ -27,21 +27,25 @@ namespace VillageNewbies
             // Laske kokonaishinta
             double kokonaishinta = LaskeKokonaishinta(varaus, mokki, palvelut);
 
-            // Luodaan lasku-olio
+            // Laske ALV (24% kokonaishinnasta)
+            double alv = 0.24 * kokonaishinta;
+
+            // Luodaan lasku-olio ilman ALV:n lisäämistä uudelleen
             Lasku lasku = new Lasku
             {
                 VarausId = varaus.varaus_id,
-                Summa = kokonaishinta,
-                Alv = 0.24 * kokonaishinta,
+                Summa = kokonaishinta, // Tämä on hinta, johon sisältyy ALV
+                Alv = alv,
                 Maksettu = false
             };
 
+
             // Tallenna lasku tietokantaan ja hanki laskuId
             int laskuId = await _laskuAccess.TallennaLaskuIlmanPdf(lasku);
-
+            
             // Luo PDF-tiedoston nimi, joka sisältää laskun ID:n
-            string desktopPath = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
-            string pdfFileName = Path.Combine(desktopPath, $"Lasku_{laskuId}.pdf");
+            string desktopPath = Environment.GetFolderPath(Environment.SpecialFolder.Desktop); // Polku työpöydälle
+            string pdfFileName = Path.Combine(desktopPath, $"Lasku_{laskuId}.pdf"); // PDF-tiedoston nimi
 
             // Luo PDF lasku iText7-kirjastolla ja tallenna se paikallisesti
             using (FileStream fileStream = new FileStream(pdfFileName, FileMode.Create, FileAccess.Write))
@@ -56,12 +60,15 @@ namespace VillageNewbies
                 document.Add(new Paragraph($"Mökin nimi: {mokki.mokkinimi}"));
                 document.Add(new Paragraph($"Mökin hinta per vuorokausi: {mokki.hinta}€"));
                 document.Add(new Paragraph($"Varausaika: {varaus.varattu_alkupvm} - {varaus.varattu_loppupvm}"));
-                document.Add(new Paragraph($"ALV: {lasku.Alv.ToString("F2")}€"));
+                document.Add(new Paragraph($"ALV: {alv.ToString("F2")}€ (ALV sisältyy hintaan)")); // Näytä ALV
+
                 foreach (Palvelu palvelu in palvelut)
                 {
                     document.Add(new Paragraph($"{palvelu.nimi}: {palvelu.hinta}€ (ALV sisältyy hintaan)"));
                 }
-                document.Add(new Paragraph("\nMaksettava summa: " + String.Format("{0:0.00} €", lasku.Summa + lasku.Alv)));
+
+                // Maksettava summa ilman ALV:n lisäystä
+                document.Add(new Paragraph("\nMaksettava summa: " + String.Format("{0:0.00} €", kokonaishinta))); // Käytä kokonaishintaa ilman ALV:n uudelleenlisäystä
 
                 // Eräpäivä 14 päivää varauksen loppumispäivämäärästä
                 DateTime erapaiva = varaus.varattu_loppupvm.AddDays(14);
@@ -76,25 +83,23 @@ namespace VillageNewbies
         }
 
 
-
-
         private double LaskeKokonaishinta(Varaus varaus, Mokki mokki, List<Palvelu> palvelut)
         {
-            DateTime alkupvm = DateTime.Parse(varaus.varattu_alkupvm.ToString());
-            DateTime loppupvm = DateTime.Parse(varaus.varattu_loppupvm.ToString());
-            TimeSpan varauksenKesto = loppupvm - alkupvm;
-            int varauksenPaivat = varauksenKesto.Days;
+            // Aloitus- ja lopetuspäivämäärät
+            DateTime alkupvm = varaus.varattu_alkupvm;
+            DateTime loppupvm = varaus.varattu_loppupvm;
 
-            // Jos varaus kestää vähemmän kuin yhden vuorokauden, käsittele se yhden vuorokauden mittaisena.
-            if (varauksenPaivat == 0)
-            {
-                varauksenPaivat = 1;
-            }
+            // Laske päivien määrä aloituksesta lopetukseen mukaan lukien
+            int varauksenPaivat = (loppupvm.Date - alkupvm.Date).Days + 1; 
 
+            // Mökin kokonaishinta
             double mokinHinta = varauksenPaivat * mokki.hinta;
+
+            // Palveluiden kokonaishinta
             double palveluidenHinta = palvelut.Sum(p => p.hinta);
 
-            return mokinHinta + palveluidenHinta;
+            return mokinHinta + palveluidenHinta; // Kokonaishinta
         }
+
     }
 }

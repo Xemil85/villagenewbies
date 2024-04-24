@@ -33,7 +33,6 @@ public partial class ChangeServices : Popup
 
     private async void TallennaPalvelu_Clicked(object? sender, EventArgs e)
     {
-        // Oletus olettaen, että Application.Current.MainPage on käytettävissä
         var currentPage = Application.Current.MainPage;
 
         if (string.IsNullOrWhiteSpace(palvelunimi.Text) ||
@@ -76,7 +75,7 @@ public partial class ChangeServices : Popup
 
     private async void lataaTyypit()
     {
-        var tyyppiAccess = new MokkiAccess(); // Oletetaan, että tämä luokka hakee tietokannasta
+        var tyyppiAccess = new MokkiAccess(); 
         var tyypit = await tyyppiAccess.FetchAllPalveluTyypitAsync();
         _tyyppiNimet = tyypit.ToDictionary(a => a.tyyppi, a => a.nimi);
         TypePicker.ItemsSource = _tyyppiNimet.Values.ToList();
@@ -110,7 +109,6 @@ public partial class ChangeServices : Popup
             else
             {
                 // Käsittele tilannetta, jossa tyyppi ei ole olemassa _tyyppiNimet-sanakirjassa.
-                // Tässä voisi esimerkiksi asettaa SelectedItem:n nulliksi tai valita jonkin oletusarvon.
                 TypePicker.SelectedItem = null;
             }
         }

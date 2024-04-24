@@ -233,12 +233,11 @@ namespace VillageNewbies
                     catch (MySqlException ex) when (ex.Number == 1451)
                     {
                         Debug.WriteLine("Ei voi poistaa asiakasta, koska siihen viitataan muissa tauluissa.");
-                        // T‰ss‰ voit esimerkiksi n‰ytt‰‰ k‰ytt‰j‰lle viestin, ett‰ poisto ei ole mahdollista.
                     }
                     catch (Exception ex)
                     {
                         Debug.WriteLine($"Virhe asiakkaan poistossa tietokannasta: {ex.Message}");
-                        throw; // Heit‰ poikkeus ylemm‰lle tasolle, jos haluat k‰sitell‰ sit‰ siell‰.
+                        throw; 
                     }
                 }
             }

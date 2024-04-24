@@ -37,7 +37,7 @@ public partial class DeleteAreaPage : ContentPage
         bool confirm = await DisplayAlert("Vahvistus", $"Haluatko varmasti poistaa alueen: {alue.nimi}?", "Kyllä", "Ei");
         if (!confirm) return;
 
-        // Toteuta tietokannasta poistaminen tässä. Oletetaan, että DatabaseAccess-luokallasi on metodi, joka hoitaa tämän.
+
         var success = await databaseAccess.PoistaAlueTietokannasta(alue.alue_id);
         if (success)
         {

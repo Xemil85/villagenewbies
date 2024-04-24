@@ -195,7 +195,7 @@ public partial class AddCustomerPage : ContentPage
                     
                     if (!await OnkoPostinumeroOlemassa(uusiAsiakas.postinro))
                     {
-                        await LisaaPostinumero(uusiAsiakas.postinro, toimipaikka); // Olettaen, ett‰ uusiAsiakas sis‰lt‰‰ paikkakunnan
+                        await LisaaPostinumero(uusiAsiakas.postinro, toimipaikka); 
                     }
                     
                     var query = "INSERT INTO asiakas (postinro, etunimi, sukunimi, lahiosoite, email, puhelinnro) VALUES (@Postinro, @Etunimi, @Sukunimi, @Lahiosoite, @Email, @Puhelinnro)";

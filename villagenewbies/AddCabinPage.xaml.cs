@@ -171,7 +171,6 @@ namespace VillageNewbies
                     await connection.OpenAsync();
 
                     var postinroString = uusiMokki.postinro.ToString();
-                    // Lis‰‰ postinumero tietokantaan
                     await LisaaPostinumero(postinroString);
 
                     var query = "INSERT INTO mokki (mokki_id, alue_id, mokkinimi, katuosoite, postinro, hinta, kuvaus,henkilomaara, varustelu)  VALUES (@Mokki_id, @Alue_id, @Mokkinimi, @Katuosoite, @Postinro, @Hinta, @Kuvaus, @Henkilomaara, @Varustelu)";
