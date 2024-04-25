@@ -1,4 +1,4 @@
-# villagenewbies
+# Villagenewbies
 
 Villagenewbies on kuvitteelinen mökkivaraus järjestelmä, jolla pystytään varaamaan mökkejä asiakkaille. <br>
 Projekti on suunniteltu C# ohjelmointikieltä ja .NET MAUI graafista käyttöliittymää käyttäen, jossa tietokantayhteytenä toimii MySQL.
