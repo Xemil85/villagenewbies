@@ -28,6 +28,7 @@ namespace VillageNewbies
                 kuvaus.Text = _mokki.kuvaus;
                 henkilomaara.Text = _mokki.henkilomaara.ToString();
                 varustelu.Text = _mokki.varustelu;
+                toimipaikka.Text = _mokki.sijainti;
             }
         }
 
@@ -66,11 +67,11 @@ namespace VillageNewbies
 
             // Tarkista, onko postinumero jo tietokannassa, ja lis‰‰ se tarvittaessa
             var databaseAccess = new DatabaseAccess();
-            bool postinumeroOlemassa = await databaseAccess.OnkoPostinumeroOlemassa(postinro.Text);
+            bool postinumeroOlemassa = await databaseAccess.OnkoPostinumeroOlemassa(postinro.Text, toimipaikka.Text);
 
             if (!postinumeroOlemassa)
             {
-                await databaseAccess.LisaaPostinumero(postinro.Text);
+                await databaseAccess.LisaaPostinumero(postinro.Text, toimipaikka.Text);
             }
 
             var muokattuMokki = new Mokki
@@ -83,7 +84,10 @@ namespace VillageNewbies
                 hinta = parsedHinta,
                 kuvaus = kuvaus.Text,
                 henkilomaara = parsedHenkilomaara,
-                varustelu = varustelu.Text
+                varustelu = varustelu.Text,
+                sijainti = toimipaikka.Text,
+
+
             };
 
             var success = await PaivitaMokinTiedot(muokattuMokki);
@@ -186,7 +190,7 @@ namespace VillageNewbies
             }
         }
 
-        public async Task<bool> OnkoPostinumeroOlemassa(string postinro)
+        public async Task<bool> OnkoPostinumeroOlemassa(string postinro, string toimipaikka)
         {
             string projectDirectory = System.AppDomain.CurrentDomain.BaseDirectory;
             var projectRoot = Path.GetFullPath(Path.Combine(projectDirectory, @"..\..\..\..\..\"));
@@ -198,10 +202,11 @@ namespace VillageNewbies
             using (var connection = new MySqlConnection(connectionString))
             {
                 await connection.OpenAsync();
-                var query = "SELECT COUNT(*) FROM posti WHERE postinro = @Postinro";
+                var query = "SELECT COUNT(*) FROM posti WHERE postinro = @Postinro AND toimipaikka = @Toimipaikka";
                 using (var command = new MySqlCommand(query, connection))
                 {
                     command.Parameters.AddWithValue("@Postinro", postinro);
+                    command.Parameters.AddWithValue("@Toimipaikka", toimipaikka);
 
                     var tulos = Convert.ToInt32(await command.ExecuteScalarAsync());
                     return tulos > 0;
@@ -209,9 +214,9 @@ namespace VillageNewbies
             }
         }
 
-        public async Task LisaaPostinumero(string postinro)
+        public async Task LisaaPostinumero(string postinro, string toimipaikka)
         {
-            if (await OnkoPostinumeroOlemassa(postinro))
+            if (await OnkoPostinumeroOlemassa(postinro, toimipaikka))
             {
                 return; // Jos postinumero on jo tietokannassa, ei tehd‰ mit‰‰n
             }
@@ -227,15 +232,17 @@ namespace VillageNewbies
             using (var connection = new MySqlConnection(connectionString))
             {
                 await connection.OpenAsync();
-                var query = "INSERT INTO posti (postinro) VALUES (@Postinro)";
+                var query = "INSERT INTO posti (postinro, toimipaikka) VALUES (@Postinro, @Toimipaikka)";
                 using (var command = new MySqlCommand(query, connection))
                 {
                     command.Parameters.AddWithValue("@Postinro", postinro);
+                    command.Parameters.AddWithValue("@Toimipaikka", toimipaikka);
                     await command.ExecuteNonQueryAsync();
                 }
             }
         }
     }
 }
-    
+
+
 

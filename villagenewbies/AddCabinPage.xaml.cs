@@ -44,6 +44,7 @@ namespace VillageNewbies
 
         private async void LisaaMokki_Clicked(object sender, EventArgs e)
         {
+
             // Tarkistetaan, onko alue valittu
             if (AreaPicker.SelectedIndex == -1)
             {
@@ -103,16 +104,16 @@ namespace VillageNewbies
                 henkilomaara = int.Parse(henkilomaara.Text),
                 varustelu = varustelu.Text
             };
-
+            var selectedAreaName = _alueNimet[selectedAreaId.Value];
             // Tarkistetaan, onko postinumero jo olemassa
-            bool postinumeroOlemassa = await databaseAccess.OnkoPostinumeroOlemassa(postinro.Text);
+            bool postinumeroOlemassa = await databaseAccess.OnkoPostinumeroOlemassa(postinro.Text, selectedAreaName);
             if (!postinumeroOlemassa)
             {
-                await databaseAccess.LisaaPostinumero(postinro.Text);
+                await databaseAccess.LisaaPostinumero(postinro.Text, selectedAreaName);
             }
 
             // Yritet‰‰n lis‰t‰ mˆkki tietokantaan
-            bool success = await databaseAccess.LisaaMokkiTietokantaan(uusiMokki);
+            bool success = await databaseAccess.LisaaMokkiTietokantaan(uusiMokki, selectedAreaName);
 
             if (success)
             {
@@ -155,7 +156,7 @@ namespace VillageNewbies
 
     public partial class DatabaseAccess
     {
-        public async Task<bool> LisaaMokkiTietokantaan(Mokki uusiMokki)
+        public async Task<bool> LisaaMokkiTietokantaan(Mokki uusiMokki, string toimipaikka)
         {
             string projectDirectory = System.AppDomain.CurrentDomain.BaseDirectory;
             var projectRoot = Path.GetFullPath(Path.Combine(projectDirectory, @"..\..\..\..\..\"));
@@ -171,7 +172,9 @@ namespace VillageNewbies
                     await connection.OpenAsync();
 
                     var postinroString = uusiMokki.postinro.ToString();
-                    await LisaaPostinumero(postinroString);
+
+                    // Lis‰‰ postinumero tietokantaan
+                    await LisaaPostinumero(postinroString, toimipaikka);
 
                     var query = "INSERT INTO mokki (mokki_id, alue_id, mokkinimi, katuosoite, postinro, hinta, kuvaus,henkilomaara, varustelu)  VALUES (@Mokki_id, @Alue_id, @Mokkinimi, @Katuosoite, @Postinro, @Hinta, @Kuvaus, @Henkilomaara, @Varustelu)";
 
@@ -201,7 +204,7 @@ namespace VillageNewbies
         }
 
 
-        public async Task<bool> OnkoPostinumeroOlemassa(string postinro)
+        public async Task<bool> OnkoPostinumeroOlemassa(string postinro, string toimipaikka)
         {
             string projectDirectory = System.AppDomain.CurrentDomain.BaseDirectory;
             var projectRoot = Path.GetFullPath(Path.Combine(projectDirectory, @"..\..\..\..\..\"));
@@ -213,10 +216,12 @@ namespace VillageNewbies
             using (var connection = new MySqlConnection(connectionString))
             {
                 await connection.OpenAsync();
-                var query = "SELECT COUNT(*) FROM posti WHERE postinro = @Postinro";
+                var query = "SELECT COUNT(*) FROM posti WHERE postinro = @Postinro AND toimipaikka = @Toimipaikka";
                 using (var command = new MySqlCommand(query, connection))
                 {
                     command.Parameters.AddWithValue("@Postinro", postinro);
+                    command.Parameters.AddWithValue("@Toimipaikka", toimipaikka);
+                    //command.Parameters.AddWithValue("@Toimipaikka", toimipaikka);
 
                     var tulos = Convert.ToInt32(await command.ExecuteScalarAsync());
                     return tulos > 0;
@@ -224,9 +229,9 @@ namespace VillageNewbies
             }
         }
 
-        public async Task LisaaPostinumero(string postinro)
+        public async Task LisaaPostinumero(string postinro, string toimipaikka)
         {
-            if (await OnkoPostinumeroOlemassa(postinro))
+            if (await OnkoPostinumeroOlemassa(postinro, toimipaikka))
             {
                 return; // Jos postinumero on jo tietokannassa, ei tehd‰ mit‰‰n
             }
@@ -242,10 +247,11 @@ namespace VillageNewbies
             using (var connection = new MySqlConnection(connectionString))
             {
                 await connection.OpenAsync();
-                var query = "INSERT INTO posti (postinro) VALUES (@Postinro)";
+                var query = "INSERT INTO posti (postinro, toimipaikka) VALUES (@Postinro, @Toimipaikka)";
                 using (var command = new MySqlCommand(query, connection))
                 {
                     command.Parameters.AddWithValue("@Postinro", postinro);
+                    command.Parameters.AddWithValue("@Toimipaikka", toimipaikka);
                     await command.ExecuteNonQueryAsync();
                 }
             }

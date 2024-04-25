@@ -84,10 +84,10 @@ public partial class AddAreaPage : ContentPage
     {
         var muokattavaAlue = new Alue();
 
-        if (!string.IsNullOrWhiteSpace(alue_id.Text) && int.TryParse(alue_id.Text, out int parsedAlueId))
+       /* if (!string.IsNullOrWhiteSpace(alue_id.Text) && int.TryParse(alue_id.Text, out int parsedAlueId))
         {
             muokattavaAlue.alue_id = parsedAlueId;
-        }
+        }*/
 
         // Päivitä aluenimi, jos se on annettu
         if (!string.IsNullOrWhiteSpace(nimi.Text))
@@ -118,7 +118,7 @@ public partial class AddAreaPage : ContentPage
         // Tyhjennä valittu alue
         valittuAlue = null;
         nimi.Text = "";
-        alue_id.Text = ""; 
+        //alue_id.Text = ""; 
     }
 
 
@@ -129,7 +129,7 @@ public partial class AddAreaPage : ContentPage
         var alue = button.CommandParameter as Alue;
         if (alue != null)
         {
-            alue_id.Text = alue.alue_id.ToString();
+           // alue_id.Text = alue.alue_id.ToString();
             nimi.Text = alue.nimi;
         }
     }

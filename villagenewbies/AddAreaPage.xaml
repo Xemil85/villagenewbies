@@ -11,13 +11,13 @@
         <HorizontalStackLayout>
             <Entry x:Name="nimi" Placeholder="Alueen nimi" MinimumWidthRequest="300"
              HorizontalOptions="Center" Margin="30,10,0,0"></Entry>
-            <Entry x:Name="alue_id"
+            <!--<Entry x:Name="alue_id"
            Placeholder="Alue ID"
            MinimumWidthRequest="300"
            HorizontalOptions="Center"
            Margin="30,10,0,0"
            BackgroundColor="White"
-           TextColor="Black"/>
+           TextColor="Black"/>-->
         </HorizontalStackLayout>
 
 
@@ -25,9 +25,9 @@
             <Button Text="Lisää Alue" Margin="30,10,0,0" Clicked="LisaaAlue_Clicked" />
             <Button Text="Tallenna" Margin="30,10,0,0" Clicked="TallennaAlue_Clicked"/>
         </HorizontalStackLayout>
-        
 
-            <CollectionView x:Name="AreasCollectionView" HeightRequest="500">
+
+        <CollectionView x:Name="AreasCollectionView" HeightRequest="500">
             <CollectionView.ItemTemplate>
                 <DataTemplate>
                     <Grid Padding="10" ColumnDefinitions="*,*,*,*,*,*,*">

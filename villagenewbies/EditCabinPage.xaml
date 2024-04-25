@@ -10,6 +10,7 @@
 		<Entry x:Name="henkilomaara" Placeholder="Henkilömäärä" Keyboard="Numeric" />
 		<Editor x:Name="varustelu" Placeholder="Varustelu" />
 		<Entry x:Name="postinro" Placeholder="Postinumero" Keyboard="Numeric" />
+        <Entry x:Name="toimipaikka" Placeholder="Toimipaikka"  />
 
 		<Grid>
 			<Grid.ColumnDefinitions>
