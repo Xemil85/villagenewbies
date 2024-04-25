@@ -206,15 +206,19 @@ public partial class Reportage : ContentPage
             {
                 await connection.OpenAsync();
                 var query = @"
-                SELECT vp.varaus_id, p.nimi, vp.lkm
+                SELECT p.nimi, COUNT(*) AS Lkm
                 FROM varauksen_palvelut vp
                 JOIN varaus v ON vp.varaus_id = v.varaus_id
                 JOIN mokki m ON v.mokki_mokki_id = m.mokki_id
                 JOIN palvelu p ON vp.palvelu_id = p.palvelu_id
                 WHERE m.alue_id = @AlueId
                 AND v.varattu_loppupvm >= @StartDate
-                AND v.varattu_alkupvm <= @EndDate";
+                AND v.varattu_alkupvm <= @EndDate
+                GROUP BY p.nimi;";
 
+                
+                
+                
                 using (var command = new MySqlCommand(query, connection))
                 {
                     command.Parameters.AddWithValue("@AlueId", alueId);
@@ -227,9 +231,9 @@ public partial class Reportage : ContentPage
                         {
                             palvelut.Add(new PalveluViewModel
                             {
-                                VarausId = reader.GetInt32("varaus_id"),
+                                //VarausId = reader.GetInt32("varaus_id"),
                                 PalvelunNimi = reader.GetString("nimi"),
-                                Lkm = reader.GetInt32("lkm")
+                                Lkm = reader.GetInt32("Lkm")
                             });
                         }
                     }

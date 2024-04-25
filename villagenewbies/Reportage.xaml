@@ -48,23 +48,23 @@
             <!-- Otsikot Palvelutiedot-alueelle -->
             <Grid RowSpacing="5">
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*" />
+                    
                     <ColumnDefinition Width="*" />
                     <ColumnDefinition Width="*" />
                 </Grid.ColumnDefinitions>
-                <Label Text="Varaus id" FontSize="Small" Grid.Column="0" />
-                <Label Text="Palvelun nimi" FontSize="Small" Grid.Column="1" />
-                <Label Text="Lkm" FontSize="Small" Grid.Column="2" />
+                
+                <Label Text="Palvelun nimi" FontSize="Small" Grid.Column="0" />
+                <Label Text="Lkm" FontSize="Small" Grid.Column="1" />
             </Grid>
 
             <!-- Palvelut CollectionView sisältäen ScrollViewer -->
             <CollectionView x:Name="ServicesReportage" ItemsSource="{Binding Palvelut}">
                 <CollectionView.ItemTemplate>
                     <DataTemplate>
-                        <Grid Padding="10" ColumnDefinitions="*,*,*">
-                            <Label Grid.Column="0" Text="{Binding VarausId}"/>
-                            <Label Grid.Column="1" Text="{Binding PalvelunNimi}"/>
-                            <Label Grid.Column="2" Text="{Binding Lkm}"/>
+                        <Grid Padding="10" ColumnDefinitions="*,*">
+                            
+                            <Label Grid.Column="0" Text="{Binding PalvelunNimi}"/>
+                            <Label Grid.Column="1" Text="{Binding Lkm}"/>
                         </Grid>
                     </DataTemplate>
                 </CollectionView.ItemTemplate>
